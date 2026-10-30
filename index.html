@@ -57,16 +57,13 @@
           </button>
           <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-64 glass-card rounded-xl shadow-xl border border-slate-700 py-1 z-50">
             <div class="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase border-b border-slate-800 flex justify-between">
-              <span>切換或登入 ID</span>
+              <span>臨時切換或登入 ID</span>
               <button onclick="openForgotIdModal()" class="text-[#CFB87C] hover:underline">忘記 ID？</button>
             </div>
             <div id="user-list-options" class="max-h-48 overflow-y-auto py-1"></div>
-            <div class="border-t border-slate-800 pt-1 space-y-0.5">
+            <div class="border-t border-slate-800 pt-1">
               <button onclick="openNewUserModal()" class="w-full text-left px-3 py-2 text-xs text-[#CFB87C] hover:bg-slate-800 font-semibold flex items-center">
                 <i data-lucide="user-plus" class="w-3.5 h-3.5 mr-2"></i> + 建立新 ID / 登入既有 ID
-              </button>
-              <button onclick="openDeviceSetupModal(true)" class="w-full text-left px-3 py-2 text-xs text-emerald-400 hover:bg-slate-800 font-medium flex items-center">
-                <i data-lucide="smartphone" class="w-3.5 h-3.5 mr-2"></i> 📱 變更此裝置預設開啟 ID
               </button>
             </div>
           </div>
@@ -84,6 +81,25 @@
       </div>
     </div>
   </header>
+
+  <!-- 未解鎖時的內容鎖定畫面 (防止新裝置未輸入密碼直接檢視內容) -->
+  <section id="locked-view-screen" class="max-w-lg mx-auto px-4 pt-14 hidden">
+    <div class="glass-card rounded-2xl p-8 border border-[#CFB87C]/40 text-center space-y-4 shadow-2xl">
+      <div class="w-14 h-14 rounded-2xl bg-[#CFB87C]/15 text-[#CFB87C] flex items-center justify-center mx-auto">
+        <i data-lucide="lock" class="w-7 h-7"></i>
+      </div>
+      <h2 class="text-lg font-bold text-white">帳號 <span id="locked-screen-id" class="text-[#CFB87C] font-mono">@surihua</span> 內容受密碼保護</h2>
+      <p class="text-xs text-slate-400 leading-relaxed">此裝置尚未解鎖該帳號。請輸入密碼以檢視修課進度與成績，或點選下方按鈕切換/建立其他帳號。</p>
+      <div class="flex flex-col sm:flex-row gap-2 justify-center pt-2">
+        <button onclick="promptUnlockCurrentAccount()" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f]">
+          🔑 輸入密碼解鎖檢視
+        </button>
+        <button onclick="openNewUserModal('login')" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700 hover:border-[#CFB87C]">
+          👤 切換 / 建立其他 ID
+        </button>
+      </div>
+    </div>
+  </section>
 
   <!-- HOME PAGE -->
   <main id="page-home" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
@@ -129,8 +145,8 @@
           </div>
         </div>
         <div class="mt-3 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between items-center">
-          <span>此裝置預設/當前 ID：<strong id="footer-sync-id" class="text-[#CFB87C] font-mono">@surihua</strong> <span id="footer-lock-badge" class="ml-1">🔒</span></span>
-          <button onclick="syncFromCloud(true)" class="text-emerald-400 hover:underline">🔄 立即同步雲端</button>
+          <span>當前顯示：<strong id="footer-sync-id" class="text-[#CFB87C] font-mono">@surihua</strong> <span id="footer-lock-badge" class="ml-0.5">🔒</span>（此裝置預設：<span id="footer-device-default-id" class="text-emerald-400 font-mono">@surihua</span>）</span>
+          <button onclick="syncFromCloud(true)" class="text-emerald-400 hover:underline shrink-0">🔄 立即同步</button>
         </div>
       </div>
       <div class="glass-card rounded-2xl p-5 md:col-span-2 flex flex-col justify-between">
@@ -168,7 +184,7 @@
 
   <!-- PROFILE & SECURITY PAGE -->
   <main id="page-profile" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6 hidden">
-    <!-- 1. 修改 User ID 與顯示名稱（需驗證密碼） -->
+    <!-- 頂部帳號狀態與「此裝置預設顯示 ID」專屬設定卡片 -->
     <div class="glass-card rounded-2xl p-6 space-y-5">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-5 gap-3">
         <div class="flex items-center space-x-4">
@@ -178,17 +194,46 @@
               <h2 id="profile-display-name" class="text-xl font-bold text-slate-100">Suri Hua</h2>
               <span id="profile-pwd-badge" class="text-[10px] px-2 py-0.5 rounded-full font-semibold"></span>
             </div>
-            <p class="text-xs text-slate-400 mt-0.5">當前同步代碼 ID: <span id="profile-display-id" class="text-[#CFB87C] font-mono font-bold">@surihua</span></p>
+            <p class="text-xs text-slate-400 mt-0.5">
+              當前瀏覽 ID: <span id="profile-display-id" class="text-[#CFB87C] font-mono font-bold">@surihua</span>
+              <span class="mx-1.5 text-slate-600">|</span>
+              此裝置預設開啟 ID: <span id="profile-device-default-badge" class="text-emerald-400 font-mono font-bold">@surihua</span>
+            </p>
           </div>
         </div>
         <div class="flex flex-wrap gap-2">
-          <button onclick="openDeviceSetupModal(true)" class="px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 text-emerald-400 border border-slate-700 hover:border-emerald-400">📱 變更此裝置預設 ID</button>
           <button onclick="openForgotIdModal()" class="px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 text-[#CFB87C] border border-slate-700 hover:border-[#CFB87C]">🔍 忘記 ID 查詢</button>
           <button onclick="syncFromCloud(true)" class="px-3 py-2 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950">🔄 立即同步</button>
         </div>
       </div>
 
-      <form onsubmit="handleUpdateUserIdAndName(event)" class="space-y-3">
+      <!-- 專屬區塊：設定此裝置預設顯示 ID（僅能在此頁面修改） -->
+      <div class="p-4 rounded-xl bg-slate-900/90 border border-emerald-500/30 space-y-3">
+        <div>
+          <h3 class="text-sm font-bold text-emerald-400 flex items-center">
+            <i data-lucide="smartphone" class="w-4 h-4 mr-2"></i> 📱 此裝置預設顯示 ID 設定（僅限此處變更）
+          </h3>
+          <p class="text-xs text-slate-400 mt-0.5">右上角選單切換帳號僅為「臨時切換」，不會改變此裝置的預設開啟 ID。若要更改這台裝置每次打開時自動載入的預設 ID，請在下方選擇並輸入該帳號密碼：</p>
+        </div>
+        <form onsubmit="handleSaveDeviceDefaultId(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">選擇要設為此裝置預設的 ID</label>
+            <select id="profile-device-default-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-slate-100 font-mono"></select>
+          </div>
+          <div>
+            <label class="block text-[11px] text-amber-400 font-semibold mb-1">🔒 輸入該 ID 的密碼以確認設定</label>
+            <input type="password" id="profile-device-default-pwd" required placeholder="請輸入該帳號密碼" class="w-full px-3 py-2 bg-slate-950 border border-amber-500/40 rounded-xl text-xs text-slate-100">
+          </div>
+          <div class="flex items-end">
+            <button type="submit" class="w-full py-2 px-4 rounded-xl text-xs font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow">
+              儲存為此裝置預設 ID
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 1. 修改 User ID 與顯示名稱（需驗證密碼） -->
+      <form onsubmit="handleUpdateUserIdAndName(event)" class="space-y-3 pt-2 border-t border-slate-800">
         <div class="flex items-center justify-between">
           <h3 class="text-sm font-semibold text-slate-200 flex items-center"><i data-lucide="user-cog" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 1. 修改顯示名稱與同步 User ID（需驗證密碼）</h3>
           <button type="button" onclick="openForgotIdModal()" class="text-xs text-[#CFB87C] hover:underline font-semibold">忘記其他帳號 ID？用手機找回</button>
@@ -211,7 +256,7 @@
       <div class="flex items-center justify-between">
         <div>
           <h3 class="text-sm font-semibold text-slate-200 flex items-center"><i data-lucide="key-round" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 2. 自訂密碼與救援手機號碼（SHA-256 加密）</h3>
-          <p class="text-xs text-slate-400 mt-0.5">密碼只有您自己知道。更新密碼前必須先輸入舊密碼；綁定手機號碼可用於找回忘記的 ID 或重設密碼。</p>
+          <p class="text-xs text-slate-400 mt-0.5">更新密碼前必須先輸入舊密碼；綁定手機號碼可用於找回忘記的 ID 或重設密碼。</p>
         </div>
         <button type="button" onclick="openForgotModal(activeUserId)" class="text-xs text-[#CFB87C] hover:underline font-semibold shrink-0">忘記密碼？用手機重設</button>
       </div>
@@ -242,69 +287,18 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
           <h3 class="text-sm font-bold text-rose-400 flex items-center"><i data-lucide="trash-2" class="w-4 h-4 mr-2"></i> 3. 刪除當前帳號 (@<span id="delete-zone-id">surihua</span>)</h3>
-          <p class="text-xs text-slate-400 mt-0.5">刪除帳號需要輸入您自己知道的密碼，驗證通過後將清空此帳號的本機與雲端資料。</p>
+          <p class="text-xs text-slate-400 mt-0.5">刪除帳號需要輸入該帳號的密碼，驗證通過後將清空此帳號的本機與雲端資料。</p>
         </div>
         <button type="button" onclick="openDeleteAccountModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500 hover:text-white shrink-0">永久刪除此帳號...</button>
       </div>
     </div>
   </main>
 
-  <!-- 首次使用裝置：選擇此裝置預設 ID Modal (Device Onboarding) -->
-  <div id="device-setup-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-md rounded-2xl p-6 border border-[#CFB87C]/40 space-y-4 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <div class="flex items-center space-x-2.5">
-          <div class="w-8 h-8 rounded-lg bg-[#CFB87C] text-slate-950 font-black flex items-center justify-center text-sm">CU</div>
-          <div>
-            <h3 class="font-bold text-base text-slate-100">選擇此裝置預設使用的 ID</h3>
-            <p class="text-[11px] text-slate-400">設定後，這台裝置每次打開都會自動載入該帳號</p>
-          </div>
-        </div>
-        <button id="device-setup-close-btn" onclick="closeDeviceSetupModal()" class="text-slate-400 hover:text-white hidden"><i data-lucide="x" class="w-5 h-5"></i></button>
-      </div>
-
-      <!-- 選項 1：選擇預設主帳號 @surihua（受密碼保護） -->
-      <div class="p-3.5 rounded-xl bg-slate-900/90 border border-[#CFB87C]/40 space-y-2">
-        <div class="flex items-center justify-between">
-          <div>
-            <div class="text-xs font-bold text-[#CFB87C]">👑 系統預設主帳號（🔒 密碼保護）</div>
-            <div class="text-sm font-bold text-white mt-0.5">Suri Hua (<span class="font-mono text-[#CFB87C]">@surihua</span>)</div>
-          </div>
-          <button type="button" onclick="chooseDefaultSurihuaForDevice()" class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shadow">
-            驗證密碼並設為預設
-          </button>
-        </div>
-      </div>
-
-      <div class="relative flex py-1 items-center">
-        <div class="flex-grow border-t border-slate-800"></div>
-        <span class="flex-shrink mx-3 text-[11px] text-slate-400">或綁定其他帳號作為此裝置預設</span>
-        <div class="flex-grow border-t border-slate-800"></div>
-      </div>
-
-      <!-- 選項 2：輸入既有 ID 或 建立新 ID 設為此裝置預設 -->
-      <div class="grid grid-cols-2 gap-2">
-        <button type="button" onclick="closeDeviceSetupModal();openNewUserModal('login')" class="py-2.5 px-3 rounded-xl text-xs font-bold bg-slate-800 text-slate-200 border border-slate-700 hover:border-[#CFB87C] flex items-center justify-center">
-          🔑 登入其他既有 ID
-        </button>
-        <button type="button" onclick="closeDeviceSetupModal();openNewUserModal('register')" class="py-2.5 px-3 rounded-xl text-xs font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950 flex items-center justify-center">
-          ✨ 建立全新 ID
-        </button>
-      </div>
-
-      <div class="text-center pt-1">
-        <button type="button" onclick="closeDeviceSetupModal();openForgotIdModal()" class="text-[11px] text-slate-400 hover:text-[#CFB87C] underline">
-          忘記自己的 User ID？點此用手機號碼找回
-        </button>
-      </div>
-    </div>
-  </div>
-
   <!-- 建立新 ID / 登入既有 ID Modal -->
   <div id="new-user-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="glass-card w-full max-w-md rounded-2xl p-6 border border-slate-700 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-base text-slate-100">建立新 ID 或 登入既有 ID</h3>
+        <h3 class="font-bold text-base text-slate-100">建立新 ID 或 臨時登入既有 ID</h3>
         <button onclick="closeNewUserModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
@@ -315,26 +309,26 @@
 
       <!-- 建立新帳號表單 -->
       <form id="form-register-user" onsubmit="handleRegisterNewUser(event)" class="space-y-3">
-        <p class="text-[11px] text-slate-400">建立全新 ID 時，必須手動輸入新密碼與手機號碼並儲存。新帳號將自動提供全空白進度（0%）的 30 門課表，並設為此裝置預設 ID。</p>
-        <div><label class="block text-xs text-slate-300 mb-1">1. 新使用者同步 ID (英數小寫)</label><input type="text" id="reg-user-id" required placeholder="例如: alex" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono"></div>
-        <div><label class="block text-xs text-slate-300 mb-1">2. 顯示姓名 (Display Name)</label><input type="text" id="reg-user-name" required placeholder="例如: Alex Chen" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100"></div>
-        <div><label class="block text-xs text-[#CFB87C] font-semibold mb-1">3. 設定新密碼 (必填，只有您自己知道)</label><input type="password" id="reg-user-pwd" required placeholder="請手動輸入新密碼" class="w-full px-3 py-2 bg-slate-900 border border-[#CFB87C]/50 rounded-xl text-xs text-slate-100"></div>
+        <p class="text-[11px] text-slate-400">建立全新 ID 時，必須手動輸入新密碼與手機號碼並儲存。新帳號將自動提供全空白進度（0%）的 30 門課表（不會改變此裝置預設 ID，欲修改預設請至帳號安全頁）。</p>
+        <div><label class="block text-xs text-slate-300 mb-1">1. 新使用者同步 ID (英數小寫)</label><input type="text" id="reg-user-id" required placeholder="例如: dolly" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono"></div>
+        <div><label class="block text-xs text-slate-300 mb-1">2. 顯示姓名 (Display Name)</label><input type="text" id="reg-user-name" required placeholder="例如: Dolly" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100"></div>
+        <div><label class="block text-xs text-[#CFB87C] font-semibold mb-1">3. 設定新密碼 (必填)</label><input type="password" id="reg-user-pwd" required placeholder="請手動輸入新密碼" class="w-full px-3 py-2 bg-slate-900 border border-[#CFB87C]/50 rounded-xl text-xs text-slate-100"></div>
         <div><label class="block text-xs text-emerald-400 font-semibold mb-1">4. 綁定手機號碼 (必填，忘記 ID / 忘記密碼找回用)</label><input type="tel" id="reg-user-phone" required placeholder="例如: 0912345678" class="w-full px-3 py-2 bg-slate-900 border border-emerald-500/40 rounded-xl text-xs text-slate-100 font-mono"></div>
         <div class="flex justify-end space-x-2 pt-2 border-t border-slate-800">
           <button type="button" onclick="closeNewUserModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300">取消</button>
-          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">儲存新密碼並設為預設 ID</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">儲存新密碼並建立 ID</button>
         </div>
       </form>
 
       <!-- 登入既有帳號表單 -->
       <form id="form-login-user" onsubmit="handleLoginExistingUser(event)" class="space-y-3 hidden">
-        <p class="text-[11px] text-slate-400">請輸入您的同步 ID 與密碼，驗證成功後將自動設為此裝置的預設 ID。</p>
+        <p class="text-[11px] text-slate-400">請輸入同步 ID 與密碼以切換瀏覽（此操作僅為臨時切換，若要變更此裝置預設開啟 ID，請於登入後至「帳號安全」頁面設定）。</p>
         <div>
           <div class="flex justify-between mb-1">
             <label class="text-xs text-slate-300">既有使用者 ID</label>
             <button type="button" onclick="openForgotIdModal()" class="text-[11px] text-emerald-400 hover:underline font-semibold">忘記 ID？用手機號碼找回</button>
           </div>
-          <input type="text" id="login-user-id" required placeholder="例如: surihua 或 alex" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
+          <input type="text" id="login-user-id" required placeholder="例如: surihua 或 dolly" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
         </div>
         <div>
           <div class="flex justify-between mb-1">
@@ -345,7 +339,7 @@
         </div>
         <div class="flex justify-end space-x-2 pt-2 border-t border-slate-800">
           <button type="button" onclick="closeNewUserModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300">取消</button>
-          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">驗證並設為此裝置預設</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">驗證並切換帳號</button>
         </div>
       </form>
     </div>
@@ -376,21 +370,25 @@
     </div>
   </div>
 
-  <!-- 切換帳號密碼驗證 Modal -->
-  <div id="verify-pwd-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-sm rounded-2xl p-6 border border-slate-700 space-y-4">
+  <!-- 密碼驗證解鎖 Modal -->
+  <div id="verify-pwd-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-sm rounded-2xl p-6 border border-[#CFB87C]/40 space-y-4 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-sm text-slate-100 flex items-center"><i data-lucide="lock" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 請輸入帳號密碼</h3>
+        <h3 class="font-bold text-sm text-slate-100 flex items-center"><i data-lucide="lock" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 請輸入密碼以檢視內容</h3>
         <button onclick="closeVerifyPwdModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
-      <p class="text-xs text-slate-400">帳號 <strong id="verify-target-id" class="text-[#CFB87C] font-mono"></strong> 受密碼保護，請輸入密碼以解鎖：</p>
+      <p class="text-xs text-slate-300 leading-relaxed">帳號 <strong id="verify-target-id" class="text-[#CFB87C] font-mono"></strong> 受密碼保護，新裝置必須先驗證密碼才能檢視或編輯其內容：</p>
       <form onsubmit="submitVerifyPwd(event)" class="space-y-3">
-        <input type="password" id="verify-pwd-input" required placeholder="請輸入密碼" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100">
+        <input type="password" id="verify-pwd-input" required placeholder="請輸入此帳號的密碼" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100">
         <div class="flex items-center justify-between pt-2">
           <button type="button" onclick="openForgotModal(pendingSwitchUserId)" class="text-xs text-[#CFB87C] hover:underline">忘記密碼？用手機重設</button>
-          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">解鎖進入</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">驗證並解鎖檢視</button>
         </div>
       </form>
+      <div class="border-t border-slate-800 pt-2.5 flex justify-between items-center text-[11px] text-slate-400">
+        <span>不是您的帳號？</span>
+        <button type="button" onclick="closeVerifyPwdModal();openNewUserModal('register')" class="text-emerald-400 hover:underline font-semibold">+ 建立或登入其他 ID</button>
+      </div>
     </div>
   </div>
 
@@ -467,8 +465,9 @@
 
   <script>
     const DEFAULT_USER_ID = 'surihua';
-    const LEGACY_USER_ID = 'suri';
-    // 預先將 @surihua 的預設密碼與預設手機號碼轉為 SHA-256 不可逆加密指紋，防止新使用者覆蓋或從原始碼窺探明文
+    // 清除的舊帳號清單（保留 dolly 等其他使用者新建的帳號）
+    const BANNED_LEGACY_IDS = ['suri', 'suri1031'];
+    // @surihua 預設密碼与預設手機號碼的 SHA-256 雜湊指紋
     const SURIHUA_DEFAULT_PWD_HASH = '867f9888ff6f99f62467c72f7ba193aa1bdca083ab8191e6b32dc182ee1f340c';
     const SURIHUA_DEFAULT_PHONE_HASH = '49bd88743934a546950351a71f638a1b2fb55059296cc22f0a5c8861d8ca0ab6';
 
@@ -486,7 +485,6 @@
       } catch(e){}
     })();
 
-    // SHA-256 不可逆雜湊加密（保護密碼與手機號碼）
     async function sha256(str) {
       const clean = String(str || '').trim();
       const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('cu_salt_v1_' + clean));
@@ -496,6 +494,7 @@
 
     const gradePoints = { 'A': 4.0, 'A-': 3.75, 'B+': 3.25, 'B': 3.0, 'B-': 2.75 };
     let isEditMode = false;
+    let currentPage = 'home';
     let usersList = [{
       id: DEFAULT_USER_ID,
       name: 'Suri Hua',
@@ -505,14 +504,31 @@
     let activeUserId = DEFAULT_USER_ID;
     let pendingSwitchUserId = null;
     let forgotTargetUserId = null;
-    // 預設不自動解鎖任何受保護帳號，確保必須輸入密碼才能進入編輯或設為裝置預設
-    const unlockedSessionUsers = new Set();
 
     const safeStorage = {
       getItem: k => { try { return localStorage.getItem(k); } catch(e) { return null; } },
       setItem: (k,v) => { try { localStorage.setItem(k,v); } catch(e) {} },
       removeItem: k => { try { localStorage.removeItem(k); } catch(e) {} }
     };
+
+    // 紀錄這台裝置已經輸入過正確密碼解鎖的帳號清單（新裝置未輸入密碼前無法檢視 @surihua）
+    let unlockedDeviceUsers = new Set();
+    try {
+      const savedUnlocked = safeStorage.getItem('cuboulder_unlocked_device_users');
+      if (savedUnlocked) unlockedDeviceUsers = new Set(JSON.parse(savedUnlocked));
+    } catch(e) {}
+
+    function markUserUnlockedOnDevice(uid) {
+      unlockedDeviceUsers.add(uid);
+      safeStorage.setItem('cuboulder_unlocked_device_users', JSON.stringify(Array.from(unlockedDeviceUsers)));
+    }
+
+    function isAccountUnlockedForView(uid) {
+      const u = usersList.find(x => x.id === uid);
+      const needsPwd = (u && u.pwdHash) || uid === DEFAULT_USER_ID;
+      if (!needsPwd) return true;
+      return unlockedDeviceUsers.has(uid);
+    }
 
     const suriDefaultCourses = [
       { id:'1', type:"required", code:"EMEA 5021", name:"Product Cost and Investment Cash Flow Analysis", status:"Complete", grade:"A", progress:"99%", note:"已註冊，99%，待 12/22 更新成績" },
@@ -567,7 +583,7 @@
     }
 
     async function syncPhoneIndexToCloud(phoneHash, uid, name) {
-      if (!phoneHash || !uid || uid === LEGACY_USER_ID) return;
+      if (!phoneHash || !uid || BANNED_LEGACY_IDS.includes(uid)) return;
       try {
         await fetch(CLOUD_PHONE_INDEX_BASE + encodeURIComponent(phoneHash), {
           method: 'PUT',
@@ -578,6 +594,7 @@
     }
 
     async function fetchCloudUserRecord(uid) {
+      if (BANNED_LEGACY_IDS.includes(uid)) return null;
       try {
         const res = await fetch(CLOUD_API_BASE + encodeURIComponent(uid) + '?t=' + Date.now());
         if (res.ok) {
@@ -589,7 +606,7 @@
     }
 
     async function pushToCloud() {
-      if (activeUserId === LEGACY_USER_ID) return;
+      if (BANNED_LEGACY_IDS.includes(activeUserId)) return;
       const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: '', phoneHash: '' };
       if (u.id === DEFAULT_USER_ID) {
         if (!u.pwdHash) u.pwdHash = SURIHUA_DEFAULT_PWD_HASH;
@@ -618,6 +635,10 @@
     }
 
     window.syncFromCloud = async function(showToast = false) {
+      if (!isAccountUnlockedForView(activeUserId)) {
+        promptUnlockCurrentAccount();
+        return false;
+      }
       setSyncStatus('☁️ 讀取雲端...', true);
       const data = await fetchCloudUserRecord(activeUserId);
       if (data) {
@@ -645,38 +666,24 @@
       pushToCloud();
     }
 
-    // 首次開啟裝置選擇預設 ID 相關函式
-    window.openDeviceSetupModal = function(allowClose = false) {
-      document.getElementById('user-dropdown').classList.add('hidden');
-      document.getElementById('device-setup-close-btn').classList.toggle('hidden', !allowClose);
-      document.getElementById('device-setup-modal').classList.remove('hidden');
-      if (window.lucide) lucide.createIcons();
-    };
-    window.closeDeviceSetupModal = () => document.getElementById('device-setup-modal').classList.add('hidden');
-
-    window.chooseDefaultSurihuaForDevice = async function() {
-      closeDeviceSetupModal();
-      if (!unlockedSessionUsers.has(DEFAULT_USER_ID)) {
-        pendingSwitchUserId = DEFAULT_USER_ID;
-        document.getElementById('verify-target-id').textContent = `@${DEFAULT_USER_ID}`;
-        document.getElementById('verify-pwd-input').value = '';
-        document.getElementById('verify-pwd-modal').classList.remove('hidden');
-        return;
+    // 清除舊的 `suri` 與 `suri1031` 帳號，保留 `surihua` 與其他新建帳號（如 dolly）
+    async function purgeBannedLegacyAccounts() {
+      for (const oldId of BANNED_LEGACY_IDS) {
+        const legacyCourses = safeStorage.getItem(`cuboulder_courses_${oldId}`);
+        if (oldId === 'suri' && legacyCourses && !safeStorage.getItem(`cuboulder_courses_${DEFAULT_USER_ID}`)) {
+          safeStorage.setItem(`cuboulder_courses_${DEFAULT_USER_ID}`, legacyCourses);
+        }
+        safeStorage.removeItem(`cuboulder_courses_${oldId}`);
+        try {
+          await fetch(CLOUD_API_BASE + encodeURIComponent(oldId), {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: oldId, deleted: true, courses: [] })
+          });
+        } catch(e) {}
       }
-      safeStorage.setItem('cuboulder_device_default_user', DEFAULT_USER_ID);
-      await loadUserData(DEFAULT_USER_ID);
-    };
-
-    // 徹底清除舊的 `suri` 帳號並將資料遷移至 `surihua`（強制套用預設密碼與手機保護）
-    async function purgeLegacySuriAndMigrate() {
-      const legacyCourses = safeStorage.getItem(`cuboulder_courses_${LEGACY_USER_ID}`);
-      if (legacyCourses && !safeStorage.getItem(`cuboulder_courses_${DEFAULT_USER_ID}`)) {
-        safeStorage.setItem(`cuboulder_courses_${DEFAULT_USER_ID}`, legacyCourses);
-      }
-      safeStorage.removeItem(`cuboulder_courses_${LEGACY_USER_ID}`);
 
       try {
-        const oldCloud = await fetchCloudUserRecord(LEGACY_USER_ID);
         const newCloud = await fetchCloudUserRecord(DEFAULT_USER_ID);
         if (!newCloud) {
           await fetch(CLOUD_API_BASE + encodeURIComponent(DEFAULT_USER_ID), {
@@ -685,44 +692,47 @@
             body: JSON.stringify({
               id: DEFAULT_USER_ID,
               name: 'Suri Hua',
-              pwdHash: (oldCloud && oldCloud.pwdHash) || SURIHUA_DEFAULT_PWD_HASH,
-              phoneHash: (oldCloud && oldCloud.phoneHash) || SURIHUA_DEFAULT_PHONE_HASH,
+              pwdHash: SURIHUA_DEFAULT_PWD_HASH,
+              phoneHash: SURIHUA_DEFAULT_PHONE_HASH,
               updatedAt: Date.now(),
-              courses: (oldCloud && oldCloud.courses) || suriDefaultCourses
+              courses: suriDefaultCourses
             })
           });
           await syncPhoneIndexToCloud(SURIHUA_DEFAULT_PHONE_HASH, DEFAULT_USER_ID, 'Suri Hua');
-        } else if (!newCloud.pwdHash || !newCloud.phoneHash) {
-          await fetch(CLOUD_API_BASE + encodeURIComponent(DEFAULT_USER_ID), {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              ...newCloud,
-              id: DEFAULT_USER_ID,
-              pwdHash: newCloud.pwdHash || SURIHUA_DEFAULT_PWD_HASH,
-              phoneHash: newCloud.phoneHash || SURIHUA_DEFAULT_PHONE_HASH,
-              updatedAt: Date.now()
-            })
-          });
-          await syncPhoneIndexToCloud(newCloud.phoneHash || SURIHUA_DEFAULT_PHONE_HASH, DEFAULT_USER_ID, newCloud.name || 'Suri Hua');
-        }
-        if (oldCloud) {
-          await fetch(CLOUD_API_BASE + encodeURIComponent(LEGACY_USER_ID), {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: LEGACY_USER_ID, deleted: true, courses: [] })
-          });
         }
       } catch(e) {}
     }
 
+    window.promptUnlockCurrentAccount = function() {
+      pendingSwitchUserId = activeUserId;
+      document.getElementById('verify-target-id').textContent = `@${activeUserId}`;
+      document.getElementById('verify-pwd-input').value = '';
+      document.getElementById('verify-pwd-modal').classList.remove('hidden');
+      setTimeout(() => document.getElementById('verify-pwd-input').focus(), 50);
+    };
+
+    function updateLockVisibilityState() {
+      const unlocked = isAccountUnlockedForView(activeUserId);
+      const lockedScreen = document.getElementById('locked-view-screen');
+      const homeMain = document.getElementById('page-home');
+      const profileMain = document.getElementById('page-profile');
+
+      if (!unlocked) {
+        document.getElementById('locked-screen-id').textContent = `@${activeUserId}`;
+        lockedScreen.classList.remove('hidden');
+        homeMain.classList.add('hidden');
+        profileMain.classList.add('hidden');
+        if (window.lucide) lucide.createIcons();
+      } else {
+        lockedScreen.classList.add('hidden');
+        homeMain.classList.toggle('hidden', currentPage !== 'home');
+        profileMain.classList.toggle('hidden', currentPage === 'home');
+      }
+    }
+
     window.toggleEditMode = function() {
-      const u = usersList.find(x => x.id === activeUserId);
-      if (!isEditMode && u && u.pwdHash && !unlockedSessionUsers.has(activeUserId)) {
-        pendingSwitchUserId = activeUserId;
-        document.getElementById('verify-target-id').textContent = `@${activeUserId}`;
-        document.getElementById('verify-pwd-input').value = '';
-        document.getElementById('verify-pwd-modal').classList.remove('hidden');
+      if (!isAccountUnlockedForView(activeUserId)) {
+        promptUnlockCurrentAccount();
         return;
       }
       isEditMode = !isEditMode;
@@ -738,20 +748,39 @@
     };
 
     window.switchPage = function(p) {
+      if (!isAccountUnlockedForView(activeUserId)) {
+        promptUnlockCurrentAccount();
+        return;
+      }
+      currentPage = p;
       const isHome = (p === 'home');
       document.getElementById('page-home').classList.toggle('hidden', !isHome);
       document.getElementById('page-profile').classList.toggle('hidden', isHome);
+
+      document.getElementById('nav-home').className = isHome ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center" : "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center";
+      document.getElementById('nav-profile').className = !isHome ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center" : "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center";
+      document.getElementById('mobile-nav-home').className = isHome ? "flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950" : "flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300";
+      document.getElementById('mobile-nav-profile').className = !isHome ? "flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950" : "flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300";
+
       if (!isHome) updateProfilePageDisplay();
     };
 
     function updateProfilePageDisplay() {
       const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: SURIHUA_DEFAULT_PWD_HASH };
+      const devDef = safeStorage.getItem('cuboulder_device_default_user') || DEFAULT_USER_ID;
+
       document.getElementById('profile-display-name').textContent = u.name;
       document.getElementById('profile-display-id').textContent = `@${u.id}`;
+      document.getElementById('profile-device-default-badge').textContent = `@${devDef}`;
       document.getElementById('delete-zone-id').textContent = u.id;
       document.getElementById('profile-input-name').value = u.name;
       document.getElementById('profile-input-id').value = u.id;
       document.getElementById('profile-id-verify-pwd').value = '';
+
+      // 填充「此裝置預設顯示 ID」下拉選單（僅在帳號安全頁可設定）
+      const selectEl = document.getElementById('profile-device-default-select');
+      selectEl.innerHTML = usersList.map(x => `<option value="${x.id}" ${x.id === devDef ? 'selected' : ''}>${x.name} (@${x.id})${x.id === devDef ? ' [目前預設]' : ''}</option>`).join('');
+      document.getElementById('profile-device-default-pwd').value = '';
 
       const hasPwd = Boolean(u.pwdHash);
       const badge = document.getElementById('profile-pwd-badge');
@@ -770,6 +799,30 @@
       document.getElementById('sec-phone').value = '';
     }
 
+    // 專屬功能：在「帳號安全 & ID/密碼設定」頁面內儲存此裝置預設開啟 ID
+    window.handleSaveDeviceDefaultId = async function(e) {
+      e.preventDefault();
+      const targetId = document.getElementById('profile-device-default-select').value;
+      const pwd = document.getElementById('profile-device-default-pwd').value;
+      if (!targetId) return;
+
+      const u = usersList.find(x => x.id === targetId);
+      const expectedHash = (u && u.pwdHash) || (targetId === DEFAULT_USER_ID ? SURIHUA_DEFAULT_PWD_HASH : '');
+      if (expectedHash) {
+        const inputHash = await sha256(pwd);
+        if (inputHash !== expectedHash) {
+          alert(`❌ 帳號 [@${targetId}] 的密碼驗證錯誤！無法將其設為此裝置預設 ID。`);
+          return;
+        }
+      }
+
+      markUserUnlockedOnDevice(targetId);
+      safeStorage.setItem('cuboulder_device_default_user', targetId);
+      saveUsersSystemState();
+      updateProfilePageDisplay();
+      alert(`✅ 設定成功！這台裝置每次開啟時的預設顯示 ID 已固定為 [@${targetId}]。`);
+    };
+
     // 1. 修改顯示名稱與 User ID（同密碼修改原則：需驗證目前密碼）
     window.handleUpdateUserIdAndName = async function(e) {
       e.preventDefault();
@@ -780,33 +833,23 @@
       const newName = document.getElementById('profile-input-name').value.trim();
       const newId = document.getElementById('profile-input-id').value.trim().toLowerCase();
       if (!newName || !newId) return;
-      if (newId === LEGACY_USER_ID) {
-        alert('❌ `@suri` 帳號已停用，請使用 `@surihua` 或其他名稱！');
-        return;
-      }
-
-      if (!u.pwdHash) {
-        alert('⚠️ 為保障帳號安全，修改前請先在下方的「2. 自訂密碼與救援手機號碼」設定您的密碼！');
-        document.getElementById('sec-new-pwd').focus();
+      if (BANNED_LEGACY_IDS.includes(newId)) {
+        alert(`❌ [@${newId}] 帳號名稱已停用，請使用其他名稱！`);
         return;
       }
 
       const verifyPwd = document.getElementById('profile-id-verify-pwd').value;
-      if (!verifyPwd) {
-        alert('🔒 必須輸入目前的密碼進行驗證！');
-        document.getElementById('profile-id-verify-pwd').focus();
-        return;
-      }
-
-      const inputHash = await sha256(verifyPwd);
-      if (inputHash !== u.pwdHash) {
-        alert('❌ 密碼驗證錯誤！無法修改帳號資訊。若忘記密碼請使用手機號碼重設。');
-        return;
+      const expectedHash = u.pwdHash || (activeUserId === DEFAULT_USER_ID ? SURIHUA_DEFAULT_PWD_HASH : '');
+      if (expectedHash) {
+        const inputHash = await sha256(verifyPwd);
+        if (inputHash !== expectedHash) {
+          alert('❌ 密碼驗證錯誤！無法修改帳號資訊。若忘記密碼請使用手機號碼重設。');
+          return;
+        }
       }
 
       if (newId === activeUserId) {
         u.name = newName;
-        unlockedSessionUsers.add(activeUserId);
         saveUsersSystemState();
         updateProfilePageDisplay();
         await pushToCloud();
@@ -832,15 +875,19 @@
         });
       } catch(err) {}
 
+      // 若原本這台裝置預設是 oldId，才跟著連動更新
+      if (safeStorage.getItem('cuboulder_device_default_user') === oldId) {
+        safeStorage.setItem('cuboulder_device_default_user', newId);
+      }
+
       u.id = newId;
       u.name = newName;
       activeUserId = newId;
-      safeStorage.setItem('cuboulder_device_default_user', newId);
-      unlockedSessionUsers.add(newId);
+      markUserUnlockedOnDevice(newId);
       saveUsersSystemState();
       updateProfilePageDisplay();
       await pushToCloud();
-      alert(`🎉 驗證成功！您的同步代碼已從 [@${oldId}] 更新為 [@${newId}]，並設為此裝置預設 ID！`);
+      alert(`🎉 驗證成功！您的同步代碼已從 [@${oldId}] 更新為 [@${newId}]！`);
     };
 
     // 2. 更新密碼（必須先驗證舊密碼）
@@ -850,10 +897,11 @@
       if (idx === -1) return;
       const u = usersList[idx];
 
-      if (u.pwdHash) {
+      const expectedHash = u.pwdHash || (activeUserId === DEFAULT_USER_ID ? SURIHUA_DEFAULT_PWD_HASH : '');
+      if (expectedHash) {
         const oldPwd = document.getElementById('sec-old-pwd').value;
         const oldHash = await sha256(oldPwd);
-        if (oldHash !== u.pwdHash) {
+        if (oldHash !== expectedHash) {
           alert('❌ 舊密碼輸入錯誤！若忘記密碼，請點選右上角「忘記密碼？用手機重設」。');
           return;
         }
@@ -866,7 +914,7 @@
 
       u.pwdHash = await sha256(newPwd);
       u.phoneHash = await sha256(phone);
-      unlockedSessionUsers.add(activeUserId);
+      markUserUnlockedOnDevice(activeUserId);
       saveUsersSystemState();
       updateProfilePageDisplay();
       await pushToCloud();
@@ -894,7 +942,7 @@
         matched.push({ id: DEFAULT_USER_ID, name: 'Suri Hua' });
       }
       usersList.forEach(u => {
-        if (u.phoneHash === targetPhoneHash && u.id !== LEGACY_USER_ID && !matched.some(m => m.id === u.id)) {
+        if (u.phoneHash === targetPhoneHash && !BANNED_LEGACY_IDS.includes(u.id) && !matched.some(m => m.id === u.id)) {
           matched.push({ id: u.id, name: u.name });
         }
       });
@@ -903,7 +951,7 @@
         const res = await fetch(CLOUD_PHONE_INDEX_BASE + encodeURIComponent(targetPhoneHash) + '?t=' + Date.now());
         if (res.ok) {
           const data = await res.json();
-          const foundId = data && data.id === LEGACY_USER_ID ? DEFAULT_USER_ID : (data && data.id);
+          const foundId = data && BANNED_LEGACY_IDS.includes(data.id) ? DEFAULT_USER_ID : (data && data.id);
           if (foundId && !matched.some(m => m.id === foundId)) {
             matched.push({ id: foundId, name: data.name || foundId });
           }
@@ -987,8 +1035,7 @@
       }
 
       u.pwdHash = await sha256(newPwd);
-      unlockedSessionUsers.add(uid);
-      safeStorage.setItem('cuboulder_device_default_user', uid);
+      markUserUnlockedOnDevice(uid);
       closeForgotModal();
       await loadUserData(uid);
       await pushToCloud();
@@ -1026,7 +1073,7 @@
         });
       } catch(err) {}
 
-      usersList = usersList.filter(x => x.id !== deletedId && x.id !== LEGACY_USER_ID);
+      usersList = usersList.filter(x => x.id !== deletedId && !BANNED_LEGACY_IDS.includes(x.id));
       if (!usersList.length) {
         usersList.push({
           id: DEFAULT_USER_ID,
@@ -1037,21 +1084,22 @@
       }
       closeDeleteAccountModal();
       const nextUser = usersList[0].id;
-      safeStorage.setItem('cuboulder_device_default_user', nextUser);
       await loadUserData(nextUser);
       switchPage('home');
       alert(`🗑️ 帳號 [@${deletedId}] 已刪除！`);
     };
 
     async function initUserSystem() {
-      await purgeLegacySuriAndMigrate();
+      await purgeBannedLegacyAccounts();
 
       try {
         const s = safeStorage.getItem('cuboulder_users_list');
         if (s) {
           usersList = JSON.parse(s)
+            // 徹底過濾掉 suri 與 suri1031，但保留 surihua 與其他使用者（如 dolly）
+            .filter(u => u && u.id && !BANNED_LEGACY_IDS.includes(u.id.toLowerCase()))
             .map(u => {
-              if (u && (u.id === LEGACY_USER_ID || u.id === DEFAULT_USER_ID)) {
+              if (u.id === DEFAULT_USER_ID) {
                 return {
                   id: DEFAULT_USER_ID,
                   name: u.name || 'Suri Hua',
@@ -1061,7 +1109,7 @@
               }
               return u;
             })
-            .filter((u, idx, arr) => u && u.id && u.id !== LEGACY_USER_ID && arr.findIndex(x => x.id === u.id) === idx);
+            .filter((u, idx, arr) => arr.findIndex(x => x.id === u.id) === idx);
         }
       } catch(e) {}
 
@@ -1079,27 +1127,19 @@
       }
 
       let deviceDefaultId = safeStorage.getItem('cuboulder_device_default_user');
-      if (deviceDefaultId === LEGACY_USER_ID) {
+      if (!deviceDefaultId || BANNED_LEGACY_IDS.includes(deviceDefaultId)) {
         deviceDefaultId = DEFAULT_USER_ID;
         safeStorage.setItem('cuboulder_device_default_user', DEFAULT_USER_ID);
       }
 
-      if (!deviceDefaultId) {
-        activeUserId = DEFAULT_USER_ID;
-        saveUsersSystemState();
-        await loadUserData(DEFAULT_USER_ID);
-        openDeviceSetupModal(false);
-      } else {
-        activeUserId = usersList.some(u => u.id === deviceDefaultId) ? deviceDefaultId : DEFAULT_USER_ID;
-        saveUsersSystemState();
-        await loadUserData(activeUserId);
-      }
+      activeUserId = usersList.some(u => u.id === deviceDefaultId) ? deviceDefaultId : DEFAULT_USER_ID;
+      saveUsersSystemState();
+      await loadUserData(activeUserId);
     }
 
     function saveUsersSystemState() {
-      usersList = usersList.filter(u => u && u.id && u.id !== LEGACY_USER_ID);
+      usersList = usersList.filter(u => u && u.id && !BANNED_LEGACY_IDS.includes(u.id));
       safeStorage.setItem('cuboulder_users_list', JSON.stringify(usersList));
-      safeStorage.setItem('cuboulder_current_user', activeUserId);
       const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: SURIHUA_DEFAULT_PWD_HASH };
       document.getElementById('current-user-display').textContent = `${u.name} (@${u.id})`;
       const fId = document.getElementById('footer-sync-id');
@@ -1108,25 +1148,29 @@
       if (fLock) fLock.textContent = u.pwdHash ? '🔒' : '';
 
       const devDef = safeStorage.getItem('cuboulder_device_default_user') || DEFAULT_USER_ID;
+      const fDef = document.getElementById('footer-device-default-id');
+      if (fDef) fDef.textContent = `@${devDef}`;
+
       document.getElementById('user-list-options').innerHTML = usersList.map(x => `
         <button onclick="requestSwitchUser('${x.id}')" class="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 flex justify-between items-center ${x.id === activeUserId ? 'text-[#CFB87C] font-bold' : 'text-slate-200'}">
-          <span>${x.pwdHash ? '🔒 ' : '👤 '}${x.name} (@${x.id}) ${x.id === devDef ? '<span class="text-[10px] text-emerald-400 ml-1">[此裝置預設]</span>' : ''}</span>
+          <span>${x.pwdHash ? '🔒 ' : '👤 '}${x.name} (@${x.id}) ${x.id === devDef ? '<span class="text-[10px] text-emerald-400 ml-1">[預設]</span>' : ''}</span>
           ${x.id === activeUserId ? '✓' : ''}
         </button>`).join('');
     }
 
+    // 右上角選單切換帳號：僅為「臨時切換」，不會修改 cuboulder_device_default_user
     window.requestSwitchUser = function(uid) {
       document.getElementById('user-dropdown').classList.add('hidden');
-      if (uid === activeUserId && unlockedSessionUsers.has(uid)) return;
       const target = usersList.find(x => x.id === uid);
-      if (target && target.pwdHash && !unlockedSessionUsers.has(uid)) {
+      const needsPwd = (target && target.pwdHash) || uid === DEFAULT_USER_ID;
+      if (needsPwd && !unlockedDeviceUsers.has(uid)) {
         pendingSwitchUserId = uid;
         document.getElementById('verify-target-id').textContent = `@${uid}`;
         document.getElementById('verify-pwd-input').value = '';
         document.getElementById('verify-pwd-modal').classList.remove('hidden');
+        setTimeout(() => document.getElementById('verify-pwd-input').focus(), 50);
         return;
       }
-      safeStorage.setItem('cuboulder_device_default_user', uid);
       loadUserData(uid);
     };
 
@@ -1134,7 +1178,7 @@
 
     window.submitVerifyPwd = async function(e) {
       e.preventDefault();
-      const uid = pendingSwitchUserId;
+      const uid = pendingSwitchUserId || activeUserId;
       if (!uid) return;
       const u = usersList.find(x => x.id === uid);
       const expectedHash = (u && u.pwdHash) || (uid === DEFAULT_USER_ID ? SURIHUA_DEFAULT_PWD_HASH : '');
@@ -1143,15 +1187,14 @@
         alert('❌ 密碼錯誤！請重新輸入，或點選「忘記密碼」使用手機號碼重設。');
         return;
       }
-      unlockedSessionUsers.add(uid);
-      safeStorage.setItem('cuboulder_device_default_user', uid);
+      markUserUnlockedOnDevice(uid);
       closeVerifyPwdModal();
       await loadUserData(uid);
     };
 
     async function loadUserData(uid) {
       activeUserId = (uid || DEFAULT_USER_ID).toLowerCase();
-      if (activeUserId === LEGACY_USER_ID) activeUserId = DEFAULT_USER_ID;
+      if (BANNED_LEGACY_IDS.includes(activeUserId)) activeUserId = DEFAULT_USER_ID;
       isEditMode = false;
       const btn = document.getElementById('mode-toggle-btn');
       const text = document.getElementById('mode-text');
@@ -1161,6 +1204,16 @@
       if (text) text.textContent = "瀏覽模式";
 
       saveUsersSystemState();
+
+      // 若該裝置尚未輸入密碼解鎖此帳號，先遮蔽畫面並強制彈出密碼框，不直接顯示內容
+      if (!isAccountUnlockedForView(activeUserId)) {
+        courseList = [];
+        updateLockVisibilityState();
+        promptUnlockCurrentAccount();
+        return;
+      }
+
+      updateLockVisibilityState();
 
       const saved = safeStorage.getItem(`cuboulder_courses_${activeUserId}`);
       if (saved) {
@@ -1196,7 +1249,7 @@
       document.getElementById('tab-mode-login').className = !isReg ? "flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950" : "flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300";
     };
 
-    // 建立全新 ID（絕對禁止註冊或覆蓋 surihua）
+    // 建立全新 ID（不自動覆蓋裝置預設開啟 ID）
     window.handleRegisterNewUser = async function(e) {
       e.preventDefault();
       const id = document.getElementById('reg-user-id').value.trim().toLowerCase();
@@ -1205,10 +1258,8 @@
       const phone = normalizePhone(document.getElementById('reg-user-phone').value);
 
       if (!id || !name || !pwd || !phone) return;
-      if (id === LEGACY_USER_ID || id === DEFAULT_USER_ID) {
-        alert(`⚠️ [@${DEFAULT_USER_ID}] 為系統受保護的主帳號，無法重新註冊或覆蓋！請切換至右方分頁輸入密碼登入，或取一個新的 ID。`);
-        switchUserModalTab('login');
-        document.getElementById('login-user-id').value = DEFAULT_USER_ID;
+      if (BANNED_LEGACY_IDS.includes(id) || id === DEFAULT_USER_ID) {
+        alert(`⚠️ [@${id}] 為系統保留或已停用的帳號名稱，無法註冊！請切換至右方分頁登入，或取一個新的 ID。`);
         return;
       }
       if (pwd.length < 4) { alert('密碼長度請至少設定 4 個字元！'); return; }
@@ -1228,24 +1279,27 @@
 
       usersList.push({ id, name, pwdHash, phoneHash });
       safeStorage.setItem(`cuboulder_courses_${id}`, JSON.stringify(cleanCourses));
-      safeStorage.setItem('cuboulder_device_default_user', id);
-      unlockedSessionUsers.add(id);
+      markUserUnlockedOnDevice(id);
       activeUserId = id;
       courseList = cleanCourses;
       saveUsersSystemState();
+      updateLockVisibilityState();
       window.updateDashboardAndRender();
       closeNewUserModal();
       await pushToCloud();
-      alert(`🎉 新帳號 [@${id}] 建立成功！已設為此裝置預設 ID，並將您的加密密碼與空白課表同步至雲端。`);
+      alert(`🎉 新帳號 [@${id}] 建立成功！（若想將此 ID 設為這台裝置的預設開啟帳號，請至「帳號安全 & ID/密碼設定」頁面設定）`);
     };
 
-    // 登入已存在的 ID（並設為此裝置預設 ID）
+    // 登入已存在的 ID（僅臨時切換，不自動改變裝置預設開啟 ID）
     window.handleLoginExistingUser = async function(e) {
       e.preventDefault();
-      let id = document.getElementById('login-user-id').value.trim().toLowerCase();
+      const id = document.getElementById('login-user-id').value.trim().toLowerCase();
       const pwd = document.getElementById('login-user-pwd').value;
       if (!id) return;
-      if (id === LEGACY_USER_ID) id = DEFAULT_USER_ID;
+      if (BANNED_LEGACY_IDS.includes(id)) {
+        alert(`❌ 舊帳號 [@${id}] 已停用移除，請使用 [@surihua] 或其他有效 ID！`);
+        return;
+      }
 
       const cloudData = await fetchCloudUserRecord(id);
       let localUser = usersList.find(u => u.id === id);
@@ -1272,8 +1326,7 @@
           phoneHash: (cloudData && cloudData.phoneHash) || (id === DEFAULT_USER_ID ? SURIHUA_DEFAULT_PHONE_HASH : '')
         });
       }
-      safeStorage.setItem('cuboulder_device_default_user', id);
-      unlockedSessionUsers.add(id);
+      markUserUnlockedOnDevice(id);
       closeNewUserModal();
       await loadUserData(id);
     };
@@ -1341,6 +1394,7 @@
     };
 
     window.updateDashboardAndRender = function() {
+      if (!isAccountUnlockedForView(activeUserId)) return;
       const reqCount = courseList.filter(c => c.type === 'required').length;
       const eleCount = courseList.filter(c => c.type === 'electives').length;
       document.getElementById('count-all').textContent = courseList.length;
@@ -1404,6 +1458,7 @@
     };
 
     window.renderCourses = function() {
+      if (!isAccountUnlockedForView(activeUserId)) return;
       const filtered = courseList.filter(c => {
         const mCat = activeCategory === 'all' || c.type === activeCategory;
         const mQ = c.code.toLowerCase().includes(searchQuery.toLowerCase()) || c.name.toLowerCase().includes(searchQuery.toLowerCase()) || (c.note && c.note.toLowerCase().includes(searchQuery.toLowerCase()));
