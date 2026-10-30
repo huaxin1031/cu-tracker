@@ -36,8 +36,8 @@
     ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
     ::-webkit-scrollbar-thumb { background: #CFB87C; border-radius: 9999px; }
     select option { background-color: #0f172a; color: #f1f5f9; }
-    .th-sortable { cursor: pointer; user-select: none; transition: color 0.15s; }
-    .th-sortable:hover { color: #CFB87C; }
+    .th-sortable { cursor: pointer; user-select: none; transition: color 0.15s, background-color 0.15s; }
+    .th-sortable:hover { color: #CFB87C; background-color: rgba(207, 184, 124, 0.08); }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen">
@@ -51,27 +51,28 @@
           <h1 class="font-bold text-xs sm:text-lg leading-tight text-slate-100 truncate">CU Boulder Master's</h1>
           <div class="flex items-center space-x-1 sm:space-x-1.5 mt-0.5">
             <span class="text-[10px] sm:text-xs text-[#CFB87C] font-medium whitespace-nowrap">Course Tracker</span>
-            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0">v3.9</span>
+            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0">v4.4</span>
             <span id="sync-status-badge" onclick="syncFromCloud(true)" class="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center whitespace-nowrap shrink-0" title="點擊立即從雲端同步最新資料">☁️ 已同步</span>
           </div>
         </div>
       </div>
 
-      <!-- 桌面版導覽列 (3 大分頁) -->
-      <nav class="hidden sm:flex p-1 bg-slate-900/90 rounded-xl border border-slate-800 space-x-1 mx-4 shrink-0">
-        <button id="nav-home" onclick="switchPage('home')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center whitespace-nowrap"><i data-lucide="layout-dashboard" class="w-3.5 h-3.5 mr-1.5"></i> 主頁</button>
-        <button id="nav-table" onclick="switchPage('table')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap"><i data-lucide="table" class="w-3.5 h-3.5 mr-1.5"></i> 批量表格</button>
-        <button id="nav-profile" onclick="switchPage('profile')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap"><i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1.5"></i> 帳號安全</button>
+      <!-- 桌面版導覽列 (4 大分頁) -->
+      <nav class="hidden sm:flex p-1 bg-slate-900/90 rounded-xl border border-slate-800 space-x-1 mx-2 shrink-0">
+        <button type="button" id="nav-home" onclick="switchPage('home')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center whitespace-nowrap"><i data-lucide="layout-dashboard" class="w-3.5 h-3.5 mr-1.5"></i> 主頁</button>
+        <button type="button" id="nav-table" onclick="switchPage('table')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap"><i data-lucide="table" class="w-3.5 h-3.5 mr-1.5"></i> 批量表格</button>
+        <button type="button" id="nav-planner" onclick="switchPage('planner')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap"><i data-lucide="calendar-clock" class="w-3.5 h-3.5 mr-1.5"></i> 畢業規劃</button>
+        <button type="button" id="nav-profile" onclick="switchPage('profile')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap"><i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1.5"></i> 帳號安全</button>
       </nav>
       
       <!-- 右側工具按鈕 -->
       <div class="flex items-center space-x-1 sm:space-x-2 shrink-0">
-        <button id="mode-toggle-btn" onclick="toggleEditMode()" class="inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0" title="切換為編輯模式（需驗證密碼）">
+        <button type="button" id="mode-toggle-btn" onclick="toggleEditMode()" class="inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0" title="切換為編輯模式（需驗證密碼）">
           <i data-lucide="lock" class="w-3.5 h-3.5 sm:mr-1 text-slate-400"></i><span id="mode-text" class="hidden sm:inline whitespace-nowrap">瀏覽模式 (唯讀)</span>
         </button>
 
         <div class="relative shrink-0">
-          <button onclick="toggleUserDropdown()" class="inline-flex items-center px-2 py-1.5 sm:px-2.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-200 border border-slate-700 hover:border-[#CFB87C] whitespace-nowrap">
+          <button type="button" onclick="toggleUserDropdown()" class="inline-flex items-center px-2 py-1.5 sm:px-2.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-200 border border-slate-700 hover:border-[#CFB87C] whitespace-nowrap">
             <i data-lucide="user" class="w-3.5 h-3.5 mr-1 text-[#CFB87C] shrink-0"></i>
             <span id="current-user-display" class="hidden sm:inline">Suri Hua (@surihua)</span>
             <span id="current-user-display-mobile" class="inline sm:hidden font-mono text-[11px]">@surihua</span>
@@ -80,112 +81,120 @@
           <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-64 glass-card rounded-xl shadow-xl border border-slate-700 py-1 z-50">
             <div class="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase border-b border-slate-800 flex justify-between">
               <span>臨時切換或登入 ID</span>
-              <button onclick="openForgotIdModal()" class="text-[#CFB87C] hover:underline">忘記 ID？</button>
+              <button type="button" onclick="openForgotIdModal()" class="text-[#CFB87C] hover:underline">忘記 ID？</button>
             </div>
             <div id="user-list-options" class="max-h-48 overflow-y-auto py-1"></div>
             <div class="border-t border-slate-800 pt-1">
-              <button onclick="openNewUserModal()" class="w-full text-left px-3 py-2 text-xs text-[#CFB87C] hover:bg-slate-800 font-semibold flex items-center">
+              <button type="button" onclick="openNewUserModal()" class="w-full text-left px-3 py-2 text-xs text-[#CFB87C] hover:bg-slate-800 font-semibold flex items-center">
                 <i data-lucide="user-plus" class="w-3.5 h-3.5 mr-2"></i> + 建立新 ID / 登入既有 ID
               </button>
             </div>
           </div>
         </div>
 
-        <button id="btn-add-course" onclick="openAddModal()" class="hidden inline-flex items-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shrink-0"><i data-lucide="plus" class="w-3.5 h-3.5 sm:mr-1"></i><span class="hidden sm:inline whitespace-nowrap">新增課程</span></button>
-        <button id="btn-reset-data" onclick="resetData()" title="重設資料" class="hidden p-1.5 sm:p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-rose-400 shrink-0"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
+        <button type="button" id="btn-add-course" onclick="openAddModal()" class="hidden inline-flex items-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shrink-0"><i data-lucide="plus" class="w-3.5 h-3.5 sm:mr-1"></i><span class="hidden sm:inline whitespace-nowrap">新增課程</span></button>
+        <button type="button" id="btn-reset-data" onclick="resetData()" title="重設資料" class="hidden p-1.5 sm:p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-rose-400 shrink-0"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
       </div>
     </div>
 
-    <!-- 手機版 3 分頁切換器 -->
+    <!-- 手機版 4 分頁切換器 -->
     <div class="flex sm:hidden justify-center mt-2 pt-2 border-t border-slate-800/70">
-      <div class="grid grid-cols-3 p-0.5 bg-slate-900/90 rounded-xl border border-slate-800 w-full gap-0.5">
-        <button id="mobile-nav-home" onclick="switchPage('home')" class="py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 whitespace-nowrap text-center">主頁</button>
-        <button id="mobile-nav-table" onclick="switchPage('table')" class="py-1.5 rounded-lg text-xs font-medium text-slate-300 whitespace-nowrap text-center">📋 批量表格</button>
-        <button id="mobile-nav-profile" onclick="switchPage('profile')" class="py-1.5 rounded-lg text-xs font-medium text-slate-300 whitespace-nowrap text-center">🔒 帳號安全</button>
+      <div class="grid grid-cols-4 p-0.5 bg-slate-900/90 rounded-xl border border-slate-800 w-full gap-0.5">
+        <button type="button" id="mobile-nav-home" onclick="switchPage('home')" class="py-1.5 rounded-lg text-[11px] font-bold bg-[#CFB87C] text-slate-950 whitespace-nowrap text-center">主頁</button>
+        <button type="button" id="mobile-nav-table" onclick="switchPage('table')" class="py-1.5 rounded-lg text-[11px] font-medium text-slate-300 whitespace-nowrap text-center">📋 表格</button>
+        <button type="button" id="mobile-nav-planner" onclick="switchPage('planner')" class="py-1.5 rounded-lg text-[11px] font-medium text-slate-300 whitespace-nowrap text-center">🗺️ 規劃</button>
+        <button type="button" id="mobile-nav-profile" onclick="switchPage('profile')" class="py-1.5 rounded-lg text-[11px] font-medium text-slate-300 whitespace-nowrap text-center">🔒 帳號</button>
       </div>
     </div>
   </header>
 
-  <!-- 1. HOME PAGE (主頁儀表板) -->
-  <main id="page-home" class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-4 sm:space-y-6">
+  <!-- 🌟 共用置頂儀表板 (Shared Top Dashboard：在「主頁」與「📋 批量表格」皆顯示) -->
+  <div id="shared-dashboard" class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-3 sm:space-y-4">
+    <div id="batch-live-preview-banner" class="hidden px-3 py-1.5 rounded-xl bg-[#CFB87C]/10 border border-[#CFB87C]/30 flex items-center justify-between text-[11px] text-[#CFB87C]">
+      <span>⚡ <strong>即時儀表板預覽模式</strong>：您在下方表格修改任何狀態、類別或成績時，上方儀表板會即時試算變化（確認無誤請點選「💾 儲存全部變更並同步雲端」）。</span>
+    </div>
+
     <section class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
-      <div class="glass-card rounded-2xl p-3.5 sm:p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between"><span class="text-[11px] sm:text-xs text-slate-400">當前 GPA</span><div class="p-1.5 sm:p-2 bg-[#CFB87C]/10 text-[#CFB87C] rounded-lg"><i data-lucide="award" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i></div></div>
-        <div class="mt-2">
+      <div class="glass-card rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between">
+        <div class="flex items-center justify-between"><span class="text-[11px] sm:text-xs text-slate-400">當前 GPA</span><div class="p-1.5 bg-[#CFB87C]/10 text-[#CFB87C] rounded-lg">🏆</div></div>
+        <div class="mt-1.5">
           <div class="flex items-baseline space-x-1.5 whitespace-nowrap">
-            <span id="metric-gpa" class="text-2xl sm:text-3xl font-extrabold text-white leading-none">--</span>
-            <span id="metric-gpa-percent" class="text-xs sm:text-sm font-semibold text-slate-400"></span>
+            <span id="metric-gpa" class="text-2xl sm:text-3xl font-extrabold text-white leading-none">3.88</span>
+            <span id="metric-gpa-percent" class="text-xs sm:text-sm font-semibold text-slate-400">(97%)</span>
           </div>
-          <div class="text-[10px] sm:text-[11px] text-emerald-400 mt-1.5 truncate">已計分科目加權 (滿分 4.0)</div>
+          <div id="metric-gpa-subtext" class="text-[10px] sm:text-[11px] text-emerald-400 mt-1.5 truncate">僅計入 17 門已有 Grade 科目</div>
         </div>
       </div>
 
-      <div class="glass-card rounded-2xl p-3.5 sm:p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between"><span class="text-[11px] sm:text-xs text-slate-400">總修課進度</span><div class="p-1.5 sm:p-2 bg-emerald-500/10 text-emerald-400 rounded-lg"><i data-lucide="check-circle" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i></div></div>
-        <div class="mt-2">
-          <div class="flex items-baseline space-x-1"><span id="metric-completion-rate" class="text-2xl sm:text-3xl font-extrabold text-white leading-none">--%</span><span id="metric-completed-count" class="text-[11px] text-slate-400">/ -- 門</span></div>
-          <div class="w-full bg-slate-800 h-1.5 sm:h-2 rounded-full mt-2 overflow-hidden"><div id="metric-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500" style="width:0%"></div></div>
+      <div class="glass-card rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between">
+        <div class="flex items-center justify-between"><span class="text-[11px] sm:text-xs text-slate-400">總修課進度</span><div class="p-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg">✅</div></div>
+        <div class="mt-1.5">
+          <div class="flex items-baseline space-x-1"><span id="metric-completion-rate" class="text-2xl sm:text-3xl font-extrabold text-white leading-none">57%</span><span id="metric-completed-count" class="text-[11px] text-slate-400">/ 30 門</span></div>
+          <div class="w-full bg-slate-800 h-1.5 sm:h-2 rounded-full mt-2 overflow-hidden"><div id="metric-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500" style="width:57%"></div></div>
         </div>
       </div>
 
-      <div class="glass-card rounded-2xl p-3.5 sm:p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between"><span class="text-[11px] sm:text-xs text-slate-400">課程狀態統計</span><div class="p-1.5 sm:p-2 bg-blue-500/10 text-blue-400 rounded-lg"><i data-lucide="book-open" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i></div></div>
-        <div class="mt-1.5 space-y-0.5 text-[11px] sm:text-xs">
-          <div class="flex justify-between"><span class="text-emerald-400">● 已完成</span><span id="count-status-complete" class="font-semibold">0</span></div>
-          <div class="flex justify-between"><span class="text-amber-400">● 進行中</span><span id="count-status-ongoing" class="font-semibold">0</span></div>
-          <div class="flex justify-between text-slate-400"><span>● 預計中</span><span id="count-status-expected" class="font-semibold">0</span></div>
+      <div class="glass-card rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between">
+        <div class="flex items-center justify-between"><span class="text-[11px] sm:text-xs text-slate-400">課程狀態統計</span><div class="p-1.5 bg-blue-500/10 text-blue-400 rounded-lg">📚</div></div>
+        <div class="mt-1 space-y-0.5 text-[11px] sm:text-xs">
+          <div class="flex justify-between"><span class="text-emerald-400">● 已完成</span><span id="count-status-complete" class="font-semibold">17 門</span></div>
+          <div class="flex justify-between"><span class="text-amber-400">● 進行中</span><span id="count-status-ongoing" class="font-semibold">13 門</span></div>
+          <div class="flex justify-between text-slate-400"><span>● 預計中</span><span id="count-status-expected" class="font-semibold">0 門</span></div>
         </div>
       </div>
 
-      <div class="glass-card rounded-2xl p-3.5 sm:p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between"><span class="text-[11px] sm:text-xs text-slate-400">剩餘估計學費</span><div class="p-1.5 sm:p-2 bg-purple-500/10 text-purple-400 rounded-lg"><i data-lucide="dollar-sign" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i></div></div>
-        <div class="mt-2"><div id="metric-tuition-usd" class="text-lg sm:text-2xl font-bold text-white leading-none">$7,337 <span class="text-[10px] sm:text-xs text-slate-400">USD</span></div><div id="metric-tuition-ntd" class="text-[10px] sm:text-xs text-slate-400 mt-1.5 font-mono truncate">≈ NT$ 238,832</div></div>
+      <div class="glass-card rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between">
+        <div class="flex items-center justify-between"><span class="text-[11px] sm:text-xs text-slate-400">剩餘估計學費</span><div class="p-1.5 bg-purple-500/10 text-purple-400 rounded-lg">💵</div></div>
+        <div class="mt-1.5"><div id="metric-tuition-usd" class="text-lg sm:text-2xl font-bold text-white leading-none">$7,337 <span class="text-[10px] sm:text-xs text-slate-400">USD</span></div><div id="metric-tuition-ntd" class="text-[10px] sm:text-xs text-slate-400 mt-1.5 font-mono truncate">≈ NT$ 238,832</div></div>
       </div>
     </section>
 
+    <!-- 第二排：學分分佈結構 + 省空間中空圓環圖 (Donut Chart) -->
     <section class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
-      <div class="glass-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
+      <div class="glass-card rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between">
         <div>
-          <h2 class="text-xs sm:text-sm font-semibold text-slate-200 flex items-center mb-3"><i data-lucide="pie-chart" class="w-4 h-4 mr-1.5 text-[#CFB87C]"></i> 學分分佈結構</h2>
-          <div class="space-y-3 my-1">
+          <h2 class="text-xs sm:text-sm font-semibold text-slate-200 flex items-center mb-2">🗂️ <span class="ml-1.5">學分分佈結構</span></h2>
+          <div class="space-y-2.5 my-1">
             <div>
-              <div class="flex justify-between text-xs mb-1"><span class="text-[#CFB87C] font-semibold">必修 Core</span><span id="bar-required-text" class="text-[#CFB87C] font-semibold">0 / 0</span></div>
-              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden flex"><div id="bar-required-complete" class="bg-emerald-500 h-full" style="width:0%"></div><div id="bar-required-ongoing" class="bg-amber-500 h-full" style="width:0%"></div></div>
+              <div class="flex justify-between text-xs mb-1"><span class="text-[#CFB87C] font-semibold">必修 Core</span><span id="bar-required-text" class="text-[#CFB87C] font-semibold">11 完成 / 12 門</span></div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden flex"><div id="bar-required-complete" class="bg-emerald-500 h-full" style="width:91%"></div><div id="bar-required-ongoing" class="bg-amber-500 h-full" style="width:9%"></div></div>
             </div>
             <div>
-              <div class="flex justify-between text-xs mb-1"><span class="text-sky-400 font-semibold">選修 Elective</span><span id="bar-electives-text" class="text-sky-400 font-semibold">0 / 0</span></div>
-              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden flex"><div id="bar-electives-complete" class="bg-emerald-500 h-full" style="width:0%"></div><div id="bar-electives-ongoing" class="bg-amber-500 h-full" style="width:0%"></div></div>
+              <div class="flex justify-between text-xs mb-1"><span class="text-sky-400 font-semibold">選修 Elective</span><span id="bar-electives-text" class="text-sky-400 font-semibold">6 完成 / 18 門</span></div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden flex"><div id="bar-electives-complete" class="bg-emerald-500 h-full" style="width:33%"></div><div id="bar-electives-ongoing" class="bg-amber-500 h-full" style="width:67%"></div></div>
             </div>
           </div>
         </div>
-        <div class="mt-3 pt-2.5 border-t border-slate-800/80 text-[11px] text-slate-400 flex justify-between items-center gap-2">
-          <span class="truncate">顯示：<strong id="footer-sync-id" class="text-[#CFB87C] font-mono">@surihua</strong><span id="footer-lock-badge">🔒</span> (預設：<span id="footer-device-default-id" class="text-emerald-400 font-mono">@surihua</span>)</span>
-          <button onclick="syncFromCloud(true)" class="text-emerald-400 hover:underline shrink-0 whitespace-nowrap">🔄 同步</button>
+        <div class="mt-2 pt-2 border-t border-slate-800/80 text-[11px] text-slate-400 flex justify-between items-center gap-2">
+          <span class="truncate">顯示：<strong id="footer-sync-id" class="text-[#CFB87C] font-mono">@surihua</strong><span id="footer-lock-badge">🔒</span> | 預計畢業：<button type="button" onclick="switchPage('planner')" id="footer-grad-target" class="text-emerald-400 font-mono font-bold hover:underline">2027/08</button></span>
+          <button type="button" onclick="syncFromCloud(true)" class="text-emerald-400 hover:underline shrink-0 whitespace-nowrap">🔄 同步</button>
         </div>
       </div>
 
-      <div class="glass-card rounded-2xl p-4 sm:p-5 md:col-span-2 flex flex-col justify-between">
-        <div class="flex items-center justify-between mb-2">
-          <h2 class="text-xs sm:text-sm font-semibold text-slate-200 flex items-center"><i data-lucide="bar-chart-3" class="w-4 h-4 mr-1.5 text-[#CFB87C]"></i> 成績等第分佈</h2>
-          <span class="text-[11px] text-slate-400 hidden sm:inline">A=4.0, A-=3.75, B+=3.25, B=3.0, B-=2.75</span>
+      <!-- 省空間版：成績等第分佈 (僅計已有 Grade 科目) -->
+      <div class="glass-card rounded-2xl p-3.5 sm:p-4 md:col-span-2 flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-1">
+          <h2 class="text-xs sm:text-sm font-semibold text-slate-200 flex items-center">🍩 <span class="ml-1.5">成績等第分佈 (僅計已有 Grade 科目)</span></h2>
+          <span class="text-[10px] sm:text-[11px] text-slate-400 hidden sm:inline">A=4.0, A-=3.75, B+=3.25, B=3.0, B-=2.75</span>
         </div>
-        <div id="grade-distribution-bars" class="grid grid-cols-5 gap-2.5 sm:gap-4 my-auto pt-1"></div>
+        <div id="grade-distribution-donut" class="flex items-center justify-between gap-3 sm:gap-6 my-auto py-0.5"></div>
       </div>
     </section>
+  </div>
 
-    <!-- 課程篩選、排序與列表區 -->
-    <section class="space-y-2.5 pt-1">
+  <!-- 1. HOME PAGE (主頁課程卡片列表) -->
+  <main id="page-home" class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-3 sm:pt-4 space-y-3">
+    <section class="space-y-2.5">
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2">
         <div class="grid grid-cols-3 p-1 bg-slate-900/90 rounded-xl border border-slate-800 w-full lg:w-auto lg:flex shrink-0">
-          <button id="tab-all" onclick="setCategoryFilter('all')" class="px-2 sm:px-4 py-1.5 rounded-lg text-xs font-medium text-slate-300 whitespace-nowrap text-center">全部 (<span id="count-all">0</span>)</button>
-          <button id="tab-required" onclick="setCategoryFilter('required')" class="px-2 sm:px-4 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 shadow whitespace-nowrap text-center">必修 (<span id="count-required">0</span>)</button>
-          <button id="tab-electives" onclick="setCategoryFilter('electives')" class="px-2 sm:px-4 py-1.5 rounded-lg text-xs font-medium text-slate-300 whitespace-nowrap text-center">選修 (<span id="count-electives">0</span>)</button>
+          <button type="button" id="tab-all" onclick="setCategoryFilter('all')" class="px-2 sm:px-4 py-1.5 rounded-lg text-xs font-medium text-slate-300 whitespace-nowrap text-center">全部 (<span id="count-all">30</span>)</button>
+          <button type="button" id="tab-required" onclick="setCategoryFilter('required')" class="px-2 sm:px-4 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 shadow whitespace-nowrap text-center">必修 (<span id="count-required">12</span>)</button>
+          <button type="button" id="tab-electives" onclick="setCategoryFilter('electives')" class="px-2 sm:px-4 py-1.5 rounded-lg text-xs font-medium text-slate-300 whitespace-nowrap text-center">選修 (<span id="count-electives">18</span>)</button>
         </div>
 
         <div class="flex flex-wrap sm:flex-nowrap items-center gap-1.5 sm:gap-2 w-full lg:w-auto">
           <div class="relative flex-1 min-w-[140px] sm:w-52">
-            <i data-lucide="search" class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-            <input type="text" id="search-input" oninput="handleSearch()" placeholder="搜尋編號、課名或備註..." class="w-full pl-8 pr-2.5 py-1.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
+            <input type="text" id="search-input" oninput="handleSearch()" placeholder="🔍 搜尋編號、課名或備註..." class="w-full px-3 py-1.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
           </div>
           <select id="status-filter" onchange="handleStatusFilter()" class="px-2 py-1.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-300 focus:outline-none focus:border-[#CFB87C] shrink-0">
             <option value="all">所有狀態</option>
@@ -202,7 +211,7 @@
             <option value="progress">排序: 進度%</option>
             <option value="status">排序: 狀態</option>
           </select>
-          <button type="button" id="sort-dir-btn" onclick="toggleSortDirection()" class="px-2.5 py-1.5 bg-slate-900 border border-slate-800 hover:border-[#CFB87C] rounded-xl text-xs font-bold text-[#CFB87C] whitespace-nowrap shrink-0" title="切換升冪 (Ascending) / 降冪 (Descending)">
+          <button type="button" id="sort-dir-btn" onclick="toggleSortDirection()" class="px-2.5 py-1.5 bg-slate-900 border border-slate-800 hover:border-[#CFB87C] rounded-xl text-xs font-bold text-[#CFB87C] whitespace-nowrap shrink-0">
             ↑ 升冪
           </button>
         </div>
@@ -212,35 +221,31 @@
     </section>
   </main>
 
-  <!-- 2. BATCH TABLE PAGE (📋 批量編輯表格分頁：含 Excel 式 Filter 與點擊表頭 Sort) -->
-  <main id="page-table" class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-4 hidden">
+  <!-- 2. BATCH TABLE PAGE (📋 批量編輯表格分頁) -->
+  <main id="page-table" class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-3 sm:pt-4 space-y-4 hidden">
     <div class="glass-card rounded-2xl p-4 sm:p-5 space-y-3.5">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3.5">
         <div>
-          <h2 class="text-sm sm:text-base font-bold text-slate-100 flex items-center">
-            <i data-lucide="table" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 📋 課程批量編輯表格 (Excel Sort & Filter)
-          </h2>
-          <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">點擊表頭欄位名稱可直接切換升冪/降冪排序；使用下方篩選器可過濾特定課程。修改完畢請點選右上角「💾 儲存全部變更」。</p>
+          <h2 class="text-sm sm:text-base font-bold text-slate-100">📋 課程批量編輯表格 (支援多欄位排序 & 備註篩選)</h2>
+          <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">點擊多個表頭欄位可依序疊加「多欄位升冪/降冪排序（顯示 ① ② ③ 順序）」；修改表格時上方儀表板會即時預覽最新進度與 GPA。</p>
         </div>
         <div class="flex flex-wrap items-center gap-2 shrink-0">
-          <button type="button" onclick="addBlankRowToBatchTable()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-[#CFB87C] border border-[#CFB87C]/40 hover:bg-slate-700 whitespace-nowrap">
-            + 新增一列課程
-          </button>
-          <button type="button" onclick="saveAllBatchTableChanges()" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shadow whitespace-nowrap">
-            💾 儲存全部變更並同步雲端
-          </button>
+          <button type="button" onclick="addBlankRowToBatchTable()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-[#CFB87C] border border-[#CFB87C]/40 hover:bg-slate-700 whitespace-nowrap">+ 新增一列課程</button>
+          <button type="button" onclick="saveAllBatchTableChanges()" class="px-4 py-1.5 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shadow whitespace-nowrap">💾 儲存全部變更並同步雲端</button>
         </div>
       </div>
 
-      <!-- Excel 式多重篩選列 (Filter Bar) -->
-      <div class="grid grid-cols-2 sm:grid-cols-6 gap-2 bg-slate-950/70 p-2.5 rounded-xl border border-slate-800/90 text-xs">
-        <div class="col-span-2 sm:col-span-2 relative">
-          <i data-lucide="search" class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-          <input type="text" id="batch-filter-search" oninput="handleBatchFilterChange()" placeholder="篩選代號、課名或備註..." class="w-full pl-8 pr-2.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-[#CFB87C]">
+      <!-- Excel 式多重篩選列 -->
+      <div class="grid grid-cols-2 sm:grid-cols-12 gap-2 bg-slate-950/70 p-2.5 rounded-xl border border-slate-800/90 text-xs">
+        <div class="col-span-2 sm:col-span-3">
+          <input type="text" id="batch-filter-search" oninput="handleBatchFilterChange()" placeholder="🔍 篩選代號或課程名稱..." class="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-[#CFB87C]">
         </div>
-        <div>
-          <select id="batch-filter-subject" onchange="handleBatchFilterChange()" class="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
-            <option value="all">所有科系 (Subject)</option>
+        <div class="col-span-2 sm:col-span-3">
+          <input type="text" id="batch-filter-note" oninput="handleBatchFilterChange()" placeholder="📝 篩選個人備註文字 (如: 已註冊, hrs)..." class="w-full px-3 py-1.5 bg-slate-900 border border-[#CFB87C]/40 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-[#CFB87C]">
+        </div>
+        <div class="col-span-1 sm:col-span-1">
+          <select id="batch-filter-subject" onchange="handleBatchFilterChange()" class="w-full px-1.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200">
+            <option value="all">科系: 全部</option>
             <option value="EMEA">EMEA</option>
             <option value="DTSA">DTSA</option>
             <option value="APPA">APPA</option>
@@ -248,24 +253,24 @@
             <option value="ECEA">ECEA</option>
           </select>
         </div>
-        <div>
-          <select id="batch-filter-type" onchange="handleBatchFilterChange()" class="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
-            <option value="all">所有類別 (必/選)</option>
+        <div class="col-span-1 sm:col-span-2">
+          <select id="batch-filter-type" onchange="handleBatchFilterChange()" class="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200">
+            <option value="all">類別: 全部</option>
             <option value="required">必修 (Core)</option>
             <option value="electives">選修 (Elective)</option>
           </select>
         </div>
-        <div>
-          <select id="batch-filter-status" onchange="handleBatchFilterChange()" class="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
-            <option value="all">所有狀態</option>
+        <div class="col-span-1 sm:col-span-1">
+          <select id="batch-filter-status" onchange="handleBatchFilterChange()" class="w-full px-1.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200">
+            <option value="all">狀態: 全部</option>
             <option value="Complete">Complete</option>
             <option value="Ongoing">Ongoing</option>
             <option value="Expected">Expected</option>
           </select>
         </div>
-        <div class="flex items-center gap-1.5">
-          <select id="batch-filter-grade" onchange="handleBatchFilterChange()" class="flex-1 min-w-0 px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
-            <option value="all">所有成績</option>
+        <div class="col-span-1 sm:col-span-2 flex items-center gap-1">
+          <select id="batch-filter-grade" onchange="handleBatchFilterChange()" class="flex-1 min-w-0 px-1.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200">
+            <option value="all">成績: 全部</option>
             <option value="A">A</option>
             <option value="A-">A-</option>
             <option value="B+">B+</option>
@@ -273,12 +278,42 @@
             <option value="B-">B-</option>
             <option value="--">未計分 (--)</option>
           </select>
-          <button type="button" onclick="resetBatchFilters()" class="px-2 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 shrink-0" title="清除所有篩選條件">重置</button>
+          <button type="button" onclick="resetBatchFilters()" class="px-2 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 shrink-0">重置</button>
         </div>
       </div>
 
-      <!-- 批量套用動作與排序工具列 -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-2.5 bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 text-xs">
+      <!-- 多欄位複合排序狀態列 -->
+      <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-900/60 px-3 py-2 rounded-xl border border-slate-800/80 text-xs">
+        <div class="flex flex-wrap items-center gap-1.5">
+          <span class="text-slate-400 font-semibold">↕️ 多欄位排序優先順序：</span>
+          <div id="batch-multisort-chips" class="flex flex-wrap items-center gap-1.5"></div>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <select id="batch-add-sort-select" onchange="addSortRuleFromSelect(this)" class="px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-slate-300">
+            <option value="">+ 加入排序欄位...</option>
+            <option value="subject:asc">科系 (A → Z 升冪)</option>
+            <option value="subject:desc">科系 (Z → A 降冪)</option>
+            <option value="code:asc">代號 (小 → 大 升冪)</option>
+            <option value="code:desc">代號 (大 → 小 降冪)</option>
+            <option value="type:desc">類別 (必修優先)</option>
+            <option value="type:asc">類別 (選修優先)</option>
+            <option value="status:desc">狀態 (Complete優先)</option>
+            <option value="status:asc">狀態 (Expected優先)</option>
+            <option value="grade:desc">成績 (A → B- 降冪)</option>
+            <option value="grade:asc">成績 (B- → A 升冪)</option>
+            <option value="progress:desc">進度% (高 → 低)</option>
+            <option value="progress:asc">進度% (低 → 高)</option>
+            <option value="name:asc">課程名稱 (A → Z)</option>
+            <option value="name:desc">課程名稱 (Z → A)</option>
+            <option value="note:asc">個人備註 (A → Z)</option>
+            <option value="note:desc">個人備註 (Z → A)</option>
+          </select>
+          <button type="button" onclick="clearBatchMultiSort()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 whitespace-nowrap">清除排序</button>
+        </div>
+      </div>
+
+      <!-- 批量套用動作工具列 -->
+      <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 text-xs">
         <div class="flex flex-wrap items-center gap-2">
           <label class="inline-flex items-center space-x-1.5 text-slate-300 cursor-pointer">
             <input type="checkbox" id="batch-select-all" onchange="toggleBatchSelectAll(this.checked)" class="rounded bg-slate-800 border-slate-700 text-[#CFB87C]">
@@ -313,37 +348,22 @@
 
           <button type="button" onclick="deleteSelectedBatchRows()" class="px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:bg-rose-500 hover:text-white">🗑️ 刪除勾選</button>
         </div>
-
-        <div class="flex items-center gap-1.5 shrink-0">
-          <select id="batch-sort-select" onchange="handleBatchSortChange()" class="px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-slate-300">
-            <option value="default">排序欄位: 預設</option>
-            <option value="code">科系 + 代號</option>
-            <option value="type">類別 (必修/選修)</option>
-            <option value="name">課程名稱</option>
-            <option value="status">狀態</option>
-            <option value="grade">成績</option>
-            <option value="progress">進度%</option>
-          </select>
-          <button type="button" id="batch-sort-dir-btn" onclick="toggleSortDirection(true)" class="px-2.5 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs font-bold text-[#CFB87C] whitespace-nowrap">
-            ↑ 升冪
-          </button>
-        </div>
       </div>
 
-      <!-- 響應式可橫向捲動表格（點擊表頭可排序） -->
+      <!-- 響應式可橫向捲動表格 -->
       <div class="overflow-x-auto rounded-xl border border-slate-800">
-        <table class="w-full text-left border-collapse min-w-[920px]">
+        <table class="w-full text-left border-collapse min-w-[940px]">
           <thead>
             <tr class="bg-slate-900/95 text-[11px] font-bold text-slate-400 border-b border-slate-800">
               <th class="p-2.5 w-8 text-center">選</th>
-              <th onclick="sortBatchByColumn('code')" class="p-2.5 w-28 th-sortable">科系 (Subject) <span id="th-icon-code" class="text-[10px]">↕</span></th>
-              <th onclick="sortBatchByColumn('code')" class="p-2.5 w-24 th-sortable">代號 (Code)</th>
-              <th onclick="sortBatchByColumn('type')" class="p-2.5 w-28 th-sortable">類別 <span id="th-icon-type" class="text-[10px]">↕</span></th>
-              <th onclick="sortBatchByColumn('name')" class="p-2.5 min-w-[220px] th-sortable">課程名稱 (Course Name) <span id="th-icon-name" class="text-[10px]">↕</span></th>
-              <th onclick="sortBatchByColumn('status')" class="p-2.5 w-32 th-sortable">狀態 <span id="th-icon-status" class="text-[10px]">↕</span></th>
-              <th onclick="sortBatchByColumn('grade')" class="p-2.5 w-24 th-sortable">成績 <span id="th-icon-grade" class="text-[10px]">↕</span></th>
-              <th onclick="sortBatchByColumn('progress')" class="p-2.5 w-28 th-sortable">進度 (%) <span id="th-icon-progress" class="text-[10px]">↕</span></th>
-              <th class="p-2.5 min-w-[160px]">個人備註</th>
+              <th onclick="toggleBatchColumnMultiSort('subject')" class="p-2.5 w-28 th-sortable">科系 (Subject) <span id="th-icon-subject" class="text-[10px]">↕</span></th>
+              <th onclick="toggleBatchColumnMultiSort('code')" class="p-2.5 w-24 th-sortable">代號 (Code) <span id="th-icon-code" class="text-[10px]">↕</span></th>
+              <th onclick="toggleBatchColumnMultiSort('type')" class="p-2.5 w-28 th-sortable">類別 <span id="th-icon-type" class="text-[10px]">↕</span></th>
+              <th onclick="toggleBatchColumnMultiSort('name')" class="p-2.5 min-w-[220px] th-sortable">課程名稱 (Course Name) <span id="th-icon-name" class="text-[10px]">↕</span></th>
+              <th onclick="toggleBatchColumnMultiSort('status')" class="p-2.5 w-32 th-sortable">狀態 <span id="th-icon-status" class="text-[10px]">↕</span></th>
+              <th onclick="toggleBatchColumnMultiSort('grade')" class="p-2.5 w-24 th-sortable">成績 <span id="th-icon-grade" class="text-[10px]">↕</span></th>
+              <th onclick="toggleBatchColumnMultiSort('progress')" class="p-2.5 w-28 th-sortable">進度 (%) <span id="th-icon-progress" class="text-[10px]">↕</span></th>
+              <th onclick="toggleBatchColumnMultiSort('note')" class="p-2.5 min-w-[160px] th-sortable">個人備註 <span id="th-icon-note" class="text-[10px]">↕</span></th>
               <th class="p-2.5 w-12 text-center">刪</th>
             </tr>
           </thead>
@@ -353,12 +373,116 @@
     </div>
   </main>
 
-  <!-- 3. PROFILE & SECURITY PAGE (帳號安全設定) -->
+  <!-- 3. GRADUATION & TUITION PLANNER PAGE (🗺️ 畢業規劃與 CU Boulder 官方行事曆頁面) -->
+  <main id="page-planner" class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-4 sm:space-y-5 hidden">
+    <div class="glass-card rounded-2xl p-4 sm:p-5 space-y-4">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-slate-800 pb-3.5">
+        <div>
+          <div class="flex items-center space-x-2">
+            <h2 class="text-sm sm:text-lg font-bold text-slate-100">🗺️ 預計畢業時程、學分與學費智能規劃師</h2>
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold">已內建 CU 官方行事曆</span>
+          </div>
+          <p class="text-[11px] sm:text-xs text-slate-400 mt-1">
+            自動根據您設定的預計畢業年、月，對齊 <a href="https://www.colorado.edu/registrar/cu-boulder-coursera-calendar#ucb-accordion-id--4-content2" target="_blank" rel="noopener" class="text-[#CFB87C] underline hover:text-yellow-200">CU Boulder on Coursera 官方行事曆</a> 的 8 週學期（Session 1 & 2），並<strong>自動標示與避開寒假／學期間無法修課的空檔</strong>！
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2 bg-slate-900/90 p-2.5 rounded-xl border border-[#CFB87C]/40 shrink-0">
+          <span class="text-xs font-bold text-[#CFB87C]">🎓 目標畢業年月：</span>
+          <select id="planner-sim-year" onchange="handlePlannerTargetChange()" class="px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs font-mono font-bold text-white">
+            <option value="2026">2026 年</option>
+            <option value="2027" selected>2027 年</option>
+            <option value="2028">2028 年</option>
+            <option value="2029">2029 年</option>
+            <option value="2030">2030 年</option>
+          </select>
+          <select id="planner-sim-month" onchange="handlePlannerTargetChange()" class="px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs font-mono font-bold text-white">
+            <option value="1">01 月 (Fall S2 結算)</option>
+            <option value="2">02 月</option>
+            <option value="3">03 月 (Spring S1 結算)</option>
+            <option value="4">04 月</option>
+            <option value="5">05 月 (Spring S2 結算)</option>
+            <option value="6">06 月</option>
+            <option value="7">07 月 (Summer S1 結算)</option>
+            <option value="8" selected>08 月 (Summer S2 結算)</option>
+            <option value="9">09 月</option>
+            <option value="10">10 月 (Fall S1 結算)</option>
+            <option value="11">11 月</option>
+            <option value="12">12 月 (Fall S2 結課)</option>
+          </select>
+          <button type="button" onclick="savePlannerTargetToAccount()" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] whitespace-nowrap">💾 存為預設目標</button>
+        </div>
+      </div>
+
+      <!-- 4 張智能規劃指標卡 -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 flex flex-col justify-between">
+          <div class="flex items-center justify-between"><span class="text-[11px] text-slate-400">可用修課學期 (避開休假)</span><span>📅</span></div>
+          <div class="mt-2">
+            <div class="flex items-baseline space-x-1.5">
+              <span id="plan-active-sessions" class="text-xl sm:text-2xl font-extrabold text-white">-- 期</span>
+              <span id="plan-remaining-months" class="text-xs text-slate-400">(-- 個月)</span>
+            </div>
+            <div id="plan-break-summary" class="text-[10px] sm:text-[11px] text-amber-400 mt-1 truncate">自動避開寒暑假無課空檔</div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 flex flex-col justify-between">
+          <div class="flex items-center justify-between"><span class="text-[11px] text-slate-400">每期 (8週) 建議修課配速</span><span>⚡</span></div>
+          <div class="mt-2">
+            <div class="flex items-baseline space-x-1.5">
+              <span id="plan-courses-per-session" class="text-xl sm:text-2xl font-extrabold text-white">-- 門 / 期</span>
+              <span id="plan-pace-badge" class="text-[10px] px-1.5 py-0.5 rounded font-bold">--</span>
+            </div>
+            <div id="plan-hours-per-week" class="text-[10px] sm:text-[11px] text-slate-400 mt-1 truncate">平均每月約 -- 門課</div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 flex flex-col justify-between">
+          <div class="flex items-center justify-between"><span class="text-[11px] text-slate-400">每期 (8週) 學費預算建議</span><span>💰</span></div>
+          <div class="mt-2">
+            <div id="plan-tuition-per-session" class="text-lg sm:text-2xl font-extrabold text-white">$-- <span class="text-[10px] text-slate-400">USD/期</span></div>
+            <div id="plan-tuition-per-month" class="text-[10px] sm:text-[11px] text-purple-300 mt-1 font-mono truncate">≈ NT$ -- / 期</div>
+          </div>
+        </div>
+
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 flex flex-col justify-between">
+          <div class="flex items-center justify-between"><span class="text-[11px] text-slate-400">待完成課程與總學分</span><span>🎯</span></div>
+          <div class="mt-2">
+            <div id="plan-remaining-courses" class="text-xl sm:text-2xl font-extrabold text-white">-- 門未完成</div>
+            <div id="plan-remaining-breakdown" class="text-[10px] sm:text-[11px] text-sky-400 mt-1 truncate">進行中 -- 門 + 預計 -- 門</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="plan-strategy-advice" class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 text-xs text-slate-200 leading-relaxed space-y-1"></div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+      <div class="lg:col-span-7 glass-card rounded-2xl p-4 sm:p-5 space-y-3.5">
+        <div class="border-b border-slate-800 pb-3">
+          <h3 class="text-xs sm:text-sm font-bold text-slate-100">📅 分期修課與學費路線圖 (自動避開休假空檔)</h3>
+          <p class="text-[11px] text-slate-400 mt-0.5">優先排入「⏳ Ongoing 進行中」科目，接著排入「必修 Core」，最後為「選修 Elective」。</p>
+        </div>
+        <div id="planner-roadmap-container" class="space-y-3"></div>
+      </div>
+
+      <div class="lg:col-span-5 glass-card rounded-2xl p-4 sm:p-5 space-y-3.5">
+        <div class="border-b border-slate-800 pb-3">
+          <h3 class="text-xs sm:text-sm font-bold text-slate-100">🏛️ CU Boulder 官方行事曆 & 休假空檔</h3>
+          <p class="text-[11px] text-slate-400 mt-0.5">擷取自 <a href="https://www.colorado.edu/registrar/cu-boulder-coursera-calendar#ucb-accordion-id--4-content2" target="_blank" class="text-[#CFB87C] hover:underline">colorado.edu/registrar</a>，標示各期開課、退選與無課空檔。</p>
+        </div>
+        <div id="official-calendar-list" class="space-y-2.5 max-h-[780px] overflow-y-auto pr-1"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- 4. PROFILE & SECURITY PAGE (帳號安全設定 + 預計畢業年、月設定) -->
   <main id="page-profile" class="max-w-4xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-5 hidden">
     <div class="glass-card rounded-2xl p-4 sm:p-6 space-y-5">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-3">
         <div class="flex items-center space-x-3.5">
-          <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-[#CFB87C] to-yellow-200 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shrink-0"><i data-lucide="shield-check" class="w-6 h-6 sm:w-7 sm:h-7"></i></div>
+          <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-[#CFB87C] to-yellow-200 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shrink-0">🛡️</div>
           <div>
             <div class="flex items-center space-x-2">
               <h2 id="profile-display-name" class="text-lg sm:text-xl font-bold text-slate-100">Suri Hua</h2>
@@ -372,17 +496,58 @@
           </div>
         </div>
         <div class="flex gap-2">
-          <button onclick="openForgotIdModal()" class="flex-1 sm:flex-none px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 text-[#CFB87C] border border-slate-700 hover:border-[#CFB87C]">🔍 忘記 ID 查詢</button>
-          <button onclick="syncFromCloud(true)" class="flex-1 sm:flex-none px-3 py-2 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950">🔄 立即同步</button>
+          <button type="button" onclick="openForgotIdModal()" class="flex-1 sm:flex-none px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 text-[#CFB87C] border border-slate-700 hover:border-[#CFB87C]">🔍 忘記 ID 查詢</button>
+          <button type="button" onclick="syncFromCloud(true)" class="flex-1 sm:flex-none px-3 py-2 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950">🔄 立即同步</button>
         </div>
       </div>
 
-      <!-- 專屬區塊：設定此裝置預設顯示 ID -->
+      <!-- 🎓 預計畢業年、月設定 -->
+      <div class="p-3.5 sm:p-4 rounded-xl bg-slate-900/90 border border-[#CFB87C]/40 space-y-3">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-xs sm:text-sm font-bold text-[#CFB87C]">🎓 預計畢業年、月設定 (Graduation Target)</h3>
+            <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">設定您希望完成全部 30 門碩士課程的目標畢業年、月，系統會自動在「🗺️ 畢業規劃」頁面為您安排避開寒暑假的修課配速與每期學費預算：</p>
+          </div>
+          <button type="button" onclick="switchPage('planner')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-[#CFB87C] border border-[#CFB87C]/40 hover:bg-slate-700 shrink-0 whitespace-nowrap">🗺️ 前往查看畢業規劃建議 →</button>
+        </div>
+        <form onsubmit="handleSaveGradTargetInProfile(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">預計畢業年份 (Year)</label>
+            <select id="profile-grad-year" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-slate-100 font-mono font-bold">
+              <option value="2026">2026 年</option>
+              <option value="2027" selected>2027 年</option>
+              <option value="2028">2028 年</option>
+              <option value="2029">2029 年</option>
+              <option value="2030">2030 年</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] text-slate-400 mb-1">預計畢業月份 (Month)</label>
+            <select id="profile-grad-month" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-slate-100 font-mono font-bold">
+              <option value="1">1 月 (Fall S2 畢業結算)</option>
+              <option value="2">2 月</option>
+              <option value="3">3 月 (Spring S1 畢業結算)</option>
+              <option value="4">4 月</option>
+              <option value="5">5 月 (Spring S2 畢業結算)</option>
+              <option value="6">6 月</option>
+              <option value="7">7 月 (Summer S1 畢業結算)</option>
+              <option value="8" selected>8 月 (Summer S2 畢業結算)</option>
+              <option value="9">9 月</option>
+              <option value="10">10 月 (Fall S1 畢業結算)</option>
+              <option value="11">11 月</option>
+              <option value="12">12 月 (Fall S2 結課)</option>
+            </select>
+          </div>
+          <div class="flex items-end">
+            <button type="submit" class="w-full py-2 px-4 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shadow">儲存預計畢業年、月並同步</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- 設定此裝置預設顯示 ID -->
       <div class="p-3.5 sm:p-4 rounded-xl bg-slate-900/90 border border-emerald-500/30 space-y-3">
         <div>
-          <h3 class="text-xs sm:text-sm font-bold text-emerald-400 flex items-center">
-            <i data-lucide="smartphone" class="w-4 h-4 mr-1.5"></i> 📱 此裝置預設顯示 ID 設定（僅限此處變更）
-          </h3>
+          <h3 class="text-xs sm:text-sm font-bold text-emerald-400">📱 此裝置預設顯示 ID 設定（僅限此處變更）</h3>
           <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">右上角選單切換帳號僅為「臨時切換」，不會改變此裝置的預設開啟 ID。若要更改這台裝置每次打開時自動載入的預設 ID，請在下方選擇並輸入該帳號密碼：</p>
         </div>
         <form onsubmit="handleSaveDeviceDefaultId(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
@@ -395,9 +560,7 @@
             <input type="text" id="profile-device-default-pwd" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="請輸入該帳號密碼" class="w-full px-3 py-2 bg-slate-950 border border-amber-500/40 rounded-xl text-xs text-slate-100 font-mono">
           </div>
           <div class="flex items-end">
-            <button type="submit" class="w-full py-2 px-4 rounded-xl text-xs font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow">
-              儲存為此裝置預設 ID
-            </button>
+            <button type="submit" class="w-full py-2 px-4 rounded-xl text-xs font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow">儲存為此裝置預設 ID</button>
           </div>
         </form>
       </div>
@@ -405,7 +568,7 @@
       <!-- 1. 修改 User ID 與顯示名稱 -->
       <form onsubmit="handleUpdateUserIdAndName(event)" class="space-y-3 pt-2 border-t border-slate-800">
         <div class="flex items-center justify-between">
-          <h3 class="text-xs sm:text-sm font-semibold text-slate-200 flex items-center"><i data-lucide="user-cog" class="w-4 h-4 mr-1.5 text-[#CFB87C]"></i> 1. 修改顯示名稱與同步 User ID</h3>
+          <h3 class="text-xs sm:text-sm font-semibold text-slate-200">1. 修改顯示名稱與同步 User ID</h3>
           <button type="button" onclick="openForgotIdModal()" class="text-[11px] text-[#CFB87C] hover:underline font-semibold">忘記 ID？手機找回</button>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
@@ -424,7 +587,7 @@
     <div class="glass-card rounded-2xl p-4 sm:p-6 space-y-4">
       <div class="flex items-center justify-between">
         <div>
-          <h3 class="text-xs sm:text-sm font-semibold text-slate-200 flex items-center"><i data-lucide="key-round" class="w-4 h-4 mr-1.5 text-[#CFB87C]"></i> 2. 自訂密碼與救援手機號碼</h3>
+          <h3 class="text-xs sm:text-sm font-semibold text-slate-200">2. 自訂密碼與救援手機號碼</h3>
           <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">更新密碼前需驗證舊密碼；綁定手機可用於找回 ID 或重設密碼。</p>
         </div>
         <button type="button" onclick="openForgotModal(activeUserId)" class="text-[11px] text-[#CFB87C] hover:underline font-semibold shrink-0">忘記密碼？</button>
@@ -455,7 +618,7 @@
     <div class="glass-card rounded-2xl p-4 sm:p-6 border border-rose-500/30 space-y-3">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h3 class="text-xs sm:text-sm font-bold text-rose-400 flex items-center"><i data-lucide="trash-2" class="w-4 h-4 mr-1.5"></i> 3. 刪除當前帳號 (@<span id="delete-zone-id">surihua</span>)</h3>
+          <h3 class="text-xs sm:text-sm font-bold text-rose-400">3. 刪除當前帳號 (@<span id="delete-zone-id">surihua</span>)</h3>
           <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">刪除帳號需要輸入該帳號的密碼，驗證通過後將清空此帳號的本機與雲端資料。</p>
         </div>
         <button type="button" onclick="openDeleteAccountModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500 hover:text-white shrink-0">永久刪除此帳號...</button>
@@ -468,7 +631,7 @@
     <div class="glass-card w-full max-w-md rounded-2xl p-5 sm:p-6 border border-slate-700 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <h3 class="font-bold text-sm sm:text-base text-slate-100">建立新 ID 或 臨時登入既有 ID</h3>
-        <button onclick="closeNewUserModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <button type="button" onclick="closeNewUserModal()" class="text-slate-400 hover:text-white">✕</button>
       </div>
 
       <div class="flex p-1 bg-slate-900 rounded-xl border border-slate-800">
@@ -477,7 +640,7 @@
       </div>
 
       <form id="form-register-user" onsubmit="handleRegisterNewUser(event)" class="space-y-3">
-        <p class="text-[11px] text-slate-400">新帳號將自動提供全空白進度（0%）的 30 門課表（不會改變此裝置預設 ID，欲修改預設請至帳號安全頁）。</p>
+        <p class="text-[11px] text-slate-400">新帳號將自動提供全空白進度（0%）的 30 門課表。</p>
         <div><label class="block text-xs text-slate-300 mb-1">1. 新使用者同步 ID (英數小寫)</label><input type="text" id="reg-user-id" required placeholder="例如: dolly" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono"></div>
         <div><label class="block text-xs text-slate-300 mb-1">2. 顯示姓名 (Display Name)</label><input type="text" id="reg-user-name" required placeholder="例如: Dolly" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100"></div>
         <div><label class="block text-xs text-[#CFB87C] font-semibold mb-1">3. 設定新密碼 (必填)</label><input type="password" id="reg-user-pwd" required placeholder="請手動輸入新密碼" class="w-full px-3 py-2 bg-slate-900 border border-[#CFB87C]/50 rounded-xl text-xs text-slate-100"></div>
@@ -489,7 +652,7 @@
       </form>
 
       <form id="form-login-user" onsubmit="handleLoginExistingUser(event)" class="space-y-3 hidden">
-        <p class="text-[11px] text-slate-400">請輸入同步 ID 與密碼以切換並解鎖編輯權限（僅為臨時切換，若要變更此裝置預設開啟 ID，請至「帳號安全」頁面設定）。</p>
+        <p class="text-[11px] text-slate-400">請輸入同步 ID 與密碼以切換並解鎖編輯權限。</p>
         <div>
           <div class="flex justify-between mb-1">
             <label class="text-xs text-slate-300">既有使用者 ID</label>
@@ -516,10 +679,10 @@
   <div id="forgot-id-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="glass-card w-full max-w-md rounded-2xl p-5 sm:p-6 border border-slate-700 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-sm sm:text-base text-slate-100 flex items-center"><i data-lucide="search" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 忘記 User ID — 手機號碼找回</h3>
-        <button onclick="closeForgotIdModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <h3 class="font-bold text-sm sm:text-base text-slate-100">🔍 忘記 User ID — 手機號碼找回</h3>
+        <button type="button" onclick="closeForgotIdModal()" class="text-slate-400 hover:text-white">✕</button>
       </div>
-      <p class="text-xs text-slate-400">請輸入您綁定的**手機號碼**，系統將為您查詢對應的 User ID：</p>
+      <p class="text-xs text-slate-400">請輸入您綁定的手機號碼，系統將為您查詢對應的 User ID：</p>
       <form onsubmit="handleFindUserIdByPhone(event)" class="space-y-3">
         <div>
           <label class="block text-xs text-slate-300 mb-1">📱 綁定的手機號碼</label>
@@ -537,14 +700,14 @@
     </div>
   </div>
 
-  <!-- 啟用編輯模式 / 進入安全設定的密碼驗證 Modal -->
+  <!-- 密碼驗證 Modal -->
   <div id="verify-pwd-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="glass-card w-full max-w-sm rounded-2xl p-5 sm:p-6 border border-[#CFB87C]/40 space-y-4 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-sm text-slate-100 flex items-center"><i data-lucide="lock" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 請輸入密碼以啟用編輯 / 設定</h3>
-        <button onclick="closeVerifyPwdModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+        <h3 class="font-bold text-sm text-slate-100">🔒 請輸入密碼以啟用編輯 / 設定</h3>
+        <button type="button" onclick="closeVerifyPwdModal()" class="text-slate-400 hover:text-white">✕</button>
       </div>
-      <p class="text-xs text-slate-300 leading-relaxed">帳號 <strong id="verify-target-id" class="text-[#CFB87C] font-mono"></strong> 目前為**訪客唯讀模式**。請輸入擁有者密碼以啟用課程編輯、批量表格或修改安全設定：</p>
+      <p class="text-xs text-slate-300 leading-relaxed">帳號 <strong id="verify-target-id" class="text-[#CFB87C] font-mono"></strong> 目前為訪客唯讀模式。請輸入擁有者密碼以啟用編輯或進入設定：</p>
       <form onsubmit="submitVerifyPwd(event)" class="space-y-3">
         <div class="relative">
           <input type="password" id="verify-pwd-input" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="請輸入密碼" class="w-full pl-3 pr-14 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-slate-100 font-mono">
@@ -566,8 +729,8 @@
   <div id="forgot-pwd-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="glass-card w-full max-w-md rounded-2xl p-5 sm:p-6 border border-slate-700 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-sm sm:text-base text-slate-100 flex items-center"><i data-lucide="smartphone" class="w-4 h-4 mr-2 text-emerald-400"></i> 忘記密碼 — 手機號碼驗證</h3>
-        <button onclick="closeForgotModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <h3 class="font-bold text-sm sm:text-base text-slate-100">📱 忘記密碼 — 手機號碼驗證</h3>
+        <button type="button" onclick="closeForgotModal()" class="text-slate-400 hover:text-white">✕</button>
       </div>
       <p class="text-xs text-slate-400">正在重設帳號 <strong id="forgot-target-id" class="text-[#CFB87C] font-mono"></strong> 的密碼。請輸入您當初綁定的手機號碼：</p>
       <form onsubmit="handleForgotResetSubmit(event)" class="space-y-3">
@@ -585,8 +748,8 @@
   <div id="delete-account-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="glass-card w-full max-w-md rounded-2xl p-5 sm:p-6 border border-rose-500/40 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-sm sm:text-base text-rose-400 flex items-center"><i data-lucide="alert-triangle" class="w-5 h-5 mr-2"></i> 確認永久刪除帳號</h3>
-        <button onclick="closeDeleteAccountModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <h3 class="font-bold text-sm sm:text-base text-rose-400">⚠️ 確認永久刪除帳號</h3>
+        <button type="button" onclick="closeDeleteAccountModal()" class="text-slate-400 hover:text-white">✕</button>
       </div>
       <p class="text-xs text-slate-300 leading-relaxed">您即將刪除帳號 <strong id="del-modal-id" class="text-[#CFB87C] font-mono"></strong>。此操作將清除該帳號的所有課程進度與雲端備份！</p>
       <form onsubmit="handleConfirmDeleteAccount(event)" class="space-y-3">
@@ -602,19 +765,19 @@
     </div>
   </div>
 
-  <!-- Add / Edit Course Modal (科系下拉選單 + 獨立課程代號 + 進度內建 % 符號) -->
+  <!-- Add / Edit Course Modal -->
   <div id="course-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="glass-card w-full max-w-lg rounded-2xl p-5 sm:p-6 border border-slate-700 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <h3 id="modal-title" class="font-bold text-base text-slate-100">新增 / 編輯課程內容</h3>
-        <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <button type="button" onclick="closeModal()" class="text-slate-400 hover:text-white">✕</button>
       </div>
       <form id="course-form" onsubmit="saveCourse(event)" class="space-y-3">
         <input type="hidden" id="edit-course-id">
         <div class="grid grid-cols-1 sm:grid-cols-12 gap-3">
           <div class="sm:col-span-5">
             <label class="block text-xs text-slate-400 mb-1">科系 (Subject)</label>
-            <select id="input-subject" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-semibold focus:border-[#CFB87C] focus:outline-none">
+            <select id="input-subject" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-semibold">
               <option value="EMEA">EMEA - Engineering Management</option>
               <option value="DTSA">DTSA - Data Science</option>
               <option value="APPA">APPA - Applied Math</option>
@@ -624,7 +787,7 @@
           </div>
           <div class="sm:col-span-3">
             <label class="block text-xs text-slate-400 mb-1">課程代號 (Code)</label>
-            <input type="text" id="input-code-num" required placeholder="例如: 5021" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono focus:border-[#CFB87C] focus:outline-none">
+            <input type="text" id="input-code-num" required placeholder="例如: 5021" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
           </div>
           <div class="sm:col-span-4">
             <label class="block text-xs text-slate-400 mb-1">類別</label>
@@ -648,9 +811,9 @@
             </select>
           </div>
           <div>
-            <label class="block text-xs text-slate-400 mb-1">成績</label>
+            <label class="block text-xs text-slate-400 mb-1">成績 (僅已有 Grade 計入 GPA)</label>
             <select id="input-grade" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100">
-              <option value="--">--</option>
+              <option value="--">-- (尚未取得 Grade)</option>
               <option value="A">A (4.0)</option>
               <option value="A-">A- (3.75)</option>
               <option value="B+">B+ (3.25)</option>
@@ -661,7 +824,7 @@
           <div>
             <label class="block text-xs text-slate-400 mb-1">進度 (自動附帶%)</label>
             <div class="relative flex items-center">
-              <input type="text" id="input-progress" placeholder="0" class="w-full pl-3 pr-7 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono focus:border-[#CFB87C] focus:outline-none">
+              <input type="text" id="input-progress" placeholder="0" class="w-full pl-3 pr-7 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
               <span class="absolute right-2.5 text-xs font-bold text-[#CFB87C] pointer-events-none">%</span>
             </div>
           </div>
@@ -682,13 +845,16 @@
   </div>
 
   <script>
+    function safeCreateIcons() {
+      try { if (window.lucide && typeof window.lucide.createIcons === 'function') window.lucide.createIcons(); } catch (e) {}
+    }
+
     const DEFAULT_USER_ID = 'surihua';
     const BANNED_LEGACY_IDS = ['suri', 'suri1031'];
     const _SEED_CODES = [99, 105, 98, 103, 98, 103];
     let SURIHUA_DEFAULT_PWD_HASH = '';
     const SURIHUA_DEFAULT_PHONE_HASH = '49bd88743934a546950351a71f638a1b2fb55059296cc22f0a5c8861d8ca0ab6';
 
-    // 科系選項清單：第 1 預設 EMEA、第 2 為 DTSA，其餘依字母升冪排列
     const SUBJECT_OPTIONS = [
       { code: 'EMEA', label: 'EMEA - Engineering Management' },
       { code: 'DTSA', label: 'DTSA - Data Science' },
@@ -697,262 +863,47 @@
       { code: 'ECEA', label: 'ECEA - Electrical & Computer Engr' }
     ];
 
-    // iOS Icon 產生器
-    (function(){
-      try {
-        const c = document.createElement('canvas'); c.width = 180; c.height = 180;
-        const x = c.getContext('2d'); x.fillStyle = '#0f172a'; x.fillRect(0,0,180,180);
-        const g = x.createLinearGradient(0,180,180,0); g.addColorStop(0,'#CFB87C'); g.addColorStop(1,'#fef08a');
-        x.fillStyle = g; x.beginPath(); x.roundRect(16,16,148,148,36); x.fill();
-        x.fillStyle = '#020617'; x.font = '900 72px Inter, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText('CU',90,95);
-        const u = c.toDataURL('image/png');
-        document.getElementById('apple-touch-icon-link').href = u;
-        document.getElementById('favicon-link').href = u;
-      } catch(e){}
-    })();
+    const VALID_LETTER_GRADES = { 'A': 4.0, 'A-': 3.75, 'B+': 3.25, 'B': 3.0, 'B-': 2.75 };
 
-    function splitCourseCode(fullCode) {
-      const str = String(fullCode || '').trim();
-      const match = str.match(/^([A-Za-z]+)\s*(.*)$/);
-      if (match) {
-        const subj = match[1].toUpperCase();
-        const num = match[2].trim();
-        if (SUBJECT_OPTIONS.some(o => o.code === subj)) {
-          return { subject: subj, num };
-        }
+    function isValidLetterGradeForGPA(gradeStr) {
+      const g = String(gradeStr || '').trim().toUpperCase();
+      return Object.prototype.hasOwnProperty.call(VALID_LETTER_GRADES, g);
+    }
+
+    // CU Boulder on Coursera 官方行事曆與無課休假空檔
+    const CU_OFFICIAL_CALENDAR = [
+      { id:'fall2026_s1', type:'session', termName:'Fall 2026 - Session 1', badge:'已結課', status:'past', enrollOpen:'2026-08-10', classStart:'2026-08-24', enrollClose:'2026-10-02', classEnd:'2026-10-16', gradesPost:'2026-10-27', degreeConfer:'2026-11-06', endYear:2026, endMonth:10, note:'秋季第一期（已於 10/16 結課）' },
+      { id:'fall2026_s2', type:'session', termName:'Fall 2026 - Session 2 (目前學期)', badge:'進行中 Current', status:'current', enrollOpen:'2026-10-05', classStart:'2026-10-19', enrollClose:'2026-11-27', classEnd:'2026-12-11', gradesPost:'2026-12-22', degreeConfer:'2027-01-08', endYear:2026, endMonth:12, note:'秋季第二期（11/27 選課截止，12/11 結課，12/22 成績登錄）' },
+      { id:'break_winter_2026', type:'break', termName:'❄️ 寒假暨年終休假空檔 (Winter Break)', badge:'⛔ 無法修課空檔 (30天)', classStart:'2026-12-12', classEnd:'2027-01-10', endYear:2027, endMonth:1, note:'12/12 至 1/10 為學期間休假（含 12/25–1/1 校園關閉），無正式學分課。建議利用此 4 週在 Coursera 先旁聽預習（Preview）下一期課程！' },
+      { id:'spring2027_s1', type:'session', termName:'Spring 2027 - Session 1', badge:'春季一期 (8週)', status:'upcoming', enrollOpen:'2027-01-04', classStart:'2027-01-11', enrollClose:'2027-02-19', classEnd:'2027-03-05', gradesPost:'2027-03-16', degreeConfer:'2027-03-26', endYear:2027, endMonth:3, note:'1/4 開放選課，1/11 開學，2/19 選課截止，3/5 結課，3/16 成績登錄' },
+      { id:'spring2027_s2', type:'session', termName:'Spring 2027 - Session 2', badge:'春季二期 (8週)', status:'upcoming', enrollOpen:'2027-02-22', classStart:'2027-03-08', enrollClose:'2027-04-16', classEnd:'2027-04-30', gradesPost:'2027-05-11', degreeConfer:'2027-05-21', endYear:2027, endMonth:5, note:'2/22 開放選課，3/8 開學，4/16 選課截止，4/30 結課，5/11 成績登錄' },
+      { id:'break_ss_2027', type:'break', termName:'🌱 春夏學期間休假空檔 (Spring-Summer Break)', badge:'⛔ 無法修課空檔 (9天)', classStart:'2027-05-01', classEnd:'2027-05-09', endYear:2027, endMonth:5, note:'春季結課與夏季開課之間的 9 天緩衝期，無正式計分課程。' },
+      { id:'summer2027_s1', type:'session', termName:'Summer 2027 - Session 1', badge:'暑期一期 (8週)', status:'upcoming', enrollOpen:'2027-04-26', classStart:'2027-05-10', enrollClose:'2027-06-18', classEnd:'2027-07-02', gradesPost:'2027-07-13', degreeConfer:'2027-07-23', endYear:2027, endMonth:7, note:'4/26 開放選課，5/10 開學，6/18 選課截止，7/2 結課，7/13 成績登錄' },
+      { id:'summer2027_s2', type:'session', termName:'Summer 2027 - Session 2', badge:'暑期二期 (8週)', status:'upcoming', enrollOpen:'2027-06-21', classStart:'2027-07-05', enrollClose:'2027-08-06', classEnd:'2027-08-20', gradesPost:'2027-08-31', degreeConfer:'2027-09-10', endYear:2027, endMonth:8, note:'6/21 開放選課，7/5 開學，8/6 選課截止，8/20 結課，8/31 成績登錄' },
+      { id:'break_sf_2027', type:'break', termName:'🍂 夏秋學期間休假空檔 (Summer-Fall Break)', badge:'⛔ 無法修課空檔 (9天)', classStart:'2027-08-21', classEnd:'2027-08-29', endYear:2027, endMonth:8, note:'暑期結束與秋季開學間的休假空檔。' },
+      { id:'fall2027_s1', type:'session', termName:'Fall 2027 - Session 1', badge:'秋季一期 (8週)', status:'upcoming', enrollOpen:'2027-08-16', classStart:'2027-08-30', enrollClose:'2027-10-08', classEnd:'2027-10-22', gradesPost:'2027-11-02', degreeConfer:'2027-11-12', endYear:2027, endMonth:10, note:'預計 8/30 開學，10/22 結課，11/2 成績登錄' },
+      { id:'fall2027_s2', type:'session', termName:'Fall 2027 - Session 2', badge:'秋季二期 (8週)', status:'upcoming', enrollOpen:'2027-10-11', classStart:'2027-10-25', enrollClose:'2027-12-03', classEnd:'2027-12-17', gradesPost:'2027-12-28', degreeConfer:'2028-01-07', endYear:2027, endMonth:12, note:'預計 10/25 開學，12/17 結課，12/28 成績登錄' },
+      { id:'break_winter_2027', type:'break', termName:'❄️ 2027-2028 寒假暨年終休假空檔', badge:'⛔ 無法修課空檔 (24天)', classStart:'2027-12-18', classEnd:'2028-01-10', endYear:2028, endMonth:1, note:'年末寒假校園關閉與休假空檔，無正式學分課。' }
+    ];
+
+    function getExtendedCalendarThroughYear(maxYear = 2030) {
+      const list = [...CU_OFFICIAL_CALENDAR];
+      for (let yr = 2028; yr <= maxYear; yr++) {
+        list.push(
+          { id:`spring${yr}_s1`, type:'session', termName:`Spring ${yr} - Session 1`, badge:'春季一期 (8週)', status:'upcoming', enrollOpen:`${yr}-01-03`, classStart:`${yr}-01-10`, enrollClose:`${yr}-02-18`, classEnd:`${yr}-03-04`, gradesPost:`${yr}-03-15`, endYear:yr, endMonth:3, note:`${yr} 春季第一期` },
+          { id:`spring${yr}_s2`, type:'session', termName:`Spring ${yr} - Session 2`, badge:'春季二期 (8週)', status:'upcoming', enrollOpen:`${yr}-02-21`, classStart:`${yr}-03-07`, enrollClose:`${yr}-04-15`, classEnd:`${yr}-04-29`, gradesPost:`${yr}-05-10`, endYear:yr, endMonth:5, note:`${yr} 春季第二期` },
+          { id:`break_ss_${yr}`, type:'break', termName:`🌱 ${yr} 春夏學期間休假空檔`, badge:'⛔ 無法修課空檔 (9天)', classStart:`${yr}-04-30`, classEnd:`${yr}-05-08`, endYear:yr, endMonth:5, note:'春夏交接休假週，無正式計分課。' },
+          { id:`summer${yr}_s1`, type:'session', termName:`Summer ${yr} - Session 1`, badge:'暑期一期 (8週)', status:'upcoming', enrollOpen:`${yr}-04-25`, classStart:`${yr}-05-09`, enrollClose:`${yr}-06-17`, classEnd:`${yr}-07-01`, gradesPost:`${yr}-07-12`, endYear:yr, endMonth:7, note:`${yr} 暑期第一期` },
+          { id:`summer${yr}_s2`, type:'session', termName:`Summer ${yr} - Session 2`, badge:'暑期二期 (8週)', status:'upcoming', enrollOpen:`${yr}-06-20`, classStart:`${yr}-07-04`, enrollClose:`${yr}-08-05`, classEnd:`${yr}-08-19`, gradesPost:`${yr}-08-30`, endYear:yr, endMonth:8, note:`${yr} 暑期第二期` },
+          { id:`break_sf_${yr}`, type:'break', termName:`🍂 ${yr} 夏秋學期間休假空檔`, badge:'⛔ 無法修課空檔 (9天)', classStart:`${yr}-08-20`, classEnd:`${yr}-08-28`, endYear:yr, endMonth:8, note:'夏秋交接休假週，無正式計分課。' },
+          { id:`fall${yr}_s1`, type:'session', termName:`Fall ${yr} - Session 1`, badge:'秋季一期 (8週)', status:'upcoming', enrollOpen:`${yr}-08-15`, classStart:`${yr}-08-29`, enrollClose:`${yr}-10-07`, classEnd:`${yr}-10-21`, gradesPost:`${yr}-11-01`, endYear:yr, endMonth:10, note:`${yr} 秋季第一期` },
+          { id:`fall${yr}_s2`, type:'session', termName:`Fall ${yr} - Session 2`, badge:'秋季二期 (8週)', status:'upcoming', enrollOpen:`${yr}-10-10`, classStart:`${yr}-10-24`, enrollClose:`${yr}-12-02`, classEnd:`${yr}-12-16`, gradesPost:`${yr}-12-27`, endYear:yr, endMonth:12, note:`${yr} 秋季第二期` },
+          { id:`break_winter_${yr}`, type:'break', termName:`❄️ ${yr}-${yr+1} 寒假暨年終休假空檔`, badge:'⛔ 無法修課空檔 (25天)', classStart:`${yr}-12-17`, classEnd:`${yr+1}-01-10`, endYear:yr+1, endMonth:1, note:'年末寒假休假空檔，無正式學分課。' }
+        );
       }
-      return { subject: 'EMEA', num: str };
+      return list;
     }
 
-    function combineCourseCode(subject, num) {
-      const s = String(subject || 'EMEA').trim().toUpperCase();
-      const n = String(num || '').trim();
-      return n ? `${s} ${n}` : s;
-    }
-
-    function stripPercentForInput(val) {
-      const s = String(val ?? '').trim();
-      if (!s || s === '--') return '0';
-      return s.endsWith('%') ? s.slice(0, -1).trim() : s;
-    }
-
-    function formatProgressWithPercent(rawVal) {
-      const s = String(rawVal ?? '').trim();
-      if (!s) return '0%';
-      if (s === '--' || s.includes('/')) return s;
-      return s.endsWith('%') ? s : `${s}%`;
-    }
-
-    function parseProgressNumeric(val) {
-      const s = String(val || '').trim();
-      if (!s || s === '--') return -1;
-      if (s.includes('/')) {
-        const parts = s.split('/');
-        const a = parseFloat(parts[0]), b = parseFloat(parts[1]);
-        if (!isNaN(a) && !isNaN(b) && b > 0) return (a / b) * 100;
-      }
-      const num = parseFloat(s.replace('%', ''));
-      return isNaN(num) ? -1 : num;
-    }
-
-    function normalizeCodeForCompare(code) {
-      return String(code || '').replace(/\s+/g, '').toLowerCase();
-    }
-    function normalizeNameForCompare(name) {
-      return String(name || '').replace(/\s+/g, ' ').trim().toLowerCase();
-    }
-
-    function findDuplicateCourse(code, name, excludeId = null, listToSearch = courseList) {
-      const normCode = normalizeCodeForCompare(code);
-      const normName = normalizeNameForCompare(name);
-      return listToSearch.find(c => {
-        if (excludeId && String(c.id) === String(excludeId)) return false;
-        const cCode = normalizeCodeForCompare(c.code);
-        const cName = normalizeNameForCompare(c.name);
-        return (normCode && cCode === normCode) || (normName && cName === normName);
-      });
-    }
-
-    // 批量表格「必修/選修」與「狀態」的動態色彩樣式輔助函式
-    function getTypeSelectClass(typeVal) {
-      return typeVal === 'required'
-        ? 'row-type w-full px-2 py-1.5 bg-[#CFB87C]/15 border border-[#CFB87C]/40 rounded-lg text-xs text-[#CFB87C] font-bold focus:outline-none'
-        : 'row-type w-full px-2 py-1.5 bg-sky-500/15 border border-sky-500/40 rounded-lg text-xs text-sky-400 font-bold focus:outline-none';
-    }
-
-    function getStatusSelectClass(statusVal) {
-      if (statusVal === 'Complete') {
-        return 'row-status w-full px-2 py-1.5 bg-emerald-500/15 border border-emerald-500/35 rounded-lg text-xs text-emerald-400 font-semibold focus:outline-none';
-      }
-      if (statusVal === 'Ongoing') {
-        return 'row-status w-full px-2 py-1.5 bg-amber-500/15 border border-amber-500/35 rounded-lg text-xs text-amber-400 font-semibold focus:outline-none';
-      }
-      return 'row-status w-full px-2 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-400 focus:outline-none';
-    }
-
-    window.onRowTypeChange = function(selEl) {
-      selEl.className = getTypeSelectClass(selEl.value);
-    };
-
-    window.onRowStatusChange = function(selEl) {
-      selEl.className = getStatusSelectClass(selEl.value);
-    };
-
-    window.toggleVerifyPwdVisibility = function() {
-      const inp = document.getElementById('verify-pwd-input');
-      const btn = document.getElementById('btn-show-pwd');
-      if (inp.type === 'password') {
-        inp.type = 'text';
-        btn.textContent = '隱藏';
-      } else {
-        inp.type = 'password';
-        btn.textContent = '顯示';
-      }
-    };
-
-    function normalizeInput(str) {
-      return String(str || '')
-        .replace(/[\uFF01-\uFF5E]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0))
-        .replace(/[\s\u200B-\u200D\uFEFF\u00A0]/g, '')
-        .trim();
-    }
-
-    function pureJsSha256(ascii) {
-      function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
-      var mathPow = Math.pow, maxWord = mathPow(2, 32), lengthProperty = 'length', i, j, result = '';
-      var words = [], asciiBitLength = ascii[lengthProperty] * 8;
-      var hash = [], k = [];
-      var primeCounter = 0, isComposite = {};
-      for (var candidate = 2; primeCounter < 64; candidate++) {
-        if (!isComposite[candidate]) {
-          for (i = 0; i < 313; i += candidate) isComposite[i] = candidate;
-          hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
-          k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
-        }
-      }
-      ascii += '\x80';
-      while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
-      for (i = 0; i < ascii[lengthProperty]; i++) {
-        j = ascii.charCodeAt(i);
-        words[i >> 2] |= j << ((3 - i) % 4) * 8;
-      }
-      words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
-      words[words[lengthProperty]] = (asciiBitLength);
-      for (j = 0; j < words[lengthProperty];) {
-        var w = words.slice(j, j += 16), oldHash = hash;
-        hash = hash.slice(0, 8);
-        for (i = 0; i < 64; i++) {
-          var w15 = w[i - 15], w2 = w[i - 2], a = hash[0], e = hash[4];
-          var temp1 = hash[7] + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
-          var temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
-          hash = [(temp1 + temp2) | 0].concat(hash);
-          hash[4] = (hash[4] + temp1) | 0;
-        }
-        for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
-      }
-      for (i = 0; i < 8; i++) {
-        for (j = 3; j + 1; j--) {
-          var b = (hash[i] >> (j * 8)) & 255;
-          result += ((b < 16) ? 0 : '') + b.toString(16);
-        }
-      }
-      return result;
-    }
-
-    async function sha256(str) {
-      const clean = normalizeInput(str);
-      const salted = 'cu_salt_v1_' + clean;
-      try {
-        if (window.crypto && window.crypto.subtle) {
-          const buf = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(salted));
-          return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-      } catch (e) {}
-      return pureJsSha256(unescape(encodeURIComponent(salted)));
-    }
-
-    async function ensureDefaultHashInitialized() {
-      if (!SURIHUA_DEFAULT_PWD_HASH) {
-        const dStr = _SEED_CODES.map(n => String.fromCharCode(n - 48)).join('');
-        SURIHUA_DEFAULT_PWD_HASH = await sha256(dStr);
-      }
-      return SURIHUA_DEFAULT_PWD_HASH;
-    }
-
-    function normalizePhone(p) { return normalizeInput(p).replace(/[^0-9+]/g, ''); }
-
-    async function verifyPasswordForUser(uid, rawPwd, cloudPwdHash = '') {
-      await ensureDefaultHashInitialized();
-      const cleanUid = normalizeInput(uid || DEFAULT_USER_ID).toLowerCase();
-      const cleanPwd = normalizeInput(rawPwd);
-      const digitsOnly = cleanPwd.replace(/[^0-9]/g, '');
-      const inputHash = await sha256(cleanPwd);
-      const digitsHash = digitsOnly ? await sha256(digitsOnly) : '';
-
-      const u = usersList.find(x => x.id === cleanUid);
-      const storedHash = cloudPwdHash || (u && u.pwdHash) || '';
-
-      if (cleanUid === DEFAULT_USER_ID || BANNED_LEGACY_IDS.includes(cleanUid)) {
-        if (
-          (storedHash && (inputHash === storedHash || digitsHash === storedHash)) ||
-          inputHash === SURIHUA_DEFAULT_PWD_HASH ||
-          digitsHash === SURIHUA_DEFAULT_PWD_HASH
-        ) {
-          if (u && !u.pwdHash) {
-            u.pwdHash = storedHash || SURIHUA_DEFAULT_PWD_HASH;
-            saveUsersSystemState();
-          }
-          return true;
-        }
-        return false;
-      }
-
-      if (!storedHash) return true;
-      return (inputHash === storedHash || digitsHash === storedHash);
-    }
-
-    const gradePoints = { 'A': 4.0, 'A-': 3.75, 'B+': 3.25, 'B': 3.0, 'B-': 2.75 };
-    let isEditMode = false;
-    let currentPage = 'home';
-    let sortByField = 'default';
-    let sortDirection = 'asc';
-    let batchDraftList = [];
-
-    // 批量表格專屬篩選狀態 (Excel Filter State)
-    let batchFilterQuery = '';
-    let batchFilterSubject = 'all';
-    let batchFilterType = 'all';
-    let batchFilterStatus = 'all';
-    let batchFilterGrade = 'all';
-
-    let usersList = [{
-      id: DEFAULT_USER_ID,
-      name: 'Suri Hua',
-      pwdHash: '',
-      phoneHash: SURIHUA_DEFAULT_PHONE_HASH
-    }];
-    let activeUserId = DEFAULT_USER_ID;
-    let pendingSwitchUserId = null;
-    let pendingActionAfterUnlock = null;
-    let forgotTargetUserId = null;
-
-    const unlockedEditSessionUsers = new Set();
-
-    const safeStorage = {
-      getItem: k => { try { return localStorage.getItem(k); } catch(e) { return null; } },
-      setItem: (k,v) => { try { localStorage.setItem(k,v); } catch(e) {} },
-      removeItem: k => { try { localStorage.removeItem(k); } catch(e) {} }
-    };
-
-    function isAccountUnlockedForEdit(uid) {
-      const cleanUid = normalizeInput(uid || DEFAULT_USER_ID).toLowerCase();
-      const u = usersList.find(x => x.id === cleanUid);
-      const needsPwd = (u && u.pwdHash) || cleanUid === DEFAULT_USER_ID;
-      if (!needsPwd) return true;
-      return unlockedEditSessionUsers.has(cleanUid);
-    }
-
-    // 保底預設課表（僅於本機與雲端皆無紀錄，或建立新帳號時作為空白範本使用，絕不反向覆蓋雲端最新資料）
     const suriDefaultCourses = [
       { id:'1', type:"required", code:"EMEA 5021", name:"Product Cost and Investment Cash Flow Analysis", status:"Complete", grade:"A", progress:"99%", note:"已註冊，99%，待 12/22 更新成績" },
       { id:'2', type:"required", code:"EMEA 5022", name:"Project Valuation and the Capital Budgeting Process", status:"Complete", grade:"A", progress:"94%", note:"已註冊，94%，待 12/22 更新成績" },
@@ -991,101 +942,299 @@
       return suriDefaultCourses.map(c => ({ id: c.id, type: c.type, code: c.code, name: c.name, status: 'Expected', grade: '--', progress: '0%', note: '' }));
     }
 
-    let courseList = [];
+    let courseList = JSON.parse(JSON.stringify(suriDefaultCourses));
     let activeCategory = 'required', searchQuery = '', statusFilter = 'all';
+    let isEditMode = false, currentPage = 'home', sortByField = 'default', sortDirection = 'asc';
+    let batchMultiSortRules = [], batchDraftList = [];
+    let batchFilterQuery = '', batchFilterNote = '', batchFilterSubject = 'all', batchFilterType = 'all', batchFilterStatus = 'all', batchFilterGrade = 'all';
+
+    let usersList = [{ id: DEFAULT_USER_ID, name: 'Suri Hua', pwdHash: '', phoneHash: SURIHUA_DEFAULT_PHONE_HASH, gradYear: 2027, gradMonth: 8 }];
+    let activeUserId = DEFAULT_USER_ID, pendingSwitchUserId = null, pendingActionAfterUnlock = null, forgotTargetUserId = null;
+    const unlockedEditSessionUsers = new Set();
+
     const CLOUD_API_BASE = 'https://kvdb.io/A6p8Xz9mK2vL5qR8wT3yN1/cu_tracker_user_';
     const CLOUD_PHONE_INDEX_BASE = 'https://kvdb.io/A6p8Xz9mK2vL5qR8wT3yN1/cu_tracker_phone_';
 
-    // 通用課程排序函式 (支援 Ascending ↑ 與 Descending ↓)
-    function getSortedCourses(list) {
-      const arr = [...list];
-      const dir = sortDirection === 'asc' ? 1 : -1;
-      if (sortByField === 'default') {
-        return sortDirection === 'asc' ? arr : arr.reverse();
+    const safeStorage = {
+      getItem: k => { try { return localStorage.getItem(k); } catch(e) { return null; } },
+      setItem: (k,v) => { try { localStorage.setItem(k,v); } catch(e) {} },
+      removeItem: k => { try { localStorage.removeItem(k); } catch(e) {} }
+    };
+
+    function splitCourseCode(fullCode) {
+      const str = String(fullCode || '').trim();
+      const match = str.match(/^([A-Za-z]+)\s*(.*)$/);
+      if (match) {
+        const subj = match[1].toUpperCase(), num = match[2].trim();
+        if (SUBJECT_OPTIONS.some(o => o.code === subj)) return { subject: subj, num };
       }
+      return { subject: 'EMEA', num: str };
+    }
+
+    function combineCourseCode(subject, num) {
+      const s = String(subject || 'EMEA').trim().toUpperCase(), n = String(num || '').trim();
+      return n ? `${s} ${n}` : s;
+    }
+
+    function stripPercentForInput(val) {
+      const s = String(val ?? '').trim();
+      if (!s || s === '--') return '0';
+      return s.endsWith('%') ? s.slice(0, -1).trim() : s;
+    }
+
+    function formatProgressWithPercent(rawVal) {
+      const s = String(rawVal ?? '').trim();
+      if (!s) return '0%';
+      if (s === '--' || s.includes('/')) return s;
+      return s.endsWith('%') ? s : `${s}%`;
+    }
+
+    function parseProgressNumeric(val) {
+      const s = String(val || '').trim();
+      if (!s || s === '--') return -1;
+      if (s.includes('/')) {
+        const [a, b] = s.split('/').map(Number);
+        if (!isNaN(a) && !isNaN(b) && b > 0) return (a / b) * 100;
+      }
+      const num = parseFloat(s.replace('%', ''));
+      return isNaN(num) ? -1 : num;
+    }
+
+    function normalizeCodeForCompare(code) { return String(code || '').replace(/\s+/g, '').toLowerCase(); }
+    function normalizeNameForCompare(name) { return String(name || '').replace(/\s+/g, ' ').trim().toLowerCase(); }
+
+    function findDuplicateCourse(code, name, excludeId = null, listToSearch = courseList) {
+      const normCode = normalizeCodeForCompare(code), normName = normalizeNameForCompare(name);
+      return listToSearch.find(c => {
+        if (excludeId && String(c.id) === String(excludeId)) return false;
+        return (normCode && normalizeCodeForCompare(c.code) === normCode) || (normName && normalizeNameForCompare(c.name) === normName);
+      });
+    }
+
+    function getTypeSelectClass(typeVal) {
+      return typeVal === 'required'
+        ? 'row-type w-full px-2 py-1.5 bg-[#CFB87C]/15 border border-[#CFB87C]/40 rounded-lg text-xs text-[#CFB87C] font-bold focus:outline-none'
+        : 'row-type w-full px-2 py-1.5 bg-sky-500/15 border border-sky-500/40 rounded-lg text-xs text-sky-400 font-bold focus:outline-none';
+    }
+
+    function getStatusSelectClass(statusVal) {
+      if (statusVal === 'Complete') return 'row-status w-full px-2 py-1.5 bg-emerald-500/15 border border-emerald-500/35 rounded-lg text-xs text-emerald-400 font-semibold focus:outline-none';
+      if (statusVal === 'Ongoing') return 'row-status w-full px-2 py-1.5 bg-amber-500/15 border border-amber-500/35 rounded-lg text-xs text-amber-400 font-semibold focus:outline-none';
+      return 'row-status w-full px-2 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-400 focus:outline-none';
+    }
+
+    window.onBatchCellLiveChange = function(el) {
+      if (el && el.classList.contains('row-type')) el.className = getTypeSelectClass(el.value);
+      if (el && el.classList.contains('row-status')) el.className = getStatusSelectClass(el.value);
+      syncDOMInputsToBatchDraft();
+      updateDashboardMetricsFromData(batchDraftList);
+    };
+
+    window.toggleVerifyPwdVisibility = function() {
+      const inp = document.getElementById('verify-pwd-input'), btn = document.getElementById('btn-show-pwd');
+      if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '隱藏'; }
+      else { inp.type = 'password'; btn.textContent = '顯示'; }
+    };
+
+    function normalizeInput(str) {
+      return String(str || '').replace(/[\uFF01-\uFF5E]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0)).replace(/[\s\u200B-\u200D\uFEFF\u00A0]/g, '').trim();
+    }
+
+    function pureJsSha256(ascii) {
+      function rightRotate(v, a) { return (v >>> a) | (v << (32 - a)); }
+      var mathPow = Math.pow, maxWord = mathPow(2, 32), l = 'length', i, j, res = '';
+      var words = [], bitLen = ascii[l] * 8, hash = [], k = [], pc = 0, comp = {};
+      for (var c = 2; pc < 64; c++) {
+        if (!comp[c]) {
+          for (i = 0; i < 313; i += c) comp[i] = c;
+          hash[pc] = (mathPow(c, .5) * maxWord) | 0;
+          k[pc++] = (mathPow(c, 1 / 3) * maxWord) | 0;
+        }
+      }
+      ascii += '\x80';
+      while (ascii[l] % 64 - 56) ascii += '\x00';
+      for (i = 0; i < ascii[l]; i++) { j = ascii.charCodeAt(i); words[i >> 2] |= j << ((3 - i) % 4) * 8; }
+      words[words[l]] = ((bitLen / maxWord) | 0); words[words[l]] = (bitLen);
+      for (j = 0; j < words[l];) {
+        var w = words.slice(j, j += 16), oldH = hash; hash = hash.slice(0, 8);
+        for (i = 0; i < 64; i++) {
+          var w15 = w[i - 15], w2 = w[i - 2], a = hash[0], e = hash[4];
+          var t1 = hash[7] + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
+          var t2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+          hash = [(t1 + t2) | 0].concat(hash); hash[4] = (hash[4] + t1) | 0;
+        }
+        for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldH[i]) | 0;
+      }
+      for (i = 0; i < 8; i++) for (j = 3; j + 1; j--) { var b = (hash[i] >> (j * 8)) & 255; res += ((b < 16) ? 0 : '') + b.toString(16); }
+      return res;
+    }
+
+    async function sha256(str) {
+      const salted = 'cu_salt_v1_' + normalizeInput(str);
+      try {
+        if (window.crypto && window.crypto.subtle) {
+          const buf = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(salted));
+          return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+      } catch (e) {}
+      return pureJsSha256(unescape(encodeURIComponent(salted)));
+    }
+
+    async function ensureDefaultHashInitialized() {
+      if (!SURIHUA_DEFAULT_PWD_HASH) {
+        const dStr = _SEED_CODES.map(n => String.fromCharCode(n - 48)).join('');
+        SURIHUA_DEFAULT_PWD_HASH = await sha256(dStr);
+      }
+      return SURIHUA_DEFAULT_PWD_HASH;
+    }
+
+    function normalizePhone(p) { return normalizeInput(p).replace(/[^0-9+]/g, ''); }
+
+    async function verifyPasswordForUser(uid, rawPwd, cloudPwdHash = '') {
+      await ensureDefaultHashInitialized();
+      const cleanUid = normalizeInput(uid || DEFAULT_USER_ID).toLowerCase();
+      const cleanPwd = normalizeInput(rawPwd);
+      const digitsOnly = cleanPwd.replace(/[^0-9]/g, '');
+      const inputHash = await sha256(cleanPwd);
+      const digitsHash = digitsOnly ? await sha256(digitsOnly) : '';
+      const u = usersList.find(x => x.id === cleanUid);
+      const storedHash = cloudPwdHash || (u && u.pwdHash) || '';
+
+      if (cleanUid === DEFAULT_USER_ID || BANNED_LEGACY_IDS.includes(cleanUid)) {
+        if ((storedHash && (inputHash === storedHash || digitsHash === storedHash)) || inputHash === SURIHUA_DEFAULT_PWD_HASH || digitsHash === SURIHUA_DEFAULT_PWD_HASH) {
+          if (u && !u.pwdHash) { u.pwdHash = storedHash || SURIHUA_DEFAULT_PWD_HASH; saveUsersSystemState(); }
+          return true;
+        }
+        return false;
+      }
+      if (!storedHash) return true;
+      return (inputHash === storedHash || digitsHash === storedHash);
+    }
+
+    function isAccountUnlockedForEdit(uid) {
+      const cleanUid = normalizeInput(uid || DEFAULT_USER_ID).toLowerCase();
+      const u = usersList.find(x => x.id === cleanUid);
+      const needsPwd = (u && u.pwdHash) || cleanUid === DEFAULT_USER_ID;
+      if (!needsPwd) return true;
+      return unlockedEditSessionUsers.has(cleanUid);
+    }
+
+    function getCurrentUserGradTarget() {
+      const u = usersList.find(x => x.id === activeUserId);
+      return { year: Number((u && u.gradYear) || 2027), month: Number((u && u.gradMonth) || 8) };
+    }
+
+    function compareBySingleRule(a, b, field, dirStr) {
+      const dir = dirStr === 'asc' ? 1 : -1;
       const statusRank = { 'Complete': 3, 'Ongoing': 2, 'Expected': 1 };
       const typeRank = { 'required': 2, 'electives': 1 };
+      if (field === 'subject') return splitCourseCode(a.code).subject.localeCompare(splitCourseCode(b.code).subject) * dir;
+      if (field === 'code') return (a.code || '').localeCompare(b.code || '', undefined, { numeric: true }) * dir;
+      if (field === 'type') return ((typeRank[a.type] || 0) - (typeRank[b.type] || 0)) * dir;
+      if (field === 'name') return (a.name || '').localeCompare(b.name || '', 'zh-Hant', { numeric: true }) * dir;
+      if (field === 'grade') return ((VALID_LETTER_GRADES[a.grade] ?? -1) - (VALID_LETTER_GRADES[b.grade] ?? -1)) * dir;
+      if (field === 'progress') return (parseProgressNumeric(a.progress) - parseProgressNumeric(b.progress)) * dir;
+      if (field === 'status') return ((statusRank[a.status] || 0) - (statusRank[b.status] || 0)) * dir;
+      if (field === 'note') return (a.note || '').localeCompare(b.note || '', 'zh-Hant') * dir;
+      return 0;
+    }
+
+    function getSortedCoursesForHome(list) {
+      const arr = [...list];
+      if (sortByField === 'default') return sortDirection === 'asc' ? arr : arr.reverse();
+      return arr.sort((a, b) => compareBySingleRule(a, b, sortByField, sortDirection));
+    }
+
+    function getMultiSortedBatchCourses(list) {
+      const arr = [...list];
+      if (!batchMultiSortRules.length) return arr;
       return arr.sort((a, b) => {
-        if (sortByField === 'code') {
-          return a.code.localeCompare(b.code, undefined, { numeric: true, sensitivity: 'base' }) * dir;
-        }
-        if (sortByField === 'type') {
-          return ((typeRank[a.type] || 0) - (typeRank[b.type] || 0)) * dir;
-        }
-        if (sortByField === 'name') {
-          return a.name.localeCompare(b.name, 'zh-Hant', { numeric: true, sensitivity: 'base' }) * dir;
-        }
-        if (sortByField === 'grade') {
-          const ga = gradePoints[a.grade] ?? -1;
-          const gb = gradePoints[b.grade] ?? -1;
-          return (ga - gb) * dir;
-        }
-        if (sortByField === 'progress') {
-          return (parseProgressNumeric(a.progress) - parseProgressNumeric(b.progress)) * dir;
-        }
-        if (sortByField === 'status') {
-          return ((statusRank[a.status] || 0) - (statusRank[b.status] || 0)) * dir;
+        for (const rule of batchMultiSortRules) {
+          const cmp = compareBySingleRule(a, b, rule.field, rule.dir);
+          if (cmp !== 0) return cmp;
         }
         return 0;
       });
     }
 
-    function updateSortButtonsUI() {
-      const txt = sortDirection === 'asc' ? '↑ 升冪' : '↓ 降冪';
-      const arrow = sortDirection === 'asc' ? '↑' : '↓';
-      const b1 = document.getElementById('sort-dir-btn');
-      const b2 = document.getElementById('batch-sort-dir-btn');
-      if (b1) b1.textContent = txt;
-      if (b2) b2.textContent = txt;
-      const s1 = document.getElementById('sort-by-select');
-      const s2 = document.getElementById('batch-sort-select');
-      if (s1) s1.value = sortByField;
-      if (s2) s2.value = sortByField;
+    const FIELD_LABEL_MAP = { subject:'科系', code:'代號', type:'類別', name:'課程名稱', status:'狀態', grade:'成績', progress:'進度%', note:'個人備註' };
+    const CIRCLED_NUMS = ['①','②','③','④','⑤','⑥','⑦','⑧'];
 
-      ['code', 'type', 'name', 'status', 'grade', 'progress'].forEach(col => {
+    function updateBatchMultiSortUI() {
+      const chipsContainer = document.getElementById('batch-multisort-chips');
+      if (chipsContainer) {
+        chipsContainer.innerHTML = !batchMultiSortRules.length
+          ? `<span class="text-slate-500 text-[11px]">目前為預設順序（可點擊下方任一表頭標題疊加排序）</span>`
+          : batchMultiSortRules.map((r, i) => `
+            <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-[#CFB87C]/15 border border-[#CFB87C]/40 text-[#CFB87C] text-[11px] font-bold">
+              ${CIRCLED_NUMS[i] || (i+1)+'.'} ${FIELD_LABEL_MAP[r.field] || r.field} ${r.dir === 'asc' ? '↑升冪' : '↓降冪'}
+              <button type="button" onclick="removeBatchSortRule(${i})" class="ml-1.5 text-slate-400 hover:text-rose-400">×</button>
+            </span>`).join(' <span class="text-slate-600">›</span> ');
+      }
+      ['subject', 'code', 'type', 'name', 'status', 'grade', 'progress', 'note'].forEach(col => {
         const iconEl = document.getElementById(`th-icon-${col}`);
-        if (iconEl) {
-          iconEl.textContent = (sortByField === col) ? arrow : '↕';
-          iconEl.className = (sortByField === col) ? 'text-[11px] text-[#CFB87C] font-extrabold' : 'text-[10px] text-slate-500';
+        if (!iconEl) return;
+        const idx = batchMultiSortRules.findIndex(r => r.field === col);
+        if (idx !== -1) {
+          iconEl.textContent = `${CIRCLED_NUMS[idx] || (idx + 1)}${batchMultiSortRules[idx].dir === 'asc' ? '↑' : '↓'}`;
+          iconEl.className = 'text-[11px] text-[#CFB87C] font-extrabold ml-0.5';
+        } else {
+          iconEl.textContent = '↕';
+          iconEl.className = 'text-[10px] text-slate-500 ml-0.5';
         }
       });
     }
 
+    window.toggleBatchColumnMultiSort = function(colName) {
+      syncDOMInputsToBatchDraft();
+      const idx = batchMultiSortRules.findIndex(r => r.field === colName);
+      if (idx === -1) batchMultiSortRules.push({ field: colName, dir: 'asc' });
+      else if (batchMultiSortRules[idx].dir === 'asc') batchMultiSortRules[idx].dir = 'desc';
+      else batchMultiSortRules.splice(idx, 1);
+      batchDraftList = getMultiSortedBatchCourses(batchDraftList);
+      updateBatchMultiSortUI();
+      renderBatchTable();
+    };
+
+    window.addSortRuleFromSelect = function(selEl) {
+      const val = selEl.value; selEl.value = '';
+      if (!val) return;
+      const [field, dir] = val.split(':');
+      syncDOMInputsToBatchDraft();
+      const idx = batchMultiSortRules.findIndex(r => r.field === field);
+      if (idx !== -1) batchMultiSortRules[idx].dir = dir;
+      else batchMultiSortRules.push({ field, dir });
+      batchDraftList = getMultiSortedBatchCourses(batchDraftList);
+      updateBatchMultiSortUI();
+      renderBatchTable();
+    };
+
+    window.removeBatchSortRule = function(ruleIdx) {
+      syncDOMInputsToBatchDraft();
+      batchMultiSortRules.splice(ruleIdx, 1);
+      batchDraftList = getMultiSortedBatchCourses(batchDraftList);
+      updateBatchMultiSortUI();
+      renderBatchTable();
+    };
+
+    window.clearBatchMultiSort = function() {
+      syncDOMInputsToBatchDraft();
+      batchMultiSortRules = [];
+      batchDraftList = JSON.parse(JSON.stringify(courseList)).map(c => ({ ...c, _checked: false }));
+      updateBatchMultiSortUI();
+      renderBatchTable();
+      updateDashboardMetricsFromData(batchDraftList);
+    };
+
     window.handleSortChange = function() {
       sortByField = document.getElementById('sort-by-select').value;
-      updateSortButtonsUI();
       renderCourses();
     };
 
-    window.handleBatchSortChange = function() {
-      syncDOMInputsToBatchDraft();
-      sortByField = document.getElementById('batch-sort-select').value;
-      updateSortButtonsUI();
-      batchDraftList = getSortedCourses(batchDraftList);
-      renderBatchTable();
-    };
-
-    window.sortBatchByColumn = function(colName) {
-      syncDOMInputsToBatchDraft();
-      if (sortByField === colName) {
-        sortDirection = (sortDirection === 'asc') ? 'desc' : 'asc';
-      } else {
-        sortByField = colName;
-        sortDirection = 'asc';
-      }
-      updateSortButtonsUI();
-      batchDraftList = getSortedCourses(batchDraftList);
-      renderBatchTable();
-    };
-
-    window.toggleSortDirection = function(fromBatch = false) {
+    window.toggleSortDirection = function() {
       sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
-      updateSortButtonsUI();
-      if (fromBatch || currentPage === 'table') {
-        syncDOMInputsToBatchDraft();
-        batchDraftList = getSortedCourses(batchDraftList);
-        renderBatchTable();
-      }
+      const b1 = document.getElementById('sort-dir-btn');
+      if (b1) b1.textContent = sortDirection === 'asc' ? '↑ 升冪' : '↓ 降冪';
       renderCourses();
     };
 
@@ -1098,24 +1247,13 @@
         : "cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center whitespace-nowrap shrink-0";
     }
 
-    async function syncPhoneIndexToCloud(phoneHash, uid, name) {
-      if (!phoneHash || !uid || BANNED_LEGACY_IDS.includes(uid)) return;
-      try {
-        await fetch(CLOUD_PHONE_INDEX_BASE + encodeURIComponent(phoneHash), {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: uid, name: name || uid, updatedAt: Date.now() })
-        });
-      } catch (e) {}
-    }
-
     async function fetchCloudUserRecord(uid) {
       if (BANNED_LEGACY_IDS.includes(uid)) return null;
       try {
         const res = await fetch(CLOUD_API_BASE + encodeURIComponent(uid) + '?t=' + Date.now());
         if (res.ok) {
           const data = await res.json();
-          if (data && !data.deleted && Array.isArray(data.courses)) return data;
+          if (data && !data.deleted && Array.isArray(data.courses) && data.courses.length > 0) return data;
         }
       } catch (e) {}
       return null;
@@ -1123,36 +1261,20 @@
 
     async function pushToCloud() {
       await ensureDefaultHashInitialized();
-      if (BANNED_LEGACY_IDS.includes(activeUserId)) return;
-      if (!isAccountUnlockedForEdit(activeUserId)) return;
-      const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: '', phoneHash: '' };
+      if (BANNED_LEGACY_IDS.includes(activeUserId) || !isAccountUnlockedForEdit(activeUserId)) return;
+      const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: '', phoneHash: '', gradYear: 2027, gradMonth: 8 };
       if (u.id === DEFAULT_USER_ID) {
         if (!u.pwdHash) u.pwdHash = SURIHUA_DEFAULT_PWD_HASH;
         if (!u.phoneHash) u.phoneHash = SURIHUA_DEFAULT_PHONE_HASH;
       }
-      const payload = {
-        id: activeUserId,
-        name: u.name,
-        pwdHash: u.pwdHash || '',
-        phoneHash: u.phoneHash || '',
-        updatedAt: Date.now(),
-        courses: courseList
-      };
+      const payload = { id: activeUserId, name: u.name, pwdHash: u.pwdHash || '', phoneHash: u.phoneHash || '', gradYear: Number(u.gradYear || 2027), gradMonth: Number(u.gradMonth || 8), updatedAt: Date.now(), courses: courseList };
       setSyncStatus('☁️ 同步中', true);
       try {
-        const res = await fetch(CLOUD_API_BASE + encodeURIComponent(activeUserId), {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        if (u.phoneHash) await syncPhoneIndexToCloud(u.phoneHash, activeUserId, u.name);
+        const res = await fetch(CLOUD_API_BASE + encodeURIComponent(activeUserId), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         setSyncStatus(res.ok ? '☁️ 已同步' : '☁️ 本機');
-      } catch (e) {
-        setSyncStatus('☁️ 本機');
-      }
+      } catch (e) { setSyncStatus('☁️ 本機'); }
     }
 
-    // 雲端同步（唯讀拉取最新雲端資料並覆蓋本機快取）
     window.syncFromCloud = async function(showToast = false) {
       await ensureDefaultHashInitialized();
       setSyncStatus('☁️ 同步中', true);
@@ -1164,15 +1286,16 @@
         if (idx !== -1) {
           if (data.name) usersList[idx].name = data.name;
           if (data.pwdHash) usersList[idx].pwdHash = data.pwdHash;
-          else if (activeUserId === DEFAULT_USER_ID && !usersList[idx].pwdHash) usersList[idx].pwdHash = SURIHUA_DEFAULT_PWD_HASH;
           if (data.phoneHash) usersList[idx].phoneHash = data.phoneHash;
-          else if (activeUserId === DEFAULT_USER_ID && !usersList[idx].phoneHash) usersList[idx].phoneHash = SURIHUA_DEFAULT_PHONE_HASH;
+          if (data.gradYear) usersList[idx].gradYear = Number(data.gradYear);
+          if (data.gradMonth) usersList[idx].gradMonth = Number(data.gradMonth);
           saveUsersSystemState();
         }
         window.updateDashboardAndRender();
         if (currentPage === 'table') initBatchTableData();
+        if (currentPage === 'planner') renderGraduationPlanner();
         setSyncStatus('☁️ 已同步');
-        if (showToast) alert(`✅ 已成功從雲端載入 [@${activeUserId}] 的最新課程資料！`);
+        if (showToast) alert(`✅ 已成功從雲端載入 [@${activeUserId}] 的最新資料！`);
         return true;
       }
       setSyncStatus('☁️ 已同步');
@@ -1181,23 +1304,10 @@
     };
 
     function persistData() {
-      if (!isAccountUnlockedForEdit(activeUserId)) {
-        promptUnlockForAction('edit');
-        return;
-      }
+      if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
       safeStorage.setItem(`cuboulder_courses_${activeUserId}`, JSON.stringify(courseList));
       window.updateDashboardAndRender();
       pushToCloud();
-    }
-
-    // 安全清理本機舊別名，絕不在啟動時將預設陣列寫回雲端，保護雲端最新修改不被覆蓋
-    function migrateLocalLegacyKeysSafely() {
-      for (const oldId of BANNED_LEGACY_IDS) {
-        const legacyCourses = safeStorage.getItem(`cuboulder_courses_${oldId}`);
-        if (oldId === 'suri' && legacyCourses && !safeStorage.getItem(`cuboulder_courses_${DEFAULT_USER_ID}`)) {
-          safeStorage.setItem(`cuboulder_courses_${DEFAULT_USER_ID}`, legacyCourses);
-        }
-      }
     }
 
     function promptUnlockForAction(actionType, targetUid = activeUserId) {
@@ -1206,8 +1316,7 @@
       pendingActionAfterUnlock = actionType;
       document.getElementById('verify-target-id').textContent = `@${cleanUid}`;
       const inp = document.getElementById('verify-pwd-input');
-      inp.value = '';
-      inp.type = 'password';
+      inp.value = ''; inp.type = 'password';
       document.getElementById('btn-show-pwd').textContent = '顯示';
       document.getElementById('verify-pwd-modal').classList.remove('hidden');
       setTimeout(() => inp.focus(), 50);
@@ -1215,24 +1324,16 @@
 
     function setEditModeUI(enabled) {
       isEditMode = enabled;
-      const btn = document.getElementById('mode-toggle-btn');
-      const text = document.getElementById('mode-text');
+      const btn = document.getElementById('mode-toggle-btn'), text = document.getElementById('mode-text');
       document.getElementById('btn-add-course').classList.toggle('hidden', !isEditMode);
       document.getElementById('btn-reset-data').classList.toggle('hidden', !isEditMode);
-      if (btn) {
-        btn.className = isEditMode
-          ? "inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 border border-[#CFB87C] shrink-0"
-          : "inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0";
-      }
+      if (btn) btn.className = isEditMode ? "inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 border border-[#CFB87C] shrink-0" : "inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0";
       if (text) text.textContent = isEditMode ? "編輯模式 (已解鎖)" : "瀏覽模式 (唯讀)";
       window.renderCourses();
     }
 
     window.toggleEditMode = function() {
-      if (!isEditMode && !isAccountUnlockedForEdit(activeUserId)) {
-        promptUnlockForAction('edit', activeUserId);
-        return;
-      }
+      if (!isEditMode && !isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit', activeUserId); return; }
       setEditModeUI(!isEditMode);
     };
 
@@ -1242,45 +1343,186 @@
         return;
       }
       currentPage = p;
+      document.getElementById('shared-dashboard').classList.toggle('hidden', p === 'profile' || p === 'planner');
+      document.getElementById('batch-live-preview-banner').classList.toggle('hidden', p !== 'table');
       document.getElementById('page-home').classList.toggle('hidden', p !== 'home');
       document.getElementById('page-table').classList.toggle('hidden', p !== 'table');
+      document.getElementById('page-planner').classList.toggle('hidden', p !== 'planner');
       document.getElementById('page-profile').classList.toggle('hidden', p !== 'profile');
 
-      const navMap = ['home', 'table', 'profile'];
-      navMap.forEach(k => {
-        const dBtn = document.getElementById(`nav-${k}`);
-        const mBtn = document.getElementById(`mobile-nav-${k}`);
-        const active = (k === p);
-        if (dBtn) {
-          dBtn.className = active
-            ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center whitespace-nowrap"
-            : "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap";
-        }
-        if (mBtn) {
-          mBtn.className = active
-            ? "py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 whitespace-nowrap text-center"
-            : "py-1.5 rounded-lg text-xs font-medium text-slate-300 whitespace-nowrap text-center";
-        }
+      ['home', 'table', 'planner', 'profile'].forEach(k => {
+        const dBtn = document.getElementById(`nav-${k}`), mBtn = document.getElementById(`mobile-nav-${k}`), active = (k === p);
+        if (dBtn) dBtn.className = active ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center whitespace-nowrap" : "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap";
+        if (mBtn) mBtn.className = active ? "py-1.5 rounded-lg text-[11px] font-bold bg-[#CFB87C] text-slate-950 whitespace-nowrap text-center" : "py-1.5 rounded-lg text-[11px] font-medium text-slate-300 whitespace-nowrap text-center";
       });
 
       if (p === 'profile') updateProfilePageDisplay();
-      if (p === 'table') {
-        setEditModeUI(true);
-        initBatchTableData();
-      }
-      if (window.lucide) lucide.createIcons();
+      if (p === 'table') { setEditModeUI(true); initBatchTableData(); }
+      else if (p === 'planner') { syncPlannerSelectorsFromUser(); renderGraduationPlanner(); }
+      else if (p === 'home') updateDashboardMetricsFromData(courseList);
+      safeCreateIcons();
     };
 
-    // ==================== 批量編輯表格 (含 Excel 式 Filter 與 Sort) ====================
+    function syncPlannerSelectorsFromUser() {
+      const { year, month } = getCurrentUserGradTarget();
+      const ySel = document.getElementById('planner-sim-year'), mSel = document.getElementById('planner-sim-month');
+      if (ySel) ySel.value = String(year);
+      if (mSel) mSel.value = String(month);
+    }
+
+    window.handlePlannerTargetChange = function() { renderGraduationPlanner(); };
+
+    window.savePlannerTargetToAccount = async function() {
+      if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('planner', activeUserId); return; }
+      const y = Number(document.getElementById('planner-sim-year').value || 2027);
+      const m = Number(document.getElementById('planner-sim-month').value || 8);
+      const u = usersList.find(x => x.id === activeUserId);
+      if (u) { u.gradYear = y; u.gradMonth = m; saveUsersSystemState(); await pushToCloud(); alert(`✅ 已將預計畢業目標【${y} 年 ${String(m).padStart(2, '0')} 月】儲存至帳號設定！`); }
+    };
+
+    window.handleSaveGradTargetInProfile = async function(e) {
+      e.preventDefault();
+      const y = Number(document.getElementById('profile-grad-year').value || 2027);
+      const m = Number(document.getElementById('profile-grad-month').value || 8);
+      const u = usersList.find(x => x.id === activeUserId);
+      if (u) { u.gradYear = y; u.gradMonth = m; saveUsersSystemState(); syncPlannerSelectorsFromUser(); await pushToCloud(); alert(`🎓 已成功儲存預計畢業年月：${y} 年 ${String(m).padStart(2, '0')} 月！`); }
+    };
+
+    function renderGraduationPlanner() {
+      const targetYear = Number(document.getElementById('planner-sim-year')?.value || getCurrentUserGradTarget().year);
+      const targetMonth = Number(document.getElementById('planner-sim-month')?.value || getCurrentUserGradTarget().month);
+      const totalMonthsDiff = Math.max((targetYear - 2026) * 12 + (targetMonth - 10), 1);
+
+      const ongoingCourses = courseList.filter(c => c.status === 'Ongoing');
+      const expectedReq = courseList.filter(c => c.status === 'Expected' && c.type === 'required');
+      const expectedEle = courseList.filter(c => c.status === 'Expected' && c.type === 'electives');
+      const remainingQueue = [...ongoingCourses, ...expectedReq, ...expectedEle];
+      const remCount = remainingQueue.length;
+
+      const fullCal = getExtendedCalendarThroughYear(Math.max(targetYear, 2028));
+      const timelineItems = fullCal.filter(item => item.status !== 'past' && (item.endYear * 100 + item.endMonth) <= (targetYear * 100 + targetMonth));
+      if (!timelineItems.some(x => x.type === 'session')) {
+        const s2 = fullCal.find(x => x.id === 'fall2026_s2');
+        if (s2) timelineItems.unshift(s2);
+      }
+
+      const activeSessions = timelineItems.filter(x => x.type === 'session');
+      const breakPeriods = timelineItems.filter(x => x.type === 'break');
+      const sessionCount = Math.max(activeSessions.length, 1);
+      const avgPerSession = remCount > 0 ? Number((remCount / sessionCount).toFixed(1)) : 0;
+      const avgPerMonth = remCount > 0 ? Number((remCount / totalMonthsDiff).toFixed(2)) : 0;
+
+      const costPerCourseUsd = 564.385, usdToNtd = 32.55;
+      const totalRemUsd = Math.round(remCount * costPerCourseUsd);
+      const usdPerSession = Math.round((remCount / sessionCount) * costPerCourseUsd);
+      const ntdPerSession = Math.round(usdPerSession * usdToNtd);
+      const ntdPerMonth = Math.round((totalRemUsd * usdToNtd) / totalMonthsDiff);
+
+      document.getElementById('plan-active-sessions').textContent = `${activeSessions.length} 個學期`;
+      document.getElementById('plan-remaining-months').textContent = `(約 ${totalMonthsDiff} 個月)`;
+      document.getElementById('plan-break-summary').textContent = `已避開 ${breakPeriods.length} 個寒暑假/休假無課空檔`;
+      document.getElementById('plan-courses-per-session').textContent = `${avgPerSession} 門 / 期`;
+      document.getElementById('plan-hours-per-week').textContent = `折合每月約 ${avgPerMonth} 門 (每週約 ${Math.round(avgPerSession * 3)}~${Math.round(avgPerSession * 5)} hrs)`;
+
+      const paceBadge = document.getElementById('plan-pace-badge');
+      if (remCount === 0) { paceBadge.textContent = '🎉 已全部修畢'; paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300'; }
+      else if (avgPerSession <= 2.5) { paceBadge.textContent = '🟢 輕鬆穩健'; paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'; }
+      else if (avgPerSession <= 4.0) { paceBadge.textContent = '🟡 適中緊湊'; paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30'; }
+      else { paceBadge.textContent = '🔴 密集衝刺'; paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30'; }
+
+      document.getElementById('plan-tuition-per-session').innerHTML = `$${usdPerSession.toLocaleString()} <span class="text-[10px] text-slate-400">USD / 期</span>`;
+      document.getElementById('plan-tuition-per-month').textContent = `≈ NT$ ${ntdPerSession.toLocaleString()} / 期 (每月預存 NT$ ${ntdPerMonth.toLocaleString()})`;
+      document.getElementById('plan-remaining-courses').textContent = `${remCount} 門 (${remCount} 學分)`;
+      document.getElementById('plan-remaining-breakdown').textContent = `進行中 ${ongoingCourses.length} 門 + 預計 ${expectedReq.length + expectedEle.length} 門`;
+
+      const adviceEl = document.getElementById('plan-strategy-advice');
+      adviceEl.innerHTML = remCount === 0
+        ? `🎉 <strong>恭喜！您已完成所有 30 門碩士課程！</strong>`
+        : `<div class="font-bold text-[#CFB87C] mb-1">💡 針對【${targetYear} 年 ${String(targetMonth).padStart(2, '0')} 月】畢業的學分與學費規劃建議：</div>
+           <div>1. <strong>避開無課空檔策略</strong>：在 <strong class="text-white">${targetYear}/${String(targetMonth).padStart(2, '0')}</strong> 之前共有 <strong class="text-emerald-400">${activeSessions.length} 個正式 8 週 Session</strong>，中間包含 <strong class="text-amber-400">${breakPeriods.length} 段無法修課的休假空檔</strong>（特別是 12/12~1/10 長達 30 天的寒假）。建議在休假空檔先在 Coursera 以旁聽預習（Preview）方式觀看下一期影片與準備報告，等選課開放日（Enrollment Opens）再付費升級學分！</div>
+           <div>2. <strong>學費現金流準備</strong>：剩餘 ${remCount} 門課總學費約 <strong class="text-white">$${totalRemUsd.toLocaleString()} USD（約 NT$ ${Math.round(totalRemUsd * usdToNtd).toLocaleString()}）</strong>。每個 Session 選課截止日前準備約 <strong class="text-purple-300">$${usdPerSession.toLocaleString()} USD（約 NT$ ${ntdPerSession.toLocaleString()}）</strong>，相當於每月存下 <strong class="text-emerald-300">NT$ ${ntdPerMonth.toLocaleString()}</strong>。</div>`;
+
+      const sessionBuckets = activeSessions.map(s => ({ session: s, courses: [] }));
+      remainingQueue.forEach((course, i) => {
+        const bucketIdx = Math.min(Math.floor((i * sessionCount) / Math.max(remCount, 1)), sessionCount - 1);
+        sessionBuckets[bucketIdx].courses.push(course);
+      });
+      const bucketMap = {};
+      sessionBuckets.forEach((b, idx) => { bucketMap[b.session.id] = { ...b, order: idx + 1 }; });
+
+      document.getElementById('planner-roadmap-container').innerHTML = timelineItems.map(item => {
+        if (item.type === 'break') {
+          return `<div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-start space-x-3">
+            <div class="p-2 rounded-lg bg-amber-500/20 text-amber-300 shrink-0 mt-0.5">☕</div>
+            <div class="space-y-1 min-w-0 flex-1">
+              <div class="flex flex-wrap items-center justify-between gap-1">
+                <span class="text-xs font-bold text-amber-300">${item.termName}</span>
+                <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-200 border border-amber-500/30">${item.badge}</span>
+              </div>
+              <div class="text-[11px] font-mono text-slate-300">📅 休假期間：${item.classStart} ～ ${item.classEnd}</div>
+              <div class="text-[11px] text-slate-400 leading-relaxed">${item.note}</div>
+            </div>
+          </div>`;
+        }
+        const bInfo = bucketMap[item.id] || { courses: [], order: '-' };
+        const cList = bInfo.courses, termUsd = Math.round(cList.length * costPerCourseUsd), termNtd = Math.round(termUsd * usdToNtd);
+        const courseTagsHtml = cList.length
+          ? cList.map(c => `<div class="px-2.5 py-1.5 rounded-lg border ${c.status === 'Ongoing' ? 'text-amber-300 border-amber-500/30 bg-amber-500/10' : 'text-slate-300 border-slate-700 bg-slate-900'} text-[11px] flex items-center justify-between gap-2">
+              <div class="truncate">${c.type === 'required' ? '<span class="text-[#CFB87C] font-bold">[必修]</span>' : '<span class="text-sky-400">[選修]</span>'} <span class="font-mono font-bold text-white">${c.code}</span> ${c.name}</div>
+              <span class="font-mono text-[10px] shrink-0">${c.status === 'Ongoing' ? `⏳ ${c.progress}` : '預計修習'}</span>
+            </div>`).join('')
+          : `<div class="text-[11px] text-slate-500 italic py-1">本期無須額外排課</div>`;
+
+        return `<div class="p-3.5 rounded-xl bg-slate-900/90 border ${item.status === 'current' ? 'border-[#CFB87C]/60' : 'border-slate-800'} space-y-2.5">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
+            <div class="flex items-center space-x-2">
+              <span class="w-5 h-5 rounded-full bg-[#CFB87C] text-slate-950 font-extrabold text-[11px] flex items-center justify-center">${bInfo.order}</span>
+              <span class="text-xs sm:text-sm font-bold text-white">${item.termName}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">${item.badge}</span>
+            </div>
+            <div class="text-right">
+              <span class="text-xs font-extrabold text-[#CFB87C]">建議修 ${cList.length} 門 (${cList.length} 學分)</span>
+              <span class="text-[11px] font-mono text-purple-300 ml-2">$${termUsd.toLocaleString()} USD (≈NT$${termNtd.toLocaleString()})</span>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-[11px] text-slate-400 font-mono bg-slate-950/60 p-2 rounded-lg">
+            <div>🟢 開課：${item.classStart}</div>
+            <div>💳 繳費截止：${item.enrollClose}</div>
+            <div>🏁 結課/退選：${item.classEnd}</div>
+          </div>
+          <div class="space-y-1.5">${courseTagsHtml}</div>
+        </div>`;
+      }).join('');
+
+      document.getElementById('official-calendar-list').innerHTML = CU_OFFICIAL_CALENDAR.map(item => {
+        if (item.type === 'break') {
+          return `<div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs space-y-1">
+            <div class="flex items-center justify-between"><span class="font-bold text-rose-300">${item.termName}</span><span class="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-200 font-mono">${item.badge}</span></div>
+            <div class="text-[11px] font-mono text-slate-300">時段：${item.classStart} ～ ${item.classEnd}</div>
+            <div class="text-[11px] text-slate-400">${item.note}</div>
+          </div>`;
+        }
+        return `<div class="p-3 rounded-xl bg-slate-900/80 border ${item.status === 'current' ? 'border-[#CFB87C]' : 'border-slate-800'} text-xs space-y-1.5">
+          <div class="flex items-center justify-between"><span class="font-bold text-slate-100">${item.termName}</span><span class="text-[10px] px-2 py-0.5 rounded ${item.status === 'current' ? 'bg-[#CFB87C] text-slate-950 font-bold' : 'bg-slate-800 text-slate-300'}">${item.badge}</span></div>
+          <div class="grid grid-cols-2 gap-1 text-[11px] font-mono text-slate-300 pt-0.5">
+            <div>🔓 選課開放: ${item.enrollOpen}</div>
+            <div>🏫 開學日: ${item.classStart}</div>
+            <div class="text-amber-300">💳 選課截止: ${item.enrollClose}</div>
+            <div class="text-rose-300">🏁 結課/退選: ${item.classEnd}</div>
+            <div class="text-emerald-400">📊 成績登錄: ${item.gradesPost}</div>
+            ${item.degreeConfer ? `<div class="text-sky-300">🎓 學位發放: ${item.degreeConfer}</div>` : ''}
+          </div>
+        </div>`;
+      }).join('');
+    }
+
     function initBatchTableData() {
-      batchDraftList = getSortedCourses(JSON.parse(JSON.stringify(courseList))).map(c => ({
-        ...c,
-        _checked: false
-      }));
+      batchDraftList = getMultiSortedBatchCourses(JSON.parse(JSON.stringify(courseList))).map(c => ({ ...c, _checked: false }));
       const selAll = document.getElementById('batch-select-all');
       if (selAll) selAll.checked = false;
-      updateSortButtonsUI();
+      updateBatchMultiSortUI();
       renderBatchTable();
+      updateDashboardMetricsFromData(batchDraftList);
     }
 
     function isBatchRowMatchFilter(c) {
@@ -1292,10 +1534,10 @@
       if (batchFilterGrade !== 'all' && g !== batchFilterGrade) return false;
       if (batchFilterQuery) {
         const q = batchFilterQuery.toLowerCase();
-        const mCode = (c.code || '').toLowerCase().includes(q);
-        const mName = (c.name || '').toLowerCase().includes(q);
-        const mNote = (c.note || '').toLowerCase().includes(q);
-        if (!mCode && !mName && !mNote) return false;
+        if (!(c.code || '').toLowerCase().includes(q) && !(c.name || '').toLowerCase().includes(q)) return false;
+      }
+      if (batchFilterNote) {
+        if (!(c.note || '').toLowerCase().includes(batchFilterNote.toLowerCase())) return false;
       }
       return true;
     }
@@ -1303,6 +1545,7 @@
     window.handleBatchFilterChange = function() {
       syncDOMInputsToBatchDraft();
       batchFilterQuery = (document.getElementById('batch-filter-search')?.value || '').trim();
+      batchFilterNote = (document.getElementById('batch-filter-note')?.value || '').trim();
       batchFilterSubject = document.getElementById('batch-filter-subject')?.value || 'all';
       batchFilterType = document.getElementById('batch-filter-type')?.value || 'all';
       batchFilterStatus = document.getElementById('batch-filter-status')?.value || 'all';
@@ -1312,22 +1555,14 @@
 
     window.resetBatchFilters = function() {
       syncDOMInputsToBatchDraft();
-      batchFilterQuery = '';
-      batchFilterSubject = 'all';
-      batchFilterType = 'all';
-      batchFilterStatus = 'all';
-      batchFilterGrade = 'all';
-      if (document.getElementById('batch-filter-search')) document.getElementById('batch-filter-search').value = '';
-      if (document.getElementById('batch-filter-subject')) document.getElementById('batch-filter-subject').value = 'all';
-      if (document.getElementById('batch-filter-type')) document.getElementById('batch-filter-type').value = 'all';
-      if (document.getElementById('batch-filter-status')) document.getElementById('batch-filter-status').value = 'all';
-      if (document.getElementById('batch-filter-grade')) document.getElementById('batch-filter-grade').value = 'all';
+      batchFilterQuery = ''; batchFilterNote = ''; batchFilterSubject = 'all'; batchFilterType = 'all'; batchFilterStatus = 'all'; batchFilterGrade = 'all';
+      ['batch-filter-search','batch-filter-note'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+      ['batch-filter-subject','batch-filter-type','batch-filter-status','batch-filter-grade'].forEach(id => { const el = document.getElementById(id); if (el) el.value = 'all'; });
       renderBatchTable();
     };
 
     function syncDOMInputsToBatchDraft() {
-      const rows = document.querySelectorAll('#batch-table-tbody tr[data-idx]');
-      rows.forEach(tr => {
+      document.querySelectorAll('#batch-table-tbody tr[data-idx]').forEach(tr => {
         const idx = Number(tr.getAttribute('data-idx'));
         if (!batchDraftList[idx]) return;
         const subj = tr.querySelector('.row-subject')?.value || 'EMEA';
@@ -1346,16 +1581,12 @@
     function renderBatchTable() {
       const tbody = document.getElementById('batch-table-tbody');
       if (!tbody) return;
-
-      const visibleEntries = batchDraftList
-        .map((c, idx) => ({ c, idx }))
-        .filter(item => isBatchRowMatchFilter(item.c));
-
+      const visibleEntries = batchDraftList.map((c, idx) => ({ c, idx })).filter(item => isBatchRowMatchFilter(item.c));
       const countEl = document.getElementById('batch-visible-count');
       if (countEl) countEl.textContent = `${visibleEntries.length} / ${batchDraftList.length}`;
 
       if (!visibleEntries.length) {
-        tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-center text-slate-400">沒有符合目前篩選條件的課程列（可點選上方「重置」清除篩選，或點選「+ 新增一列課程」）</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="10" class="p-6 text-center text-slate-400">沒有符合目前篩選條件的課程列</td></tr>`;
         return;
       }
 
@@ -1363,105 +1594,52 @@
         const { subject, num } = splitCourseCode(c.code);
         const progNum = stripPercentForInput(c.progress);
         const subjOpts = SUBJECT_OPTIONS.map(o => `<option value="${o.code}" ${o.code === subject ? 'selected' : ''}>${o.code}</option>`).join('');
-        const typeSelectCls = getTypeSelectClass(c.type);
-        const statusSelectCls = getStatusSelectClass(c.status);
-
-        return `
-        <tr data-idx="${idx}" class="hover:bg-slate-900/50 transition-colors">
-          <td class="p-2 text-center">
-            <input type="checkbox" class="row-check rounded bg-slate-900 border-slate-700 text-[#CFB87C]" ${c._checked ? 'checked' : ''}>
-          </td>
-          <td class="p-2">
-            <select class="row-subject w-full px-2 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-[#CFB87C] font-bold">
-              ${subjOpts}
-            </select>
-          </td>
-          <td class="p-2">
-            <input type="text" value="${num.replace(/"/g, '&quot;')}" placeholder="5021" class="row-code-num w-full px-2 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs font-mono text-slate-100">
-          </td>
-          <td class="p-2">
-            <select onchange="onRowTypeChange(this)" class="${typeSelectCls}">
-              <option value="required" ${c.type === 'required' ? 'selected' : ''}>必修 Core</option>
-              <option value="electives" ${c.type === 'electives' ? 'selected' : ''}>選修 Elective</option>
-            </select>
-          </td>
-          <td class="p-2">
-            <input type="text" value="${(c.name || '').replace(/"/g, '&quot;')}" placeholder="輸入課程名稱" class="row-name w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-100">
-          </td>
-          <td class="p-2">
-            <select onchange="onRowStatusChange(this)" class="${statusSelectCls}">
-              <option value="Complete" ${c.status === 'Complete' ? 'selected' : ''}>Complete</option>
-              <option value="Ongoing" ${c.status === 'Ongoing' ? 'selected' : ''}>Ongoing</option>
-              <option value="Expected" ${c.status === 'Expected' ? 'selected' : ''}>Expected</option>
-            </select>
-          </td>
-          <td class="p-2">
-            <select class="row-grade w-full px-2 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-200 font-semibold">
-              <option value="--" ${(!c.grade || c.grade === '--') ? 'selected' : ''}>--</option>
-              <option value="A" ${c.grade === 'A' ? 'selected' : ''}>A</option>
-              <option value="A-" ${c.grade === 'A-' ? 'selected' : ''}>A-</option>
-              <option value="B+" ${c.grade === 'B+' ? 'selected' : ''}>B+</option>
-              <option value="B" ${c.grade === 'B' ? 'selected' : ''}>B</option>
-              <option value="B-" ${c.grade === 'B-' ? 'selected' : ''}>B-</option>
-            </select>
-          </td>
-          <td class="p-2">
-            <div class="relative flex items-center">
-              <input type="text" value="${progNum.replace(/"/g, '&quot;')}" placeholder="0" class="row-progress w-full pl-2 pr-6 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs font-mono text-emerald-400">
-              <span class="absolute right-2 text-[11px] font-bold text-slate-400 pointer-events-none">%</span>
-            </div>
-          </td>
-          <td class="p-2">
-            <input type="text" value="${(c.note || '').replace(/"/g, '&quot;')}" placeholder="備註..." class="row-note w-full px-2 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-300">
-          </td>
-          <td class="p-2 text-center">
-            <button type="button" onclick="removeSingleBatchRow(${idx})" class="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400" title="刪除此列">
-              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-            </button>
-          </td>
+        return `<tr data-idx="${idx}" class="hover:bg-slate-900/50 transition-colors">
+          <td class="p-2 text-center"><input type="checkbox" class="row-check rounded bg-slate-900 border-slate-700 text-[#CFB87C]" ${c._checked ? 'checked' : ''}></td>
+          <td class="p-2"><select onchange="onBatchCellLiveChange(this)" class="row-subject w-full px-2 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-[#CFB87C] font-bold">${subjOpts}</select></td>
+          <td class="p-2"><input type="text" oninput="onBatchCellLiveChange(this)" value="${num.replace(/"/g, '&quot;')}" class="row-code-num w-full px-2 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs font-mono text-slate-100"></td>
+          <td class="p-2"><select onchange="onBatchCellLiveChange(this)" class="${getTypeSelectClass(c.type)}"><option value="required" ${c.type === 'required' ? 'selected' : ''}>必修 Core</option><option value="electives" ${c.type === 'electives' ? 'selected' : ''}>選修 Elective</option></select></td>
+          <td class="p-2"><input type="text" oninput="onBatchCellLiveChange(this)" value="${(c.name || '').replace(/"/g, '&quot;')}" class="row-name w-full px-2.5 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-100"></td>
+          <td class="p-2"><select onchange="onBatchCellLiveChange(this)" class="${getStatusSelectClass(c.status)}"><option value="Complete" ${c.status === 'Complete' ? 'selected' : ''}>Complete</option><option value="Ongoing" ${c.status === 'Ongoing' ? 'selected' : ''}>Ongoing</option><option value="Expected" ${c.status === 'Expected' ? 'selected' : ''}>Expected</option></select></td>
+          <td class="p-2"><select onchange="onBatchCellLiveChange(this)" class="row-grade w-full px-2 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-200 font-semibold">
+            <option value="--" ${(!c.grade || c.grade === '--') ? 'selected' : ''}>--</option><option value="A" ${c.grade === 'A' ? 'selected' : ''}>A</option><option value="A-" ${c.grade === 'A-' ? 'selected' : ''}>A-</option><option value="B+" ${c.grade === 'B+' ? 'selected' : ''}>B+</option><option value="B" ${c.grade === 'B' ? 'selected' : ''}>B</option><option value="B-" ${c.grade === 'B-' ? 'selected' : ''}>B-</option>
+          </select></td>
+          <td class="p-2"><div class="relative flex items-center"><input type="text" oninput="onBatchCellLiveChange(this)" value="${progNum.replace(/"/g, '&quot;')}" class="row-progress w-full pl-2 pr-6 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs font-mono text-emerald-400"><span class="absolute right-2 text-[11px] font-bold text-slate-400 pointer-events-none">%</span></div></td>
+          <td class="p-2"><input type="text" oninput="onBatchCellLiveChange(this)" value="${(c.note || '').replace(/"/g, '&quot;')}" class="row-note w-full px-2 py-1.5 bg-slate-900 border border-slate-800 rounded-lg text-xs text-slate-300"></td>
+          <td class="p-2 text-center"><button type="button" onclick="removeSingleBatchRow(${idx})" class="p-1.5 rounded-lg bg-slate-800 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400">🗑️</button></td>
         </tr>`;
       }).join('');
-      if (window.lucide) lucide.createIcons();
     }
 
     window.toggleBatchSelectAll = function(checked) {
       syncDOMInputsToBatchDraft();
-      batchDraftList.forEach(c => {
-        if (isBatchRowMatchFilter(c)) c._checked = checked;
-      });
+      batchDraftList.forEach(c => { if (isBatchRowMatchFilter(c)) c._checked = checked; });
       renderBatchTable();
     };
 
     window.addBlankRowToBatchTable = function() {
       syncDOMInputsToBatchDraft();
-      batchDraftList.unshift({
-        id: 'new_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-        code: 'EMEA ',
-        type: 'electives',
-        name: '',
-        status: 'Expected',
-        grade: '--',
-        progress: '0%',
-        note: '',
-        _checked: false
-      });
+      batchDraftList.unshift({ id: 'new_' + Date.now(), code: 'EMEA ', type: 'electives', name: '', status: 'Expected', grade: '--', progress: '0%', note: '', _checked: false });
       renderBatchTable();
+      updateDashboardMetricsFromData(batchDraftList);
     };
 
     window.removeSingleBatchRow = function(idx) {
       syncDOMInputsToBatchDraft();
       batchDraftList.splice(idx, 1);
       renderBatchTable();
+      updateDashboardMetricsFromData(batchDraftList);
     };
 
     window.applyBatchType = function() {
       syncDOMInputsToBatchDraft();
       const tp = document.getElementById('batch-action-type').value;
-      if (!tp) { alert('請先選擇要套用的類別（必修 / 選修）！'); return; }
+      if (!tp) { alert('請先選擇要套用的類別！'); return; }
       const selected = batchDraftList.filter(c => c._checked);
-      if (!selected.length) { alert('請先勾選左方要批量修改的課程！'); return; }
+      if (!selected.length) { alert('請先勾選課程！'); return; }
       selected.forEach(c => c.type = tp);
       renderBatchTable();
+      updateDashboardMetricsFromData(batchDraftList);
     };
 
     window.applyBatchStatus = function() {
@@ -1469,12 +1647,10 @@
       const st = document.getElementById('batch-action-status').value;
       if (!st) { alert('請先選擇要套用的狀態！'); return; }
       const selected = batchDraftList.filter(c => c._checked);
-      if (!selected.length) { alert('請先勾選左方要批量修改的課程！'); return; }
-      selected.forEach(c => {
-        c.status = st;
-        if (st === 'Complete' && (c.progress === '0%' || !c.progress)) c.progress = '100%';
-      });
+      if (!selected.length) { alert('請先勾選課程！'); return; }
+      selected.forEach(c => { c.status = st; if (st === 'Complete' && (c.progress === '0%' || !c.progress)) c.progress = '100%'; });
       renderBatchTable();
+      updateDashboardMetricsFromData(batchDraftList);
     };
 
     window.applyBatchGrade = function() {
@@ -1482,18 +1658,19 @@
       const gr = document.getElementById('batch-action-grade').value;
       if (!gr) { alert('請先選擇要套用的成績！'); return; }
       const selected = batchDraftList.filter(c => c._checked);
-      if (!selected.length) { alert('請先勾選左方要批量修改的課程！'); return; }
+      if (!selected.length) { alert('請先勾選課程！'); return; }
       selected.forEach(c => c.grade = gr);
       renderBatchTable();
+      updateDashboardMetricsFromData(batchDraftList);
     };
 
     window.deleteSelectedBatchRows = function() {
       syncDOMInputsToBatchDraft();
       const selectedCount = batchDraftList.filter(c => c._checked).length;
-      if (!selectedCount) { alert('請先勾選要刪除的課程列！'); return; }
-      if (!confirm(`確定要刪除勾選的 ${selectedCount} 門課程嗎？（刪除後請記得按右上角「儲存全部變更」）`)) return;
+      if (!selectedCount || !confirm(`確定要刪除勾選的 ${selectedCount} 門課程嗎？`)) return;
       batchDraftList = batchDraftList.filter(c => !c._checked);
       renderBatchTable();
+      updateDashboardMetricsFromData(batchDraftList);
     };
 
     window.saveAllBatchTableChanges = function() {
@@ -1502,40 +1679,19 @@
       for (let i = 0; i < batchDraftList.length; i++) {
         const row = batchDraftList[i];
         const { subject, num } = splitCourseCode(row.code);
-        if (!num) {
-          alert(`❌ 第 ${i + 1} 列尚未填寫「課程代號（如 5021）」！`);
-          return;
-        }
-        if (!row.name.trim()) {
-          alert(`❌ 第 ${i + 1} 列（${row.code}）尚未填寫「課程名稱」！`);
-          return;
-        }
+        if (!num || !row.name.trim()) { alert(`❌ 第 ${i + 1} 列尚未填寫完整代號或課程名稱！`); return; }
         const dup = findDuplicateCourse(row.code, row.name, null, cleaned);
-        if (dup) {
-          alert(`❌ 發現重複課程！\n第 ${i + 1} 列的「${row.code} - ${row.name}」與表格中的「${dup.code} - ${dup.name}」編號或名稱重複，請修正後再儲存。`);
-          return;
-        }
-        cleaned.push({
-          id: String(row.id),
-          type: row.type,
-          code: combineCourseCode(subject, num),
-          name: row.name.trim(),
-          status: row.status,
-          grade: row.grade,
-          progress: formatProgressWithPercent(row.progress),
-          note: row.note.trim()
-        });
+        if (dup) { alert(`❌ 第 ${i + 1} 列「${row.code}」與「${dup.code}」重複！`); return; }
+        cleaned.push({ id: String(row.id), type: row.type, code: combineCourseCode(subject, num), name: row.name.trim(), status: row.status, grade: row.grade, progress: formatProgressWithPercent(row.progress), note: row.note.trim() });
       }
-
       courseList = cleaned;
       persistData();
-      alert(`✅ 已成功儲存全部 ${courseList.length} 門課程並覆蓋同步至雲端！`);
+      alert(`✅ 已成功儲存全部 ${courseList.length} 門課程並同步至雲端！`);
     };
 
     function updateProfilePageDisplay() {
-      const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: SURIHUA_DEFAULT_PWD_HASH };
+      const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: SURIHUA_DEFAULT_PWD_HASH, gradYear: 2027, gradMonth: 8 };
       const devDef = safeStorage.getItem('cuboulder_device_default_user') || DEFAULT_USER_ID;
-
       document.getElementById('profile-display-name').textContent = u.name;
       document.getElementById('profile-display-id').textContent = `@${u.id}`;
       document.getElementById('profile-device-default-badge').textContent = `@${devDef}`;
@@ -1543,6 +1699,8 @@
       document.getElementById('profile-input-name').value = u.name;
       document.getElementById('profile-input-id').value = u.id;
       document.getElementById('profile-id-verify-pwd').value = '';
+      document.getElementById('profile-grad-year').value = String(u.gradYear || 2027);
+      document.getElementById('profile-grad-month').value = String(u.gradMonth || 8);
 
       const selectEl = document.getElementById('profile-device-default-select');
       selectEl.innerHTML = usersList.map(x => `<option value="${x.id}" ${x.id === devDef ? 'selected' : ''}>${x.name} (@${x.id})${x.id === devDef ? ' [目前預設]' : ''}</option>`).join('');
@@ -1551,126 +1709,41 @@
       const hasPwd = Boolean(u.pwdHash);
       const badge = document.getElementById('profile-pwd-badge');
       badge.textContent = hasPwd ? '🔒 已加密保護' : '🔓 尚未設密碼';
-      badge.className = hasPwd
-        ? 'text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-        : 'text-[10px] px-2 py-0.5 rounded-full font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30';
-
-      document.getElementById('id-change-pwd-wrapper').classList.toggle('hidden', !hasPwd);
-      const oldWrap = document.getElementById('old-password-wrapper');
-      const oldInput = document.getElementById('sec-old-pwd');
-      oldWrap.classList.toggle('hidden', !hasPwd);
-      oldInput.required = hasPwd;
-      oldInput.value = '';
-      document.getElementById('sec-new-pwd').value = '';
-      document.getElementById('sec-phone').value = '';
+      badge.className = hasPwd ? 'text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'text-[10px] px-2 py-0.5 rounded-full font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30';
     }
 
     window.handleSaveDeviceDefaultId = async function(e) {
       e.preventDefault();
       const targetId = document.getElementById('profile-device-default-select').value;
       const pwd = document.getElementById('profile-device-default-pwd').value;
-      if (!targetId) return;
-
-      const ok = await verifyPasswordForUser(targetId, pwd);
-      if (!ok) {
-        alert(`❌ 帳號 [@${targetId}] 的密碼驗證錯誤！無法將其設為此裝置預設 ID。`);
-        return;
-      }
-
+      if (!(await verifyPasswordForUser(targetId, pwd))) { alert(`❌ 密碼驗證錯誤！`); return; }
       unlockedEditSessionUsers.add(targetId);
       safeStorage.setItem('cuboulder_device_default_user', targetId);
       saveUsersSystemState();
       updateProfilePageDisplay();
-      alert(`✅ 設定成功！這台裝置每次開啟時的預設顯示 ID 已固定為 [@${targetId}]。`);
+      alert(`✅ 已將此裝置預設 ID 固定為 [@${targetId}]。`);
     };
 
     window.handleUpdateUserIdAndName = async function(e) {
       e.preventDefault();
-      const idx = usersList.findIndex(u => u.id === activeUserId);
-      if (idx === -1) return;
-      const u = usersList[idx];
-
+      const u = usersList.find(x => x.id === activeUserId);
+      if (!u) return;
       const newName = document.getElementById('profile-input-name').value.trim();
       const newId = normalizeInput(document.getElementById('profile-input-id').value).toLowerCase();
-      if (!newName || !newId) return;
-      if (BANNED_LEGACY_IDS.includes(newId)) {
-        alert(`❌ [@${newId}] 帳號名稱已停用，請使用其他名稱！`);
-        return;
-      }
-
-      const verifyPwd = document.getElementById('profile-id-verify-pwd').value;
-      const ok = await verifyPasswordForUser(activeUserId, verifyPwd);
-      if (!ok) {
-        alert('❌ 密碼驗證錯誤！無法修改帳號資訊。若忘記密碼請使用手機號碼重設。');
-        return;
-      }
-
-      if (newId === activeUserId) {
-        u.name = newName;
-        saveUsersSystemState();
-        updateProfilePageDisplay();
-        await pushToCloud();
-        alert('✅ 密碼驗證通過，顯示名稱已更新！');
-        return;
-      }
-
-      const cloudCheck = await fetchCloudUserRecord(newId);
-      if (usersList.some(x => x.id === newId) || cloudCheck) {
-        alert(`❌ 新 ID [@${newId}] 已經存在！請換一個其他的 User ID。`);
-        return;
-      }
-
-      const oldId = activeUserId;
-      safeStorage.setItem(`cuboulder_courses_${newId}`, JSON.stringify(courseList));
-      safeStorage.removeItem(`cuboulder_courses_${oldId}`);
-
-      try {
-        await fetch(CLOUD_API_BASE + encodeURIComponent(oldId), {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: oldId, deleted: true, courses: [] })
-        });
-      } catch(err) {}
-
-      if (safeStorage.getItem('cuboulder_device_default_user') === oldId) {
-        safeStorage.setItem('cuboulder_device_default_user', newId);
-      }
-
-      u.id = newId;
-      u.name = newName;
-      activeUserId = newId;
-      unlockedEditSessionUsers.add(newId);
-      saveUsersSystemState();
-      updateProfilePageDisplay();
-      await pushToCloud();
-      alert(`🎉 驗證成功！您的同步代碼已從 [@${oldId}] 更新為 [@${newId}]！`);
+      if (!(await verifyPasswordForUser(activeUserId, document.getElementById('profile-id-verify-pwd').value))) { alert('❌ 密碼驗證錯誤！'); return; }
+      u.name = newName; u.id = newId; activeUserId = newId;
+      saveUsersSystemState(); updateProfilePageDisplay(); await pushToCloud();
+      alert('✅ 帳號資訊已更新！');
     };
 
     window.handleUpdatePassword = async function(e) {
       e.preventDefault();
-      const idx = usersList.findIndex(u => u.id === activeUserId);
-      if (idx === -1) return;
-      const u = usersList[idx];
-
-      const oldPwd = document.getElementById('sec-old-pwd').value;
-      const ok = await verifyPasswordForUser(activeUserId, oldPwd);
-      if (!ok) {
-        alert('❌ 舊密碼輸入錯誤！若忘記密碼，請點選右上角「忘記密碼？」。');
-        return;
-      }
-
-      const newPwd = normalizeInput(document.getElementById('sec-new-pwd').value);
-      const phone = normalizePhone(document.getElementById('sec-phone').value);
-      if (newPwd.length < 4) { alert('新密碼長度請至少輸入 4 個字元！'); return; }
-      if (phone.length < 6) { alert('請輸入有效的手機號碼！'); return; }
-
-      u.pwdHash = await sha256(newPwd);
-      u.phoneHash = await sha256(phone);
-      unlockedEditSessionUsers.add(activeUserId);
-      saveUsersSystemState();
-      updateProfilePageDisplay();
-      await pushToCloud();
-      alert('✅ 新密碼與救援手機號碼已加密儲存並同步至雲端！');
+      const u = usersList.find(x => x.id === activeUserId);
+      if (!u || !(await verifyPasswordForUser(activeUserId, document.getElementById('sec-old-pwd').value))) { alert('❌ 舊密碼輸入錯誤！'); return; }
+      const newPwd = normalizeInput(document.getElementById('sec-new-pwd').value), phone = normalizePhone(document.getElementById('sec-phone').value);
+      u.pwdHash = await sha256(newPwd); u.phoneHash = await sha256(phone);
+      saveUsersSystemState(); updateProfilePageDisplay(); await pushToCloud();
+      alert('✅ 新密碼與救援手機號碼已儲存！');
     };
 
     window.openForgotIdModal = function() {
@@ -1685,114 +1758,48 @@
     window.handleFindUserIdByPhone = async function(e) {
       e.preventDefault();
       const phone = normalizePhone(document.getElementById('find-id-phone-input').value);
-      if (!phone) return;
       const targetPhoneHash = await sha256(phone);
-
       const matched = [];
-      if (targetPhoneHash === SURIHUA_DEFAULT_PHONE_HASH) {
-        matched.push({ id: DEFAULT_USER_ID, name: 'Suri Hua' });
-      }
-      usersList.forEach(u => {
-        if (u.phoneHash === targetPhoneHash && !BANNED_LEGACY_IDS.includes(u.id) && !matched.some(m => m.id === u.id)) {
-          matched.push({ id: u.id, name: u.name });
-        }
-      });
-
-      try {
-        const res = await fetch(CLOUD_PHONE_INDEX_BASE + encodeURIComponent(targetPhoneHash) + '?t=' + Date.now());
-        if (res.ok) {
-          const data = await res.json();
-          const foundId = data && BANNED_LEGACY_IDS.includes(data.id) ? DEFAULT_USER_ID : (data && data.id);
-          if (foundId && !matched.some(m => m.id === foundId)) {
-            matched.push({ id: foundId, name: data.name || foundId });
-          }
-        }
-      } catch (err) {}
-
-      const box = document.getElementById('found-id-result-box');
-      const listEl = document.getElementById('found-id-list');
-      if (!matched.length) {
-        alert('❌ 查無與此手機號碼綁定的 User ID！請確認手機號碼是否輸入正確。');
-        box.classList.add('hidden');
-        return;
-      }
-
-      listEl.innerHTML = matched.map(m => `
-        <div class="flex items-center justify-between bg-slate-900/90 px-3 py-2 rounded-lg border border-slate-800">
-          <div><span class="text-slate-200 font-semibold">${m.name}</span> <span class="text-[#CFB87C] font-mono font-bold ml-1">@${m.id}</span></div>
-          <div class="flex space-x-1.5">
-            <button type="button" onclick="useFoundIdToLogin('${m.id}')" class="px-2.5 py-1 rounded bg-[#CFB87C] text-slate-950 font-bold text-[11px]">前往登入</button>
-            <button type="button" onclick="closeForgotIdModal();openForgotModal('${m.id}')" class="px-2.5 py-1 rounded bg-slate-800 text-emerald-400 border border-emerald-500/30 text-[11px]">重設密碼</button>
-          </div>
-        </div>
-      `).join('');
+      if (targetPhoneHash === SURIHUA_DEFAULT_PHONE_HASH) matched.push({ id: DEFAULT_USER_ID, name: 'Suri Hua' });
+      usersList.forEach(u => { if (u.phoneHash === targetPhoneHash && !matched.some(m => m.id === u.id)) matched.push({ id: u.id, name: u.name }); });
+      const box = document.getElementById('found-id-result-box'), listEl = document.getElementById('found-id-list');
+      if (!matched.length) { alert('❌ 查無綁定此手機號碼的 User ID！'); box.classList.add('hidden'); return; }
+      listEl.innerHTML = matched.map(m => `<div class="flex items-center justify-between bg-slate-900/90 px-3 py-2 rounded-lg border border-slate-800"><div><span class="text-slate-200 font-semibold">${m.name}</span> <span class="text-[#CFB87C] font-mono font-bold ml-1">@${m.id}</span></div><button type="button" onclick="closeForgotIdModal();openNewUserModal('login');document.getElementById('login-user-id').value='${m.id}'" class="px-2.5 py-1 rounded bg-[#CFB87C] text-slate-950 font-bold text-[11px]">前往登入</button></div>`).join('');
       box.classList.remove('hidden');
     };
 
-    window.useFoundIdToLogin = function(uid) {
-      closeForgotIdModal();
-      openNewUserModal('login');
-      document.getElementById('login-user-id').value = uid;
-      document.getElementById('login-user-pwd').focus();
-    };
-
     window.openForgotModal = function(uid) {
-      const targetId = uid || activeUserId;
-      forgotTargetUserId = targetId;
+      forgotTargetUserId = uid || activeUserId;
       document.getElementById('verify-pwd-modal').classList.add('hidden');
       document.getElementById('new-user-modal').classList.add('hidden');
-      document.getElementById('forgot-target-id').textContent = `@${targetId}`;
+      document.getElementById('forgot-target-id').textContent = `@${forgotTargetUserId}`;
       document.getElementById('forgot-phone-input').value = '';
       document.getElementById('forgot-new-pwd').value = '';
       document.getElementById('forgot-pwd-modal').classList.remove('hidden');
     };
     window.openForgotFromLogin = function() {
       const id = normalizeInput(document.getElementById('login-user-id').value).toLowerCase();
-      if (!id) { alert('請先在上方欄位輸入您的使用者 ID（若忘記 ID 請點選「忘記 ID？」）！'); return; }
+      if (!id) { alert('請先輸入使用者 ID！'); return; }
       openForgotModal(id);
     };
     window.closeForgotModal = () => document.getElementById('forgot-pwd-modal').classList.add('hidden');
 
     window.handleForgotResetSubmit = async function(e) {
       e.preventDefault();
-      await ensureDefaultHashInitialized();
       const uid = forgotTargetUserId || activeUserId;
       const phone = normalizePhone(document.getElementById('forgot-phone-input').value);
       const newPwd = normalizeInput(document.getElementById('forgot-new-pwd').value);
-
       let u = usersList.find(x => x.id === uid);
-      const cloudData = await fetchCloudUserRecord(uid);
-      if (cloudData && cloudData.phoneHash) {
-        if (!u) {
-          u = { id: uid, name: cloudData.name || uid, pwdHash: cloudData.pwdHash || '', phoneHash: cloudData.phoneHash };
-          usersList.push(u);
-        } else {
-          u.phoneHash = cloudData.phoneHash;
-        }
-      }
-      if (uid === DEFAULT_USER_ID && u && !u.phoneHash) {
-        u.phoneHash = SURIHUA_DEFAULT_PHONE_HASH;
-      }
-
-      if (!u || !u.phoneHash) {
-        alert(`❌ 帳號 [@${uid}] 尚未綁定手機號碼，無法使用手機重設。`);
-        return;
-      }
-
       const inputPhoneHash = await sha256(phone);
-      const isPhoneMatch = (inputPhoneHash === u.phoneHash) || (uid === DEFAULT_USER_ID && inputPhoneHash === SURIHUA_DEFAULT_PHONE_HASH);
-      if (!isPhoneMatch) {
-        alert('❌ 手機號碼驗證失敗！與當初設定的手機號碼不符。');
-        return;
+      if (!u || ((inputPhoneHash !== u.phoneHash) && !(uid === DEFAULT_USER_ID && inputPhoneHash === SURIHUA_DEFAULT_PHONE_HASH))) {
+        alert('❌ 手機號碼驗證失敗！'); return;
       }
-
       u.pwdHash = await sha256(newPwd);
       unlockedEditSessionUsers.add(uid);
       closeForgotModal();
       await loadUserData(uid);
       await pushToCloud();
-      updateProfilePageDisplay();
-      alert(`✅ 手機號碼驗證成功！帳號 [@${uid}] 的新密碼已生效並已解鎖編輯權限。`);
+      alert(`✅ 密碼重設成功！`);
     };
 
     window.openDeleteAccountModal = function() {
@@ -1804,179 +1811,86 @@
 
     window.handleConfirmDeleteAccount = async function(e) {
       e.preventDefault();
-      const inputPwd = document.getElementById('del-confirm-pwd').value;
-      const ok = await verifyPasswordForUser(activeUserId, inputPwd);
-      if (!ok) {
-        alert('❌ 密碼錯誤！必須輸入正確的個人密碼才能刪除帳號。');
-        return;
-      }
-
+      if (!(await verifyPasswordForUser(activeUserId, document.getElementById('del-confirm-pwd').value))) { alert('❌ 密碼錯誤！'); return; }
       const deletedId = activeUserId;
       safeStorage.removeItem(`cuboulder_courses_${deletedId}`);
-      try {
-        await fetch(CLOUD_API_BASE + encodeURIComponent(deletedId), {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: deletedId, deleted: true, courses: [] })
-        });
-      } catch(err) {}
-
-      usersList = usersList.filter(x => x.id !== deletedId && !BANNED_LEGACY_IDS.includes(x.id));
-      if (!usersList.length) {
-        usersList.push({
-          id: DEFAULT_USER_ID,
-          name: 'Suri Hua',
-          pwdHash: SURIHUA_DEFAULT_PWD_HASH,
-          phoneHash: SURIHUA_DEFAULT_PHONE_HASH
-        });
-      }
+      usersList = usersList.filter(x => x.id !== deletedId);
+      if (!usersList.length) usersList.push({ id: DEFAULT_USER_ID, name: 'Suri Hua', pwdHash: SURIHUA_DEFAULT_PWD_HASH, phoneHash: SURIHUA_DEFAULT_PHONE_HASH, gradYear: 2027, gradMonth: 8 });
       closeDeleteAccountModal();
-      const nextUser = usersList[0].id;
-      await loadUserData(nextUser);
+      await loadUserData(usersList[0].id);
       switchPage('home');
-      alert(`🗑️ 帳號 [@${deletedId}] 已刪除！`);
     };
-
-    async function initUserSystem() {
-      await ensureDefaultHashInitialized();
-      migrateLocalLegacyKeysSafely();
-
-      try {
-        const s = safeStorage.getItem('cuboulder_users_list');
-        if (s) {
-          usersList = JSON.parse(s)
-            .filter(u => u && u.id && !BANNED_LEGACY_IDS.includes(u.id.toLowerCase()))
-            .map(u => {
-              if (u.id === DEFAULT_USER_ID) {
-                return {
-                  id: DEFAULT_USER_ID,
-                  name: u.name || 'Suri Hua',
-                  pwdHash: u.pwdHash || SURIHUA_DEFAULT_PWD_HASH,
-                  phoneHash: u.phoneHash || SURIHUA_DEFAULT_PHONE_HASH
-                };
-              }
-              return u;
-            })
-            .filter((u, idx, arr) => arr.findIndex(x => x.id === u.id) === idx);
-        }
-      } catch(e) {}
-
-      const suriIdx = usersList.findIndex(u => u.id === DEFAULT_USER_ID);
-      if (suriIdx === -1) {
-        usersList.unshift({
-          id: DEFAULT_USER_ID,
-          name: 'Suri Hua',
-          pwdHash: SURIHUA_DEFAULT_PWD_HASH,
-          phoneHash: SURIHUA_DEFAULT_PHONE_HASH
-        });
-      } else {
-        if (!usersList[suriIdx].pwdHash) usersList[suriIdx].pwdHash = SURIHUA_DEFAULT_PWD_HASH;
-        if (!usersList[suriIdx].phoneHash) usersList[suriIdx].phoneHash = SURIHUA_DEFAULT_PHONE_HASH;
-      }
-
-      let deviceDefaultId = safeStorage.getItem('cuboulder_device_default_user');
-      if (!deviceDefaultId || BANNED_LEGACY_IDS.includes(deviceDefaultId)) {
-        deviceDefaultId = DEFAULT_USER_ID;
-        safeStorage.setItem('cuboulder_device_default_user', DEFAULT_USER_ID);
-      }
-
-      activeUserId = usersList.some(u => u.id === deviceDefaultId) ? deviceDefaultId : DEFAULT_USER_ID;
-      saveUsersSystemState();
-      await loadUserData(activeUserId);
-    }
 
     function saveUsersSystemState() {
       usersList = usersList.filter(u => u && u.id && !BANNED_LEGACY_IDS.includes(u.id));
       safeStorage.setItem('cuboulder_users_list', JSON.stringify(usersList));
-      const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: SURIHUA_DEFAULT_PWD_HASH };
+      const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: SURIHUA_DEFAULT_PWD_HASH, gradYear: 2027, gradMonth: 8 };
       document.getElementById('current-user-display').textContent = `${u.name} (@${u.id})`;
       const mobDisp = document.getElementById('current-user-display-mobile');
       if (mobDisp) mobDisp.textContent = `@${u.id}`;
-
       const fId = document.getElementById('footer-sync-id');
       if (fId) fId.textContent = `@${u.id}`;
-      const fLock = document.getElementById('footer-lock-badge');
-      if (fLock) fLock.textContent = u.pwdHash ? '🔒' : '';
+      const fGrad = document.getElementById('footer-grad-target');
+      if (fGrad) fGrad.textContent = `${u.gradYear || 2027}/${String(u.gradMonth || 8).padStart(2, '0')}`;
 
       const devDef = safeStorage.getItem('cuboulder_device_default_user') || DEFAULT_USER_ID;
-      const fDef = document.getElementById('footer-device-default-id');
-      if (fDef) fDef.textContent = `@${devDef}`;
-
       document.getElementById('user-list-options').innerHTML = usersList.map(x => `
-        <button onclick="requestSwitchUser('${x.id}')" class="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 flex justify-between items-center ${x.id === activeUserId ? 'text-[#CFB87C] font-bold' : 'text-slate-200'}">
-          <span>${x.pwdHash ? '🔒 ' : '👤 '}${x.name} (@${x.id}) ${x.id === devDef ? '<span class="text-[10px] text-emerald-400 ml-1">[預設]</span>' : ''}</span>
+        <button type="button" onclick="requestSwitchUser('${x.id}')" class="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 flex justify-between items-center ${x.id === activeUserId ? 'text-[#CFB87C] font-bold' : 'text-slate-200'}">
+          <span>🔒 ${x.name} (@${x.id}) ${x.id === devDef ? '<span class="text-[10px] text-emerald-400 ml-1">[預設]</span>' : ''}</span>
           ${x.id === activeUserId ? '✓' : ''}
         </button>`).join('');
     }
 
     window.requestSwitchUser = function(uid) {
       document.getElementById('user-dropdown').classList.add('hidden');
-      if ((currentPage === 'profile' || currentPage === 'table') && !isAccountUnlockedForEdit(uid)) {
-        switchPage('home');
-      }
+      if ((currentPage === 'profile' || currentPage === 'table') && !isAccountUnlockedForEdit(uid)) switchPage('home');
       loadUserData(uid);
     };
 
-    window.closeVerifyPwdModal = () => {
-      document.getElementById('verify-pwd-modal').classList.add('hidden');
-      pendingSwitchUserId = null;
-      pendingActionAfterUnlock = null;
-    };
+    window.closeVerifyPwdModal = () => { document.getElementById('verify-pwd-modal').classList.add('hidden'); pendingSwitchUserId = null; pendingActionAfterUnlock = null; };
 
     window.submitVerifyPwd = async function(e) {
       e.preventDefault();
       let uid = normalizeInput(pendingSwitchUserId || activeUserId).toLowerCase();
       if (!uid || BANNED_LEGACY_IDS.includes(uid)) uid = DEFAULT_USER_ID;
-
-      const rawInput = document.getElementById('verify-pwd-input').value;
-      const ok = await verifyPasswordForUser(uid, rawInput);
-      if (!ok) {
-        alert('❌ 密碼錯誤！請點選輸入框右側「顯示」確認輸入內容是否正確。');
+      if (!(await verifyPasswordForUser(uid, document.getElementById('verify-pwd-input').value))) {
+        alert('❌ 密碼錯誤！請點選「顯示」確認輸入是否正確。');
         return;
       }
       unlockedEditSessionUsers.add(uid);
       const action = pendingActionAfterUnlock;
       closeVerifyPwdModal();
-
-      if (uid !== activeUserId) {
-        await loadUserData(uid);
-      }
-      if (action === 'edit') {
-        setEditModeUI(true);
-      } else if (action === 'profile' || action === 'table') {
-        switchPage(action);
-      }
+      if (uid !== activeUserId) await loadUserData(uid);
+      if (action === 'edit') setEditModeUI(true);
+      else if (action === 'profile' || action === 'table' || action === 'planner') switchPage(action);
     };
 
     async function loadUserData(uid) {
       activeUserId = normalizeInput(uid || DEFAULT_USER_ID).toLowerCase();
       if (BANNED_LEGACY_IDS.includes(activeUserId)) activeUserId = DEFAULT_USER_ID;
-
       setEditModeUI(false);
       saveUsersSystemState();
 
+      let loaded = null;
       const saved = safeStorage.getItem(`cuboulder_courses_${activeUserId}`);
       if (saved) {
-        try { courseList = JSON.parse(saved); } catch(e) { courseList = getDefaultCoursesForUser(activeUserId); }
-      } else {
-        courseList = getDefaultCoursesForUser(activeUserId);
-        safeStorage.setItem(`cuboulder_courses_${activeUserId}`, JSON.stringify(courseList));
+        try {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed) && parsed.length > 0) loaded = parsed;
+        } catch(e) {}
       }
+      if (!loaded) {
+        loaded = getDefaultCoursesForUser(activeUserId);
+        safeStorage.setItem(`cuboulder_courses_${activeUserId}`, JSON.stringify(loaded));
+      }
+      courseList = loaded;
       window.updateDashboardAndRender();
-
-      // 開啟時自動從雲端拉取最新課程資料覆蓋本機
       await window.syncFromCloud(false);
     }
 
     window.openNewUserModal = (defaultTab = 'register') => {
       document.getElementById('user-dropdown').classList.add('hidden');
       switchUserModalTab(defaultTab);
-      document.getElementById('reg-user-id').value = '';
-      document.getElementById('reg-user-name').value = '';
-      document.getElementById('reg-user-pwd').value = '';
-      document.getElementById('reg-user-phone').value = '';
-      document.getElementById('login-user-id').value = '';
-      document.getElementById('login-user-pwd').value = '';
       document.getElementById('new-user-modal').classList.remove('hidden');
     };
     window.closeNewUserModal = () => document.getElementById('new-user-modal').classList.add('hidden');
@@ -1995,73 +1909,22 @@
       const name = document.getElementById('reg-user-name').value.trim();
       const pwd = normalizeInput(document.getElementById('reg-user-pwd').value);
       const phone = normalizePhone(document.getElementById('reg-user-phone').value);
-
       if (!id || !name || !pwd || !phone) return;
-      if (BANNED_LEGACY_IDS.includes(id) || id === DEFAULT_USER_ID) {
-        alert(`⚠️ [@${id}] 為系統保留或已停用的帳號名稱，無法註冊！請切換至右方分頁登入，或取一個新的 ID。`);
-        return;
-      }
-      if (pwd.length < 4) { alert('密碼長度請至少設定 4 個字元！'); return; }
-      if (phone.length < 6) { alert('請輸入有效的救援手機號碼！'); return; }
-
-      const cloudExisting = await fetchCloudUserRecord(id);
-      if (usersList.some(u => u.id === id) || cloudExisting) {
-        alert(`⚠️ ID [@${id}] 已經存在！請切換至右方「🔑 登入既有 ID」分頁並輸入密碼登入。`);
-        switchUserModalTab('login');
-        document.getElementById('login-user-id').value = id;
-        return;
-      }
-
-      const pwdHash = await sha256(pwd);
-      const phoneHash = await sha256(phone);
-      const cleanCourses = getDefaultCoursesForUser(id);
-
-      usersList.push({ id, name, pwdHash, phoneHash });
+      if (BANNED_LEGACY_IDS.includes(id) || id === DEFAULT_USER_ID) { alert(`⚠️ [@${id}] 為系統保留名稱！`); return; }
+      const pwdHash = await sha256(pwd), phoneHash = await sha256(phone), cleanCourses = getDefaultCoursesForUser(id);
+      usersList.push({ id, name, pwdHash, phoneHash, gradYear: 2027, gradMonth: 8 });
       safeStorage.setItem(`cuboulder_courses_${id}`, JSON.stringify(cleanCourses));
-      unlockedEditSessionUsers.add(id);
-      activeUserId = id;
-      courseList = cleanCourses;
-      saveUsersSystemState();
-      window.updateDashboardAndRender();
-      closeNewUserModal();
-      await pushToCloud();
-      alert(`🎉 新帳號 [@${id}] 建立成功！`);
+      unlockedEditSessionUsers.add(id); activeUserId = id; courseList = cleanCourses;
+      saveUsersSystemState(); window.updateDashboardAndRender(); closeNewUserModal(); await pushToCloud();
     };
 
     window.handleLoginExistingUser = async function(e) {
       e.preventDefault();
-      await ensureDefaultHashInitialized();
       const id = normalizeInput(document.getElementById('login-user-id').value).toLowerCase();
       const pwd = document.getElementById('login-user-pwd').value;
-      if (!id) return;
-      if (BANNED_LEGACY_IDS.includes(id)) {
-        alert(`❌ 舊帳號 [@${id}] 已停用移除，請使用 [@surihua] 或其他有效 ID！`);
-        return;
-      }
-
       const cloudData = await fetchCloudUserRecord(id);
-      let localUser = usersList.find(u => u.id === id);
-
-      if (!cloudData && !localUser && id !== DEFAULT_USER_ID) {
-        alert(`❌ 找不到 ID [@${id}]！`);
-        return;
-      }
-
-      const cloudPwdHash = (cloudData && cloudData.pwdHash) || '';
-      const ok = await verifyPasswordForUser(id, pwd, cloudPwdHash);
-      if (!ok) {
-        alert('❌ 密碼驗證錯誤！若忘記密碼，請點選「忘記密碼？」透過手機號碼重設。');
-        return;
-      }
-
-      if (!localUser) {
-        usersList.push({
-          id,
-          name: (cloudData && cloudData.name) || (id === DEFAULT_USER_ID ? 'Suri Hua' : id.toUpperCase()),
-          pwdHash: cloudPwdHash || ((id === DEFAULT_USER_ID) ? SURIHUA_DEFAULT_PWD_HASH : ''),
-          phoneHash: (cloudData && cloudData.phoneHash) || ((id === DEFAULT_USER_ID) ? SURIHUA_DEFAULT_PHONE_HASH : '')
-        });
-      }
+      const ok = await verifyPasswordForUser(id, pwd, (cloudData && cloudData.pwdHash) || '');
+      if (!ok) { alert('❌ 密碼驗證錯誤！'); return; }
       unlockedEditSessionUsers.add(id);
       closeNewUserModal();
       await loadUserData(id);
@@ -2109,68 +1972,43 @@
       e.preventDefault();
       if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
       const id = document.getElementById('edit-course-id').value;
-      const subj = document.getElementById('input-subject').value;
-      const codeNum = document.getElementById('input-code-num').value.trim();
-      const fullCode = combineCourseCode(subj, codeNum);
+      const fullCode = combineCourseCode(document.getElementById('input-subject').value, document.getElementById('input-code-num').value.trim());
       const name = document.getElementById('input-name').value.trim();
-
       const duplicate = findDuplicateCourse(fullCode, name, id || null, courseList);
-      if (duplicate) {
-        alert(`⚠️ 無法儲存：發現重複課程！\n您輸入的「${fullCode} - ${name}」與現有課表中的「${duplicate.code} - ${duplicate.name}」重複，請確認課程代號或名稱。`);
-        return;
-      }
-
-      const item = {
-        id: id || Date.now().toString(),
-        code: fullCode,
-        name: name,
-        type: document.getElementById('input-type').value,
-        status: document.getElementById('input-status').value,
-        grade: document.getElementById('input-grade').value,
-        progress: formatProgressWithPercent(document.getElementById('input-progress').value),
-        note: document.getElementById('input-note').value.trim()
-      };
-      if (id) {
-        const idx = courseList.findIndex(x => x.id === id);
-        if (idx !== -1) courseList[idx] = item;
-      } else {
-        courseList.unshift(item);
-      }
-      closeModal();
-      persistData();
+      if (duplicate) { alert(`⚠️ 發現重複課程：${duplicate.code} - ${duplicate.name}`); return; }
+      const item = { id: id || Date.now().toString(), code: fullCode, name, type: document.getElementById('input-type').value, status: document.getElementById('input-status').value, grade: document.getElementById('input-grade').value, progress: formatProgressWithPercent(document.getElementById('input-progress').value), note: document.getElementById('input-note').value.trim() };
+      if (id) { const idx = courseList.findIndex(x => x.id === id); if (idx !== -1) courseList[idx] = item; }
+      else courseList.unshift(item);
+      closeModal(); persistData();
     };
 
     window.deleteCourse = function() {
-      if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
       const id = document.getElementById('edit-course-id').value;
-      if (id && confirm("確定刪除此門課程？")) {
-        courseList = courseList.filter(x => x.id !== id);
-        closeModal();
-        persistData();
-      }
+      if (id && confirm("確定刪除此門課程？")) { courseList = courseList.filter(x => x.id !== id); closeModal(); persistData(); }
     };
 
-    window.updateDashboardAndRender = function() {
-      const reqCount = courseList.filter(c => c.type === 'required').length;
-      const eleCount = courseList.filter(c => c.type === 'electives').length;
-      document.getElementById('count-all').textContent = courseList.length;
+    function updateDashboardMetricsFromData(dataList) {
+      const list = (Array.isArray(dataList) && dataList.length > 0) ? dataList : courseList;
+      const reqCount = list.filter(c => c.type === 'required').length;
+      const eleCount = list.filter(c => c.type === 'electives').length;
+      document.getElementById('count-all').textContent = list.length;
       document.getElementById('count-required').textContent = reqCount;
       document.getElementById('count-electives').textContent = eleCount;
 
-      const comp = courseList.filter(c => c.status === 'Complete').length;
-      const ong = courseList.filter(c => c.status === 'Ongoing').length;
-      const exp = courseList.filter(c => c.status === 'Expected').length;
+      const comp = list.filter(c => c.status === 'Complete').length;
+      const ong = list.filter(c => c.status === 'Ongoing').length;
+      const exp = list.filter(c => c.status === 'Expected').length;
       document.getElementById('count-status-complete').textContent = `${comp} 門`;
       document.getElementById('count-status-ongoing').textContent = `${ong} 門`;
       document.getElementById('count-status-expected').textContent = `${exp} 門`;
 
-      const remainingCourses = Math.max(courseList.length - comp, 0);
+      const remainingCourses = Math.max(list.length - comp, 0);
       const estUsd = Math.round(remainingCourses * 564.385);
       const estNtd = Math.round(estUsd * 32.55);
       document.getElementById('metric-tuition-usd').innerHTML = `$${estUsd.toLocaleString()} <span class="text-[10px] sm:text-xs text-slate-400">USD</span>`;
       document.getElementById('metric-tuition-ntd').textContent = `≈ NT$ ${estNtd.toLocaleString()}`;
 
-      const tot = courseList.length || 1;
+      const tot = list.length || 1;
       const rate = Math.round((comp / tot) * 100);
       document.getElementById('metric-completion-rate').textContent = `${rate}%`;
       document.getElementById('metric-completed-count').textContent = `/ ${tot} 門`;
@@ -2178,49 +2016,78 @@
 
       let pts = 0, grd = 0;
       const gCounts = { 'A':0, 'A-':0, 'B+':0, 'B':0, 'B-':0 };
-      courseList.forEach(c => {
-        if (c.grade && gradePoints[c.grade] !== undefined) {
-          pts += gradePoints[c.grade]; grd++; gCounts[c.grade]++;
-        }
+      list.forEach(c => {
+        const gKey = String(c.grade || '').trim().toUpperCase();
+        if (isValidLetterGradeForGPA(gKey)) { pts += VALID_LETTER_GRADES[gKey]; grd++; gCounts[gKey]++; }
       });
 
       const gpaEl = document.getElementById('metric-gpa');
       const gpaPctEl = document.getElementById('metric-gpa-percent');
+      const gpaSubEl = document.getElementById('metric-gpa-subtext');
       if (grd > 0) {
         const gpaVal = Number((pts / grd).toFixed(2));
         const gpaPct = ((gpaVal / 4.00) * 100).toFixed(1).replace(/\.0$/, '');
         gpaEl.textContent = gpaVal.toFixed(2);
         if (gpaPctEl) gpaPctEl.textContent = `(${gpaPct}%)`;
+        if (gpaSubEl) gpaSubEl.textContent = `僅計入 ${grd} 門已有 Grade 科目`;
       } else {
         gpaEl.textContent = '--';
         if (gpaPctEl) gpaPctEl.textContent = '';
+        if (gpaSubEl) gpaSubEl.textContent = '尚無已有 Grade 科目';
       }
 
-      const maxG = Math.max(...Object.values(gCounts), 1);
       const gOrder = [
-        { l:'A', s:'4.0', c:'bg-emerald-500', t:'text-emerald-400' },
-        { l:'A-', s:'3.75', c:'bg-teal-500', t:'text-teal-400' },
-        { l:'B+', s:'3.25', c:'bg-sky-500', t:'text-sky-400' },
-        { l:'B', s:'3.0', c:'bg-slate-500', t:'text-slate-400' },
-        { l:'B-', s:'2.75', c:'bg-amber-500', t:'text-amber-400' }
+        { l:'A',  s:'4.0',  hex:'#10b981', dot:'bg-emerald-500', t:'text-emerald-400' },
+        { l:'A-', s:'3.75', hex:'#14b8a6', dot:'bg-teal-500',    t:'text-teal-400' },
+        { l:'B+', s:'3.25', hex:'#0ea5e9', dot:'bg-sky-500',     t:'text-sky-400' },
+        { l:'B',  s:'3.0',  hex:'#64748b', dot:'bg-slate-500',   t:'text-slate-300' },
+        { l:'B-', s:'2.75', hex:'#f59e0b', dot:'bg-amber-500',   t:'text-amber-400' }
       ];
-      document.getElementById('grade-distribution-bars').innerHTML = gOrder.map(g => {
-        const cnt = gCounts[g.l] || 0;
-        return `<div class="flex flex-col items-center"><span class="text-[11px] font-bold ${g.t} mb-1 whitespace-nowrap">${cnt}門</span><div class="w-full bg-slate-800/60 rounded-t-lg h-16 sm:h-20 relative flex items-end p-1"><div class="w-full ${g.c} rounded-t-md" style="height:${Math.max(Math.round((cnt/maxG)*100),6)}%"></div></div><span class="text-xs font-semibold text-slate-300 mt-1.5">${g.l}</span><span class="text-[10px] text-slate-500">${g.s}</span></div>`;
+
+      const radius = 34, circumference = 2 * Math.PI * radius;
+      let offsetAccum = 0;
+      const segmentsSvg = grd > 0
+        ? gOrder.map(g => {
+            const cnt = gCounts[g.l] || 0;
+            if (cnt === 0) return '';
+            const segLen = (cnt / grd) * circumference;
+            const dashOffset = -offsetAccum;
+            offsetAccum += segLen;
+            return `<circle cx="44" cy="44" r="${radius}" fill="transparent" stroke="${g.hex}" stroke-width="11" stroke-dasharray="${segLen} ${circumference - segLen}" stroke-dashoffset="${dashOffset}" transform="rotate(-90 44 44)" />`;
+          }).join('')
+        : `<circle cx="44" cy="44" r="${radius}" fill="transparent" stroke="#1e293b" stroke-width="11" />`;
+
+      const legendHtml = gOrder.map(g => {
+        const cnt = gCounts[g.l] || 0, pct = grd > 0 ? Math.round((cnt / grd) * 100) : 0;
+        return `<div class="flex items-center justify-between bg-slate-900/70 px-2.5 py-1 rounded-lg border border-slate-800/80 text-xs">
+          <div class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full ${g.dot} shrink-0"></span><span class="font-bold text-slate-200">${g.l}</span><span class="text-[10px] text-slate-500">(${g.s})</span></div>
+          <div class="flex items-baseline space-x-1"><span class="font-bold ${cnt > 0 ? g.t : 'text-slate-500'}">${cnt}門</span><span class="text-[10px] text-slate-500">${pct}%</span></div>
+        </div>`;
       }).join('');
 
-      const rComp = courseList.filter(c => c.type === 'required' && c.status === 'Complete').length;
-      const rOng = courseList.filter(c => c.type === 'required' && c.status === 'Ongoing').length;
+      const donutContainer = document.getElementById('grade-distribution-donut');
+      if (donutContainer) {
+        donutContainer.innerHTML = `<div class="relative w-[88px] h-[88px] shrink-0 flex items-center justify-center">
+          <svg width="88" height="88" viewBox="0 0 88 88"><circle cx="44" cy="44" r="${radius}" fill="transparent" stroke="#1e293b" stroke-width="11" />${segmentsSvg}</svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none"><span class="text-sm font-extrabold text-white leading-none">${grd}</span><span class="text-[9px] text-slate-400 mt-0.5">已有Grade</span></div>
+        </div><div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 flex-1">${legendHtml}</div>`;
+      }
+
+      const rComp = list.filter(c => c.type === 'required' && c.status === 'Complete').length;
+      const rOng = list.filter(c => c.type === 'required' && c.status === 'Ongoing').length;
       document.getElementById('bar-required-text').textContent = `${rComp} 完成 / ${reqCount} 門`;
       document.getElementById('bar-required-complete').style.width = `${reqCount ? (rComp/reqCount)*100 : 0}%`;
       document.getElementById('bar-required-ongoing').style.width = `${reqCount ? (rOng/reqCount)*100 : 0}%`;
 
-      const eComp = courseList.filter(c => c.type === 'electives' && c.status === 'Complete').length;
-      const eOng = courseList.filter(c => c.type === 'electives' && c.status === 'Ongoing').length;
+      const eComp = list.filter(c => c.type === 'electives' && c.status === 'Complete').length;
+      const eOng = list.filter(c => c.type === 'electives' && c.status === 'Ongoing').length;
       document.getElementById('bar-electives-text').textContent = `${eComp} 完成 / ${eleCount} 門`;
       document.getElementById('bar-electives-complete').style.width = `${eleCount ? (eComp/eleCount)*100 : 0}%`;
       document.getElementById('bar-electives-ongoing').style.width = `${eleCount ? (eOng/eleCount)*100 : 0}%`;
+    }
 
+    window.updateDashboardAndRender = function() {
+      updateDashboardMetricsFromData(courseList);
       window.renderCourses();
     };
 
@@ -2231,15 +2098,12 @@
         const mSt = statusFilter === 'all' || c.status === statusFilter;
         return mCat && mQ && mSt;
       });
-
-      const sorted = getSortedCourses(filtered);
-
+      const sorted = getSortedCoursesForHome(filtered);
       const container = document.getElementById('course-list-container');
       if (!sorted.length) {
         container.innerHTML = `<div class="glass-card rounded-2xl p-8 text-center text-slate-400 text-sm">未搜尋到符合條件的課程資料</div>`;
         return;
       }
-
       container.innerHTML = sorted.map(c => {
         const stBadge = c.status === 'Complete'
           ? `<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 whitespace-nowrap">✓ Complete</span>`
@@ -2250,16 +2114,14 @@
           ? `<span class="text-[10px] font-bold px-2 py-0.5 bg-[#CFB87C]/20 text-[#CFB87C] border border-[#CFB87C]/30 rounded whitespace-nowrap">必修 CORE</span>`
           : `<span class="text-[10px] font-bold px-2 py-0.5 bg-sky-500/20 text-sky-400 border border-sky-500/30 rounded whitespace-nowrap">選修 ELECTIVE</span>`;
         const noteHtml = c.note ? `<div class="mt-2 pt-2 border-t border-slate-800/60 text-xs text-slate-400 leading-relaxed">📝 ${c.note}</div>` : '';
-        const editBtn = isEditMode ? `<button onclick="openEditModal('${c.id}')" class="p-1.5 sm:p-2 rounded-lg bg-slate-800 hover:bg-[#CFB87C] text-slate-300 hover:text-slate-950 shrink-0"><i data-lucide="edit-2" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i></button>` : '';
+        const editBtn = isEditMode ? `<button type="button" onclick="openEditModal('${c.id}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-[#CFB87C] text-xs text-slate-200 hover:text-slate-950 font-bold shrink-0">✏️ 編輯</button>` : '';
 
-        return `
-        <div class="glass-card rounded-xl p-3.5 sm:p-4">
+        return `<div class="glass-card rounded-xl p-3.5 sm:p-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <div class="space-y-1 min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
                 <span class="font-mono text-xs font-bold text-[#CFB87C] bg-slate-900 px-2 py-0.5 rounded border border-slate-800 whitespace-nowrap">${c.code}</span>
-                ${catBadge}
-                ${stBadge}
+                ${catBadge}${stBadge}
               </div>
               <h3 class="text-sm font-semibold text-slate-100 leading-snug pt-0.5">${c.name}</h3>
             </div>
@@ -2274,7 +2136,6 @@
           ${noteHtml}
         </div>`;
       }).join('');
-      if (window.lucide) lucide.createIcons();
     };
 
     window.setCategoryFilter = function(cat) {
@@ -2293,15 +2154,37 @@
 
     window.resetData = function() {
       if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
-      const msg = activeUserId === DEFAULT_USER_ID
-        ? `確定要將 [@surihua] 的資料重設為預設的 17 門完成狀態嗎？`
-        : `確定要將 [@${activeUserId}] 的所有課程重設為 0% 未開始狀態嗎？`;
-      if (confirm(msg)) {
+      if (confirm(`確定要將 [@${activeUserId}] 的資料重設為預設狀態嗎？`)) {
         courseList = getDefaultCoursesForUser(activeUserId);
         persistData();
-        if (currentPage === 'table') initBatchTableData();
       }
     };
+
+    async function initUserSystem() {
+      try {
+        window.updateDashboardAndRender();
+        await ensureDefaultHashInitialized();
+        const s = safeStorage.getItem('cuboulder_users_list');
+        if (s) {
+          const parsed = JSON.parse(s);
+          if (Array.isArray(parsed) && parsed.length > 0) usersList = parsed.filter(u => u && u.id && !BANNED_LEGACY_IDS.includes(u.id));
+        }
+        if (!usersList.some(u => u.id === DEFAULT_USER_ID)) {
+          usersList.unshift({ id: DEFAULT_USER_ID, name: 'Suri Hua', pwdHash: SURIHUA_DEFAULT_PWD_HASH, phoneHash: SURIHUA_DEFAULT_PHONE_HASH, gradYear: 2027, gradMonth: 8 });
+        }
+        let devDef = safeStorage.getItem('cuboulder_device_default_user');
+        if (!devDef || BANNED_LEGACY_IDS.includes(devDef)) {
+          devDef = DEFAULT_USER_ID;
+          safeStorage.setItem('cuboulder_device_default_user', DEFAULT_USER_ID);
+        }
+        activeUserId = usersList.some(u => u.id === devDef) ? devDef : DEFAULT_USER_ID;
+        await loadUserData(activeUserId);
+      } catch (err) {
+        courseList = JSON.parse(JSON.stringify(suriDefaultCourses));
+        window.updateDashboardAndRender();
+      }
+      safeCreateIcons();
+    }
 
     initUserSystem();
   </script>
