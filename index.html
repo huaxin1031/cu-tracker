@@ -30,7 +30,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-    body { font-family: 'Inter', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; padding-top: env(safe-area-inset-top); padding-bottom: calc(5rem + env(safe-area-inset-bottom)); }
+    body { font-family: 'Inter', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; padding-top: env(safe-area-inset-top); padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
     header.sticky { top: env(safe-area-inset-top); }
     .glass-card { background: rgba(30, 41, 59, 0.78); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
     ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -40,36 +40,39 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen">
 
-  <!-- Header -->
-  <header class="sticky top-0 z-40 glass-card border-b border-slate-800/80 px-4 py-3 sm:px-8 shadow-md">
-    <div class="max-w-7xl mx-auto flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#CFB87C] to-yellow-200 flex items-center justify-center text-slate-950 font-extrabold text-xl shadow-lg shrink-0">CU</div>
-        <div>
-          <h1 class="font-bold text-sm sm:text-lg leading-tight text-slate-100">CU Boulder Master's</h1>
-          <div class="flex items-center space-x-1.5">
-            <p class="text-[11px] sm:text-xs text-[#CFB87C] font-medium">Course Tracker</p>
-            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">v3.6</span>
-            <span id="sync-status-badge" onclick="syncFromCloud(true)" class="cursor-pointer text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center" title="點擊立即從雲端同步">☁️ 已同步</span>
+  <!-- Header (針對手機版特別優化：單行不擠壓、不換行) -->
+  <header class="sticky top-0 z-40 glass-card border-b border-slate-800/80 px-3.5 py-2.5 sm:px-8 sm:py-3 shadow-md">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-2">
+      <!-- 左側 Logo 與標題 -->
+      <div class="flex items-center space-x-2.5 min-w-0">
+        <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-[#CFB87C] to-yellow-200 flex items-center justify-center text-slate-950 font-extrabold text-base sm:text-xl shadow-lg shrink-0">CU</div>
+        <div class="min-w-0">
+          <h1 class="font-bold text-sm sm:text-lg leading-tight text-slate-100 truncate">CU Boulder Master's</h1>
+          <div class="flex items-center space-x-1.5 mt-0.5">
+            <span class="text-[11px] sm:text-xs text-[#CFB87C] font-medium whitespace-nowrap">Course Tracker</span>
+            <span id="sync-status-badge" onclick="syncFromCloud(true)" class="cursor-pointer text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center whitespace-nowrap shrink-0" title="點擊立即從雲端同步">☁️ 已同步</span>
           </div>
         </div>
       </div>
 
-      <nav class="hidden sm:flex p-1 bg-slate-900/90 rounded-xl border border-slate-800 space-x-1 mx-4">
-        <button id="nav-home" onclick="switchPage('home')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center"><i data-lucide="layout-dashboard" class="w-3.5 h-3.5 mr-1.5"></i> 主頁</button>
-        <button id="nav-profile" onclick="switchPage('profile')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center"><i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1.5"></i> 帳號安全 & ID/密碼設定</button>
+      <!-- 桌面版導覽列 -->
+      <nav class="hidden sm:flex p-1 bg-slate-900/90 rounded-xl border border-slate-800 space-x-1 mx-4 shrink-0">
+        <button id="nav-home" onclick="switchPage('home')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center whitespace-nowrap"><i data-lucide="layout-dashboard" class="w-3.5 h-3.5 mr-1.5"></i> 主頁</button>
+        <button id="nav-profile" onclick="switchPage('profile')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap"><i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1.5"></i> 帳號安全 & ID/密碼設定</button>
       </nav>
       
-      <div class="flex items-center space-x-1.5 sm:space-x-2">
-        <button id="mode-toggle-btn" onclick="toggleEditMode()" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-[#CFB87C]" title="切換為編輯模式（需驗證密碼）">
-          <i data-lucide="lock" class="w-3.5 h-3.5 sm:mr-1 text-slate-400"></i><span id="mode-text" class="hidden sm:inline">瀏覽模式 (唯讀)</span>
+      <!-- 右側工具按鈕（手機版極簡化，絕不擠壓左邊標題） -->
+      <div class="flex items-center space-x-1.5 sm:space-x-2 shrink-0">
+        <button id="mode-toggle-btn" onclick="toggleEditMode()" class="inline-flex items-center justify-center p-2 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0" title="切換為編輯模式（需驗證密碼）">
+          <i data-lucide="lock" class="w-3.5 h-3.5 sm:mr-1 text-slate-400"></i><span id="mode-text" class="hidden sm:inline whitespace-nowrap">瀏覽模式 (唯讀)</span>
         </button>
 
-        <div class="relative">
-          <button onclick="toggleUserDropdown()" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700 hover:border-[#CFB87C]">
-            <i data-lucide="user" class="w-3.5 h-3.5 mr-1 text-[#CFB87C]"></i>
-            <span id="current-user-display" class="max-w-[95px] sm:max-w-none truncate">Suri Hua (@surihua)</span>
-            <i data-lucide="chevron-down" class="w-3 h-3 ml-1 text-slate-400"></i>
+        <div class="relative shrink-0">
+          <button onclick="toggleUserDropdown()" class="inline-flex items-center px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-200 border border-slate-700 hover:border-[#CFB87C] whitespace-nowrap">
+            <i data-lucide="user" class="w-3.5 h-3.5 mr-1 text-[#CFB87C] shrink-0"></i>
+            <span id="current-user-display" class="hidden sm:inline">Suri Hua (@surihua)</span>
+            <span id="current-user-display-mobile" class="inline sm:hidden font-mono text-[11px]">@surihua</span>
+            <i data-lucide="chevron-down" class="w-3 h-3 ml-1 text-slate-400 shrink-0"></i>
           </button>
           <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-64 glass-card rounded-xl shadow-xl border border-slate-700 py-1 z-50">
             <div class="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase border-b border-slate-800 flex justify-between">
@@ -85,133 +88,142 @@
           </div>
         </div>
 
-        <button id="btn-add-course" onclick="openAddModal()" class="hidden inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f]"><i data-lucide="plus" class="w-3.5 h-3.5 sm:mr-1"></i><span class="hidden sm:inline">新增課程</span></button>
-        <button id="btn-reset-data" onclick="resetData()" title="重設資料" class="hidden p-1.5 rounded-lg bg-slate-800 text-slate-400 hover:text-rose-400"><i data-lucide="rotate-ccw" class="w-4 h-4"></i></button>
+        <button id="btn-add-course" onclick="openAddModal()" class="hidden inline-flex items-center p-2 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shrink-0"><i data-lucide="plus" class="w-3.5 h-3.5 sm:mr-1"></i><span class="hidden sm:inline whitespace-nowrap">新增課程</span></button>
+        <button id="btn-reset-data" onclick="resetData()" title="重設資料" class="hidden p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-rose-400 shrink-0"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
       </div>
     </div>
 
-    <div class="flex sm:hidden justify-center mt-2.5 border-t border-slate-800/80 pt-2">
-      <div class="flex p-1 bg-slate-900 rounded-xl border border-slate-800 w-full justify-around">
-        <button id="mobile-nav-home" onclick="switchPage('home')" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950">主頁</button>
-        <button id="mobile-nav-profile" onclick="switchPage('profile')" class="flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300">帳號安全 & ID/密碼</button>
+    <!-- 手機版分頁切換器 -->
+    <div class="flex sm:hidden justify-center mt-2 pt-2 border-t border-slate-800/70">
+      <div class="flex p-0.5 bg-slate-900/90 rounded-xl border border-slate-800 w-full">
+        <button id="mobile-nav-home" onclick="switchPage('home')" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 whitespace-nowrap">主頁儀表板</button>
+        <button id="mobile-nav-profile" onclick="switchPage('profile')" class="flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300 whitespace-nowrap">帳號安全 & 設定</button>
       </div>
     </div>
   </header>
 
-  <!-- HOME PAGE (訪客可直接唯讀瀏覽初步狀態，點擊編輯時才需驗證密碼) -->
-  <main id="page-home" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
-    <section class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-      <div class="glass-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between"><span class="text-xs text-slate-400">當前 GPA</span><div class="p-2 bg-[#CFB87C]/10 text-[#CFB87C] rounded-lg"><i data-lucide="award" class="w-4 h-4"></i></div></div>
-        <div class="mt-3"><div id="metric-gpa" class="text-2xl sm:text-3xl font-extrabold text-white">--</div><div class="text-[11px] text-emerald-400 mt-1">依已計分科目加權計算</div></div>
+  <!-- HOME PAGE -->
+  <main id="page-home" class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-4 sm:space-y-6">
+    <!-- 頂部 4 張關鍵指標卡 -->
+    <section class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
+      <div class="glass-card rounded-2xl p-3.5 sm:p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between"><span class="text-[11px] sm:text-xs text-slate-400">當前 GPA</span><div class="p-1.5 sm:p-2 bg-[#CFB87C]/10 text-[#CFB87C] rounded-lg"><i data-lucide="award" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i></div></div>
+        <div class="mt-2"><div id="metric-gpa" class="text-2xl sm:text-3xl font-extrabold text-white leading-none">--</div><div class="text-[10px] sm:text-[11px] text-emerald-400 mt-1.5 truncate">已計分科目加權</div></div>
       </div>
-      <div class="glass-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between"><span class="text-xs text-slate-400">總修課進度</span><div class="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg"><i data-lucide="check-circle" class="w-4 h-4"></i></div></div>
-        <div class="mt-3">
-          <div class="flex items-baseline space-x-1"><span id="metric-completion-rate" class="text-2xl sm:text-3xl font-extrabold text-white">--%</span><span id="metric-completed-count" class="text-xs text-slate-400">/ -- 門</span></div>
-          <div class="w-full bg-slate-800 h-2 rounded-full mt-2 overflow-hidden"><div id="metric-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500" style="width:0%"></div></div>
+      <div class="glass-card rounded-2xl p-3.5 sm:p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between"><span class="text-[11px] sm:text-xs text-slate-400">總修課進度</span><div class="p-1.5 sm:p-2 bg-emerald-500/10 text-emerald-400 rounded-lg"><i data-lucide="check-circle" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i></div></div>
+        <div class="mt-2">
+          <div class="flex items-baseline space-x-1"><span id="metric-completion-rate" class="text-2xl sm:text-3xl font-extrabold text-white leading-none">--%</span><span id="metric-completed-count" class="text-[11px] text-slate-400">/ -- 門</span></div>
+          <div class="w-full bg-slate-800 h-1.5 sm:h-2 rounded-full mt-2 overflow-hidden"><div id="metric-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500" style="width:0%"></div></div>
         </div>
       </div>
-      <div class="glass-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between"><span class="text-xs text-slate-400">課程狀態統計</span><div class="p-2 bg-blue-500/10 text-blue-400 rounded-lg"><i data-lucide="book-open" class="w-4 h-4"></i></div></div>
-        <div class="mt-2 space-y-1 text-xs">
+      <div class="glass-card rounded-2xl p-3.5 sm:p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between"><span class="text-[11px] sm:text-xs text-slate-400">課程狀態統計</span><div class="p-1.5 sm:p-2 bg-blue-500/10 text-blue-400 rounded-lg"><i data-lucide="book-open" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i></div></div>
+        <div class="mt-1.5 space-y-0.5 text-[11px] sm:text-xs">
           <div class="flex justify-between"><span class="text-emerald-400">● 已完成</span><span id="count-status-complete" class="font-semibold">0</span></div>
           <div class="flex justify-between"><span class="text-amber-400">● 進行中</span><span id="count-status-ongoing" class="font-semibold">0</span></div>
           <div class="flex justify-between text-slate-400"><span>● 預計中</span><span id="count-status-expected" class="font-semibold">0</span></div>
         </div>
       </div>
-      <div class="glass-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
-        <div class="flex items-center justify-between"><span class="text-xs text-slate-400">剩餘估計學費</span><div class="p-2 bg-purple-500/10 text-purple-400 rounded-lg"><i data-lucide="dollar-sign" class="w-4 h-4"></i></div></div>
-        <div class="mt-3"><div id="metric-tuition-usd" class="text-xl sm:text-2xl font-bold text-white">$7,337 <span class="text-xs text-slate-400">USD</span></div><div id="metric-tuition-ntd" class="text-xs text-slate-400 mt-1 font-mono">≈ NT$ 238,832</div></div>
+      <div class="glass-card rounded-2xl p-3.5 sm:p-5 flex flex-col justify-between">
+        <div class="flex items-center justify-between"><span class="text-[11px] sm:text-xs text-slate-400">剩餘估計學費</span><div class="p-1.5 sm:p-2 bg-purple-500/10 text-purple-400 rounded-lg"><i data-lucide="dollar-sign" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i></div></div>
+        <div class="mt-2"><div id="metric-tuition-usd" class="text-lg sm:text-2xl font-bold text-white leading-none">$7,337 <span class="text-[10px] sm:text-xs text-slate-400">USD</span></div><div id="metric-tuition-ntd" class="text-[10px] sm:text-xs text-slate-400 mt-1.5 font-mono truncate">≈ NT$ 238,832</div></div>
       </div>
     </section>
 
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <div class="glass-card rounded-2xl p-5 flex flex-col justify-between">
+    <!-- 學分結構與等第分佈 -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
+      <div class="glass-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
         <div>
-          <h2 class="text-sm font-semibold text-slate-200 flex items-center mb-3"><i data-lucide="pie-chart" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 學分分佈結構</h2>
-          <div class="space-y-4 my-2">
+          <h2 class="text-xs sm:text-sm font-semibold text-slate-200 flex items-center mb-3"><i data-lucide="pie-chart" class="w-4 h-4 mr-1.5 text-[#CFB87C]"></i> 學分分佈結構</h2>
+          <div class="space-y-3 my-1">
             <div>
               <div class="flex justify-between text-xs mb-1"><span>必修 Core</span><span id="bar-required-text" class="text-[#CFB87C] font-semibold">0 / 0</span></div>
-              <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden flex"><div id="bar-required-complete" class="bg-emerald-500 h-full" style="width:0%"></div><div id="bar-required-ongoing" class="bg-amber-500 h-full" style="width:0%"></div></div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden flex"><div id="bar-required-complete" class="bg-emerald-500 h-full" style="width:0%"></div><div id="bar-required-ongoing" class="bg-amber-500 h-full" style="width:0%"></div></div>
             </div>
             <div>
               <div class="flex justify-between text-xs mb-1"><span>選修 Elective</span><span id="bar-electives-text" class="text-blue-400 font-semibold">0 / 0</span></div>
-              <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden flex"><div id="bar-electives-complete" class="bg-emerald-500 h-full" style="width:0%"></div><div id="bar-electives-ongoing" class="bg-amber-500 h-full" style="width:0%"></div></div>
+              <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden flex"><div id="bar-electives-complete" class="bg-emerald-500 h-full" style="width:0%"></div><div id="bar-electives-ongoing" class="bg-amber-500 h-full" style="width:0%"></div></div>
             </div>
           </div>
         </div>
-        <div class="mt-3 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between items-center">
-          <span>當前顯示：<strong id="footer-sync-id" class="text-[#CFB87C] font-mono">@surihua</strong> <span id="footer-lock-badge" class="ml-0.5">🔒</span>（此裝置預設：<span id="footer-device-default-id" class="text-emerald-400 font-mono">@surihua</span>）</span>
-          <button onclick="syncFromCloud(true)" class="text-emerald-400 hover:underline shrink-0">🔄 立即同步</button>
+        <div class="mt-3 pt-2.5 border-t border-slate-800/80 text-[11px] text-slate-400 flex justify-between items-center gap-2">
+          <span class="truncate">顯示：<strong id="footer-sync-id" class="text-[#CFB87C] font-mono">@surihua</strong><span id="footer-lock-badge">🔒</span> (預設：<span id="footer-device-default-id" class="text-emerald-400 font-mono">@surihua</span>)</span>
+          <button onclick="syncFromCloud(true)" class="text-emerald-400 hover:underline shrink-0 whitespace-nowrap">🔄 同步</button>
         </div>
       </div>
-      <div class="glass-card rounded-2xl p-5 md:col-span-2 flex flex-col justify-between">
+
+      <div class="glass-card rounded-2xl p-4 sm:p-5 md:col-span-2 flex flex-col justify-between">
         <div class="flex items-center justify-between mb-2">
-          <h2 class="text-sm font-semibold text-slate-200 flex items-center"><i data-lucide="bar-chart-3" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 成績等第分佈</h2>
-          <span class="text-xs text-slate-400 hidden sm:inline">A=4.0, A-=3.75, B+=3.25, B=3.0, B-=2.75</span>
+          <h2 class="text-xs sm:text-sm font-semibold text-slate-200 flex items-center"><i data-lucide="bar-chart-3" class="w-4 h-4 mr-1.5 text-[#CFB87C]"></i> 成績等第分佈</h2>
+          <span class="text-[11px] text-slate-400 hidden sm:inline">A=4.0, A-=3.75, B+=3.25, B=3.0, B-=2.75</span>
         </div>
-        <div id="grade-distribution-bars" class="grid grid-cols-5 gap-2 sm:gap-4 my-auto pt-2 pb-1"></div>
+        <div id="grade-distribution-bars" class="grid grid-cols-5 gap-2.5 sm:gap-4 my-auto pt-1"></div>
       </div>
     </section>
 
-    <section class="space-y-4 pt-2">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-        <div class="flex p-1 bg-slate-900/90 rounded-xl border border-slate-800 w-full md:w-auto">
-          <button id="tab-all" onclick="setCategoryFilter('all')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-medium text-slate-300">全部 (<span id="count-all">0</span>)</button>
-          <button id="tab-required" onclick="setCategoryFilter('required')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 shadow">必修 Core (<span id="count-required">0</span>)</button>
-          <button id="tab-electives" onclick="setCategoryFilter('electives')" class="flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-medium text-slate-300">選修 Elective (<span id="count-electives">0</span>)</button>
+    <!-- 課程篩選與列表區（手機版濃縮為緊湊 2 列，不換行） -->
+    <section class="space-y-3 pt-1">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2.5">
+        <!-- 分類 Tabs：強制單行 whitespace-nowrap -->
+        <div class="grid grid-cols-3 p-1 bg-slate-900/90 rounded-xl border border-slate-800 w-full md:w-auto md:flex">
+          <button id="tab-all" onclick="setCategoryFilter('all')" class="px-2 sm:px-4 py-1.5 rounded-lg text-xs font-medium text-slate-300 whitespace-nowrap text-center">全部 (<span id="count-all">0</span>)</button>
+          <button id="tab-required" onclick="setCategoryFilter('required')" class="px-2 sm:px-4 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 shadow whitespace-nowrap text-center">必修 (<span id="count-required">0</span>)</button>
+          <button id="tab-electives" onclick="setCategoryFilter('electives')" class="px-2 sm:px-4 py-1.5 rounded-lg text-xs font-medium text-slate-300 whitespace-nowrap text-center">選修 (<span id="count-electives">0</span>)</button>
         </div>
-        <div class="flex flex-col sm:flex-row items-center gap-2 w-full md:w-auto">
-          <div class="relative w-full sm:w-64">
-            <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-            <input type="text" id="search-input" oninput="handleSearch()" placeholder="搜尋課程、編號或備註..." class="w-full pl-9 pr-4 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
+
+        <!-- 搜尋框與狀態下拉選單：手機版並排在同一行 -->
+        <div class="flex items-center gap-2 w-full md:w-auto">
+          <div class="relative flex-1 sm:w-60">
+            <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+            <input type="text" id="search-input" oninput="handleSearch()" placeholder="搜尋編號、課名或備註..." class="w-full pl-8 pr-3 py-1.5 sm:py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
           </div>
-          <select id="status-filter" onchange="handleStatusFilter()" class="w-full sm:w-auto px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-300 focus:outline-none focus:border-[#CFB87C]">
-            <option value="all">所有狀態 (All)</option>
-            <option value="Complete">Complete (已完成)</option>
-            <option value="Ongoing">Ongoing (進行中)</option>
-            <option value="Expected">Expected (預計中)</option>
+          <select id="status-filter" onchange="handleStatusFilter()" class="w-28 sm:w-auto px-2.5 py-1.5 sm:py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-300 focus:outline-none focus:border-[#CFB87C] shrink-0">
+            <option value="all">所有狀態</option>
+            <option value="Complete">已完成</option>
+            <option value="Ongoing">進行中</option>
+            <option value="Expected">預計中</option>
           </select>
         </div>
       </div>
-      <div id="course-list-container" class="grid grid-cols-1 gap-3"></div>
+
+      <div id="course-list-container" class="grid grid-cols-1 gap-2.5 sm:gap-3"></div>
     </section>
   </main>
 
-  <!-- PROFILE & SECURITY PAGE (進入此頁或編輯需先通過密碼驗證) -->
-  <main id="page-profile" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6 hidden">
-    <div class="glass-card rounded-2xl p-6 space-y-5">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-5 gap-3">
-        <div class="flex items-center space-x-4">
-          <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#CFB87C] to-yellow-200 flex items-center justify-center text-slate-950 font-black text-2xl shadow-lg"><i data-lucide="shield-check" class="w-7 h-7"></i></div>
+  <!-- PROFILE & SECURITY PAGE -->
+  <main id="page-profile" class="max-w-4xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-5 hidden">
+    <div class="glass-card rounded-2xl p-4 sm:p-6 space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-3">
+        <div class="flex items-center space-x-3.5">
+          <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-tr from-[#CFB87C] to-yellow-200 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shrink-0"><i data-lucide="shield-check" class="w-6 h-6 sm:w-7 sm:h-7"></i></div>
           <div>
             <div class="flex items-center space-x-2">
-              <h2 id="profile-display-name" class="text-xl font-bold text-slate-100">Suri Hua</h2>
+              <h2 id="profile-display-name" class="text-lg sm:text-xl font-bold text-slate-100">Suri Hua</h2>
               <span id="profile-pwd-badge" class="text-[10px] px-2 py-0.5 rounded-full font-semibold"></span>
             </div>
             <p class="text-xs text-slate-400 mt-0.5">
-              當前瀏覽 ID: <span id="profile-display-id" class="text-[#CFB87C] font-mono font-bold">@surihua</span>
-              <span class="mx-1.5 text-slate-600">|</span>
-              此裝置預設開啟 ID: <span id="profile-device-default-badge" class="text-emerald-400 font-mono font-bold">@surihua</span>
+              當前 ID: <span id="profile-display-id" class="text-[#CFB87C] font-mono font-bold">@surihua</span>
+              <span class="mx-1 text-slate-600">|</span>
+              裝置預設: <span id="profile-device-default-badge" class="text-emerald-400 font-mono font-bold">@surihua</span>
             </p>
           </div>
         </div>
-        <div class="flex flex-wrap gap-2">
-          <button onclick="openForgotIdModal()" class="px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 text-[#CFB87C] border border-slate-700 hover:border-[#CFB87C]">🔍 忘記 ID 查詢</button>
-          <button onclick="syncFromCloud(true)" class="px-3 py-2 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950">🔄 立即同步</button>
+        <div class="flex gap-2">
+          <button onclick="openForgotIdModal()" class="flex-1 sm:flex-none px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 text-[#CFB87C] border border-slate-700 hover:border-[#CFB87C]">🔍 忘記 ID 查詢</button>
+          <button onclick="syncFromCloud(true)" class="flex-1 sm:flex-none px-3 py-2 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950">🔄 立即同步</button>
         </div>
       </div>
 
-      <!-- 專屬區塊：設定此裝置預設顯示 ID（僅能在此頁面修改） -->
-      <div class="p-4 rounded-xl bg-slate-900/90 border border-emerald-500/30 space-y-3">
+      <!-- 專屬區塊：設定此裝置預設顯示 ID -->
+      <div class="p-3.5 sm:p-4 rounded-xl bg-slate-900/90 border border-emerald-500/30 space-y-3">
         <div>
-          <h3 class="text-sm font-bold text-emerald-400 flex items-center">
-            <i data-lucide="smartphone" class="w-4 h-4 mr-2"></i> 📱 此裝置預設顯示 ID 設定（僅限此處變更）
+          <h3 class="text-xs sm:text-sm font-bold text-emerald-400 flex items-center">
+            <i data-lucide="smartphone" class="w-4 h-4 mr-1.5"></i> 📱 此裝置預設顯示 ID 設定（僅限此處變更）
           </h3>
-          <p class="text-xs text-slate-400 mt-0.5">右上角選單切換帳號僅為「臨時切換」，不會改變此裝置的預設開啟 ID。若要更改這台裝置每次打開時自動載入的預設 ID，請在下方選擇並輸入該帳號密碼：</p>
+          <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">右上角選單切換帳號僅為「臨時切換」，不會改變此裝置的預設開啟 ID。若要更改這台裝置每次打開時自動載入的預設 ID，請在下方選擇並輸入該帳號密碼：</p>
         </div>
-        <form onsubmit="handleSaveDeviceDefaultId(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+        <form onsubmit="handleSaveDeviceDefaultId(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
           <div>
             <label class="block text-[11px] text-slate-400 mb-1">選擇要設為此裝置預設的 ID</label>
             <select id="profile-device-default-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-slate-100 font-mono"></select>
@@ -228,14 +240,13 @@
         </form>
       </div>
 
-      <!-- 1. 修改 User ID 與顯示名稱（需驗證密碼） -->
+      <!-- 1. 修改 User ID 與顯示名稱 -->
       <form onsubmit="handleUpdateUserIdAndName(event)" class="space-y-3 pt-2 border-t border-slate-800">
         <div class="flex items-center justify-between">
-          <h3 class="text-sm font-semibold text-slate-200 flex items-center"><i data-lucide="user-cog" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 1. 修改顯示名稱與同步 User ID（需驗證密碼）</h3>
-          <button type="button" onclick="openForgotIdModal()" class="text-xs text-[#CFB87C] hover:underline font-semibold">忘記其他帳號 ID？用手機找回</button>
+          <h3 class="text-xs sm:text-sm font-semibold text-slate-200 flex items-center"><i data-lucide="user-cog" class="w-4 h-4 mr-1.5 text-[#CFB87C]"></i> 1. 修改顯示名稱與同步 User ID</h3>
+          <button type="button" onclick="openForgotIdModal()" class="text-[11px] text-[#CFB87C] hover:underline font-semibold">忘記 ID？手機找回</button>
         </div>
-        <p class="text-xs text-slate-400">修改 User ID 的安全原則與修改密碼相同：必須輸入您目前的密碼驗證通過後，系統才會將課程資料安全轉移至新 ID。</p>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
           <div><label class="block text-xs text-slate-400 mb-1">顯示姓名 (Display Name)</label><input type="text" id="profile-input-name" required class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100"></div>
           <div><label class="block text-xs text-[#CFB87C] font-semibold mb-1">自訂新的同步代碼 (New User ID)</label><input type="text" id="profile-input-id" required class="w-full px-3 py-2 bg-slate-900 border border-[#CFB87C]/50 rounded-xl text-xs text-slate-100 font-mono"></div>
         </div>
@@ -243,47 +254,47 @@
           <label class="block text-xs text-amber-400 font-semibold mb-1">🔒 若要修改姓名或 User ID，請輸入目前的密碼驗證身分：</label>
           <input type="password" id="profile-id-verify-pwd" required placeholder="請輸入目前的密碼以確認修改" class="w-full px-3 py-2 bg-slate-900 border border-amber-500/40 rounded-xl text-xs text-slate-100">
         </div>
-        <div class="flex justify-end pt-1"><button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f]">驗證並儲存名稱 / 新 ID</button></div>
+        <div class="flex justify-end pt-1"><button type="submit" class="w-full sm:w-auto px-5 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f]">驗證並儲存名稱 / 新 ID</button></div>
       </form>
     </div>
 
     <!-- 2. 密碼與手機號碼設定卡片 -->
-    <div class="glass-card rounded-2xl p-6 space-y-4">
+    <div class="glass-card rounded-2xl p-4 sm:p-6 space-y-4">
       <div class="flex items-center justify-between">
         <div>
-          <h3 class="text-sm font-semibold text-slate-200 flex items-center"><i data-lucide="key-round" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 2. 自訂密碼與救援手機號碼（SHA-256 加密）</h3>
-          <p class="text-xs text-slate-400 mt-0.5">更新密碼前必須先輸入舊密碼；綁定手機號碼可用於找回忘記的 ID 或重設密碼。</p>
+          <h3 class="text-xs sm:text-sm font-semibold text-slate-200 flex items-center"><i data-lucide="key-round" class="w-4 h-4 mr-1.5 text-[#CFB87C]"></i> 2. 自訂密碼與救援手機號碼</h3>
+          <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">更新密碼前需驗證舊密碼；綁定手機可用於找回 ID 或重設密碼。</p>
         </div>
-        <button type="button" onclick="openForgotModal(activeUserId)" class="text-xs text-[#CFB87C] hover:underline font-semibold shrink-0">忘記密碼？用手機重設</button>
+        <button type="button" onclick="openForgotModal(activeUserId)" class="text-[11px] text-[#CFB87C] hover:underline font-semibold shrink-0">忘記密碼？</button>
       </div>
 
-      <form onsubmit="handleUpdatePassword(event)" class="space-y-3 pt-2">
+      <form onsubmit="handleUpdatePassword(event)" class="space-y-3 pt-1">
         <div id="old-password-wrapper">
           <label class="block text-xs text-amber-400 font-semibold mb-1">🔒 請輸入舊密碼（更新密碼前必須驗證）</label>
           <input type="password" id="sec-old-pwd" required placeholder="輸入目前的舊密碼" class="w-full px-3 py-2 bg-slate-900 border border-amber-500/40 rounded-xl text-xs text-slate-100">
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-xs text-slate-400 mb-1">🔑 設定新密碼</label>
             <input type="password" id="sec-new-pwd" required placeholder="請手動輸入新密碼" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100">
           </div>
           <div>
-            <label class="block text-xs text-slate-400 mb-1">📱 綁定救援手機號碼（找回 ID 與重設密碼用）</label>
+            <label class="block text-xs text-slate-400 mb-1">📱 綁定救援手機號碼</label>
             <input type="tel" id="sec-phone" required placeholder="例如: 0912345678" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
           </div>
         </div>
         <div class="flex justify-end pt-1">
-          <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f]">儲存新密碼並同步雲端</button>
+          <button type="submit" class="w-full sm:w-auto px-5 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f]">儲存新密碼並同步雲端</button>
         </div>
       </form>
     </div>
 
     <!-- 3. 刪除帳號危險區域 -->
-    <div class="glass-card rounded-2xl p-6 border border-rose-500/30 space-y-3">
+    <div class="glass-card rounded-2xl p-4 sm:p-6 border border-rose-500/30 space-y-3">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h3 class="text-sm font-bold text-rose-400 flex items-center"><i data-lucide="trash-2" class="w-4 h-4 mr-2"></i> 3. 刪除當前帳號 (@<span id="delete-zone-id">surihua</span>)</h3>
-          <p class="text-xs text-slate-400 mt-0.5">刪除帳號需要輸入該帳號的密碼，驗證通過後將清空此帳號的本機與雲端資料。</p>
+          <h3 class="text-xs sm:text-sm font-bold text-rose-400 flex items-center"><i data-lucide="trash-2" class="w-4 h-4 mr-1.5"></i> 3. 刪除當前帳號 (@<span id="delete-zone-id">surihua</span>)</h3>
+          <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">刪除帳號需要輸入該帳號的密碼，驗證通過後將清空此帳號的本機與雲端資料。</p>
         </div>
         <button type="button" onclick="openDeleteAccountModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500 hover:text-white shrink-0">永久刪除此帳號...</button>
       </div>
@@ -292,44 +303,44 @@
 
   <!-- 建立新 ID / 登入既有 ID Modal -->
   <div id="new-user-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-md rounded-2xl p-6 border border-slate-700 space-y-4">
+    <div class="glass-card w-full max-w-md rounded-2xl p-5 sm:p-6 border border-slate-700 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-base text-slate-100">建立新 ID 或 臨時登入既有 ID</h3>
+        <h3 class="font-bold text-sm sm:text-base text-slate-100">建立新 ID 或 臨時登入既有 ID</h3>
         <button onclick="closeNewUserModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
       <div class="flex p-1 bg-slate-900 rounded-xl border border-slate-800">
-        <button type="button" id="tab-mode-register" onclick="switchUserModalTab('register')" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950">✨ 建立全新 ID（必填新密碼）</button>
-        <button type="button" id="tab-mode-login" onclick="switchUserModalTab('login')" class="flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300">🔑 登入已存在的 ID</button>
+        <button type="button" id="tab-mode-register" onclick="switchUserModalTab('register')" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950">✨ 建立全新 ID</button>
+        <button type="button" id="tab-mode-login" onclick="switchUserModalTab('login')" class="flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300">🔑 登入既有 ID</button>
       </div>
 
       <!-- 建立新帳號表單 -->
       <form id="form-register-user" onsubmit="handleRegisterNewUser(event)" class="space-y-3">
-        <p class="text-[11px] text-slate-400">建立全新 ID 時，必須手動輸入新密碼與手機號碼並儲存。新帳號將自動提供全空白進度（0%）的 30 門課表（不會改變此裝置預設 ID，欲修改預設請至帳號安全頁）。</p>
+        <p class="text-[11px] text-slate-400">新帳號將自動提供全空白進度（0%）的 30 門課表（不會改變此裝置預設 ID，欲修改預設請至帳號安全頁）。</p>
         <div><label class="block text-xs text-slate-300 mb-1">1. 新使用者同步 ID (英數小寫)</label><input type="text" id="reg-user-id" required placeholder="例如: dolly" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono"></div>
         <div><label class="block text-xs text-slate-300 mb-1">2. 顯示姓名 (Display Name)</label><input type="text" id="reg-user-name" required placeholder="例如: Dolly" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100"></div>
         <div><label class="block text-xs text-[#CFB87C] font-semibold mb-1">3. 設定新密碼 (必填)</label><input type="password" id="reg-user-pwd" required placeholder="請手動輸入新密碼" class="w-full px-3 py-2 bg-slate-900 border border-[#CFB87C]/50 rounded-xl text-xs text-slate-100"></div>
-        <div><label class="block text-xs text-emerald-400 font-semibold mb-1">4. 綁定手機號碼 (必填，忘記 ID / 忘記密碼找回用)</label><input type="tel" id="reg-user-phone" required placeholder="例如: 0912345678" class="w-full px-3 py-2 bg-slate-900 border border-emerald-500/40 rounded-xl text-xs text-slate-100 font-mono"></div>
+        <div><label class="block text-xs text-emerald-400 font-semibold mb-1">4. 綁定手機號碼 (必填，找回 ID / 密碼用)</label><input type="tel" id="reg-user-phone" required placeholder="例如: 0912345678" class="w-full px-3 py-2 bg-slate-900 border border-emerald-500/40 rounded-xl text-xs text-slate-100 font-mono"></div>
         <div class="flex justify-end space-x-2 pt-2 border-t border-slate-800">
           <button type="button" onclick="closeNewUserModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300">取消</button>
-          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">儲存新密碼並建立 ID</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">儲存並建立 ID</button>
         </div>
       </form>
 
       <!-- 登入既有帳號表單 -->
       <form id="form-login-user" onsubmit="handleLoginExistingUser(event)" class="space-y-3 hidden">
-        <p class="text-[11px] text-slate-400">請輸入同步 ID 與密碼以切換並解鎖編輯權限（此操作僅為臨時切換，若要變更此裝置預設開啟 ID，請於登入後至「帳號安全」頁面設定）。</p>
+        <p class="text-[11px] text-slate-400">請輸入同步 ID 與密碼以切換並解鎖編輯權限（僅為臨時切換，若要變更此裝置預設開啟 ID，請至「帳號安全」頁面設定）。</p>
         <div>
           <div class="flex justify-between mb-1">
             <label class="text-xs text-slate-300">既有使用者 ID</label>
-            <button type="button" onclick="openForgotIdModal()" class="text-[11px] text-emerald-400 hover:underline font-semibold">忘記 ID？用手機號碼找回</button>
+            <button type="button" onclick="openForgotIdModal()" class="text-[11px] text-emerald-400 hover:underline font-semibold">忘記 ID？手機找回</button>
           </div>
           <input type="text" id="login-user-id" required placeholder="例如: surihua 或 dolly" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
         </div>
         <div>
           <div class="flex justify-between mb-1">
             <label class="text-xs text-slate-300">帳號密碼</label>
-            <button type="button" onclick="openForgotFromLogin()" class="text-[11px] text-[#CFB87C] hover:underline font-semibold">忘記密碼？用手機號碼重設</button>
+            <button type="button" onclick="openForgotFromLogin()" class="text-[11px] text-[#CFB87C] hover:underline font-semibold">忘記密碼？手機重設</button>
           </div>
           <input type="text" id="login-user-pwd" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="請輸入該 ID 的密碼" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
         </div>
@@ -341,14 +352,14 @@
     </div>
   </div>
 
-  <!-- 忘記 User ID（手機號碼找回 ID）Modal -->
+  <!-- 忘記 User ID Modal -->
   <div id="forgot-id-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-md rounded-2xl p-6 border border-slate-700 space-y-4">
+    <div class="glass-card w-full max-w-md rounded-2xl p-5 sm:p-6 border border-slate-700 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-base text-slate-100 flex items-center"><i data-lucide="search" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 忘記 User ID — 手機號碼找回</h3>
+        <h3 class="font-bold text-sm sm:text-base text-slate-100 flex items-center"><i data-lucide="search" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 忘記 User ID — 手機號碼找回</h3>
         <button onclick="closeForgotIdModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-      <p class="text-xs text-slate-400">請輸入您當初建立帳號或設定密碼時綁定的**手機號碼**，系統將為您查詢對應的 User ID：</p>
+      <p class="text-xs text-slate-400">請輸入您綁定的**手機號碼**，系統將為您查詢對應的 User ID：</p>
       <form onsubmit="handleFindUserIdByPhone(event)" class="space-y-3">
         <div>
           <label class="block text-xs text-slate-300 mb-1">📱 綁定的手機號碼</label>
@@ -368,7 +379,7 @@
 
   <!-- 啟用編輯模式 / 進入安全設定的密碼驗證 Modal -->
   <div id="verify-pwd-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-sm rounded-2xl p-6 border border-[#CFB87C]/40 space-y-4 shadow-2xl">
+    <div class="glass-card w-full max-w-sm rounded-2xl p-5 sm:p-6 border border-[#CFB87C]/40 space-y-4 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <h3 class="font-bold text-sm text-slate-100 flex items-center"><i data-lucide="lock" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 請輸入密碼以啟用編輯 / 設定</h3>
         <button onclick="closeVerifyPwdModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
@@ -391,11 +402,11 @@
     </div>
   </div>
 
-  <!-- 忘記密碼（手機號碼驗證重設）Modal -->
+  <!-- 忘記密碼 Modal -->
   <div id="forgot-pwd-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-md rounded-2xl p-6 border border-slate-700 space-y-4">
+    <div class="glass-card w-full max-w-md rounded-2xl p-5 sm:p-6 border border-slate-700 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-base text-slate-100 flex items-center"><i data-lucide="smartphone" class="w-4 h-4 mr-2 text-emerald-400"></i> 忘記密碼 — 手機號碼驗證</h3>
+        <h3 class="font-bold text-sm sm:text-base text-slate-100 flex items-center"><i data-lucide="smartphone" class="w-4 h-4 mr-2 text-emerald-400"></i> 忘記密碼 — 手機號碼驗證</h3>
         <button onclick="closeForgotModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <p class="text-xs text-slate-400">正在重設帳號 <strong id="forgot-target-id" class="text-[#CFB87C] font-mono"></strong> 的密碼。請輸入您當初綁定的手機號碼：</p>
@@ -412,9 +423,9 @@
 
   <!-- 刪除帳號密碼驗證 Modal -->
   <div id="delete-account-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-md rounded-2xl p-6 border border-rose-500/40 space-y-4">
+    <div class="glass-card w-full max-w-md rounded-2xl p-5 sm:p-6 border border-rose-500/40 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-base text-rose-400 flex items-center"><i data-lucide="alert-triangle" class="w-5 h-5 mr-2"></i> 確認永久刪除帳號</h3>
+        <h3 class="font-bold text-sm sm:text-base text-rose-400 flex items-center"><i data-lucide="alert-triangle" class="w-5 h-5 mr-2"></i> 確認永久刪除帳號</h3>
         <button onclick="closeDeleteAccountModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
       <p class="text-xs text-slate-300 leading-relaxed">您即將刪除帳號 <strong id="del-modal-id" class="text-[#CFB87C] font-mono"></strong>。此操作將清除該帳號的所有課程進度與雲端備份！</p>
@@ -433,7 +444,7 @@
 
   <!-- Add / Edit Course Modal -->
   <div id="course-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-    <div class="glass-card w-full max-w-lg rounded-2xl p-6 border border-slate-700 space-y-4">
+    <div class="glass-card w-full max-w-lg rounded-2xl p-5 sm:p-6 border border-slate-700 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <h3 id="modal-title" class="font-bold text-base text-slate-100">編輯課程內容</h3>
         <button onclick="closeModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
@@ -465,7 +476,6 @@
   <script>
     const DEFAULT_USER_ID = 'surihua';
     const BANNED_LEGACY_IDS = ['suri', 'suri1031'];
-    // 由瀏覽器在啟動時動態計算出 100% 精準的 SHA-256 雜湊值
     const _SEED_CODES = [99, 105, 98, 103, 98, 103];
     let SURIHUA_DEFAULT_PWD_HASH = '';
     const SURIHUA_DEFAULT_PHONE_HASH = '49bd88743934a546950351a71f638a1b2fb55059296cc22f0a5c8861d8ca0ab6';
@@ -675,8 +685,8 @@
       if (!badge) return;
       badge.textContent = text;
       badge.className = isSyncing
-        ? "cursor-pointer text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center"
-        : "cursor-pointer text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center";
+        ? "cursor-pointer text-[10px] px-1.5 py-0.5 rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20 inline-flex items-center whitespace-nowrap shrink-0"
+        : "cursor-pointer text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center whitespace-nowrap shrink-0";
     }
 
     async function syncPhoneIndexToCloud(phoneHash, uid, name) {
@@ -719,7 +729,7 @@
         updatedAt: Date.now(),
         courses: courseList
       };
-      setSyncStatus('☁️ 同步中...', true);
+      setSyncStatus('☁️ 同步中', true);
       try {
         await fetch(CLOUD_API_BASE + encodeURIComponent(activeUserId), {
           method: 'PUT',
@@ -727,15 +737,15 @@
           body: JSON.stringify(payload)
         });
         if (u.phoneHash) await syncPhoneIndexToCloud(u.phoneHash, activeUserId, u.name);
-        setSyncStatus('☁️ 雲端已同步');
+        setSyncStatus('☁️ 已同步');
       } catch (e) {
-        setSyncStatus('☁️ 本機已存');
+        setSyncStatus('☁️ 本機');
       }
     }
 
     window.syncFromCloud = async function(showToast = false) {
       await ensureDefaultHashInitialized();
-      setSyncStatus('☁️ 讀取雲端...', true);
+      setSyncStatus('☁️ 同步中', true);
       const data = await fetchCloudUserRecord(activeUserId);
       if (data) {
         courseList = data.courses;
@@ -748,7 +758,7 @@
           saveUsersSystemState();
         }
         window.updateDashboardAndRender();
-        setSyncStatus('☁️ 雲端已同步');
+        setSyncStatus('☁️ 已同步');
         if (showToast) alert(`已成功從雲端讀取 [@${activeUserId}] 的最新資料！`);
         return true;
       }
@@ -822,8 +832,8 @@
       document.getElementById('btn-reset-data').classList.toggle('hidden', !isEditMode);
       if (btn) {
         btn.className = isEditMode
-          ? "inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 border border-[#CFB87C]"
-          : "inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-[#CFB87C]";
+          ? "inline-flex items-center justify-center p-2 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 border border-[#CFB87C] shrink-0"
+          : "inline-flex items-center justify-center p-2 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0";
       }
       if (text) text.textContent = isEditMode ? "編輯模式 (已解鎖)" : "瀏覽模式 (唯讀)";
       window.renderCourses();
@@ -847,10 +857,10 @@
       document.getElementById('page-home').classList.toggle('hidden', !isHome);
       document.getElementById('page-profile').classList.toggle('hidden', isHome);
 
-      document.getElementById('nav-home').className = isHome ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center" : "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center";
-      document.getElementById('nav-profile').className = !isHome ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center" : "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center";
-      document.getElementById('mobile-nav-home').className = isHome ? "flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950" : "flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300";
-      document.getElementById('mobile-nav-profile').className = !isHome ? "flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950" : "flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300";
+      document.getElementById('nav-home').className = isHome ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center whitespace-nowrap" : "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap";
+      document.getElementById('nav-profile').className = !isHome ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center whitespace-nowrap" : "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap";
+      document.getElementById('mobile-nav-home').className = isHome ? "flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 whitespace-nowrap" : "flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300 whitespace-nowrap";
+      document.getElementById('mobile-nav-profile').className = !isHome ? "flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 whitespace-nowrap" : "flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300 whitespace-nowrap";
 
       if (!isHome) updateProfilePageDisplay();
     };
@@ -978,7 +988,7 @@
       const oldPwd = document.getElementById('sec-old-pwd').value;
       const ok = await verifyPasswordForUser(activeUserId, oldPwd);
       if (!ok) {
-        alert('❌ 舊密碼輸入錯誤！若忘記密碼，請點選右上角「忘記密碼？用手機重設」。');
+        alert('❌ 舊密碼輸入錯誤！若忘記密碼，請點選右上角「忘記密碼？」。');
         return;
       }
 
@@ -1214,6 +1224,9 @@
       safeStorage.setItem('cuboulder_users_list', JSON.stringify(usersList));
       const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: SURIHUA_DEFAULT_PWD_HASH };
       document.getElementById('current-user-display').textContent = `${u.name} (@${u.id})`;
+      const mobDisp = document.getElementById('current-user-display-mobile');
+      if (mobDisp) mobDisp.textContent = `@${u.id}`;
+
       const fId = document.getElementById('footer-sync-id');
       if (fId) fId.textContent = `@${u.id}`;
       const fLock = document.getElementById('footer-lock-badge');
@@ -1236,10 +1249,10 @@
         currentPage = 'home';
         document.getElementById('page-home').classList.remove('hidden');
         document.getElementById('page-profile').classList.add('hidden');
-        document.getElementById('nav-home').className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center";
-        document.getElementById('nav-profile').className = "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center";
-        document.getElementById('mobile-nav-home').className = "flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950";
-        document.getElementById('mobile-nav-profile').className = "flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300";
+        document.getElementById('nav-home').className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center whitespace-nowrap";
+        document.getElementById('nav-profile').className = "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap";
+        document.getElementById('mobile-nav-home').className = "flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 whitespace-nowrap";
+        document.getElementById('mobile-nav-profile').className = "flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300 whitespace-nowrap";
       }
       loadUserData(uid);
     };
@@ -1332,7 +1345,7 @@
 
       const cloudExisting = await fetchCloudUserRecord(id);
       if (usersList.some(u => u.id === id) || cloudExisting) {
-        alert(`⚠️ ID [@${id}] 已經存在！請切換至右方「🔑 登入已存在的 ID」分頁並輸入密碼登入。`);
+        alert(`⚠️ ID [@${id}] 已經存在！請切換至右方「🔑 登入既有 ID」分頁並輸入密碼登入。`);
         switchUserModalTab('login');
         document.getElementById('login-user-id').value = id;
         return;
@@ -1351,7 +1364,7 @@
       window.updateDashboardAndRender();
       closeNewUserModal();
       await pushToCloud();
-      alert(`🎉 新帳號 [@${id}] 建立成功！（若想將此 ID 設為這台裝置的預設開啟帳號，請至「帳號安全 & ID/密碼設定」頁面設定）`);
+      alert(`🎉 新帳號 [@${id}] 建立成功！`);
     };
 
     window.handleLoginExistingUser = async function(e) {
@@ -1369,7 +1382,7 @@
       let localUser = usersList.find(u => u.id === id);
 
       if (!cloudData && !localUser && id !== DEFAULT_USER_ID) {
-        alert(`❌ 找不到 ID [@${id}]！若忘記 ID 可點選「忘記 ID？用手機號碼找回」，或點選左方分頁建立新 ID。`);
+        alert(`❌ 找不到 ID [@${id}]！`);
         return;
       }
 
@@ -1477,7 +1490,7 @@
       const remainingCourses = Math.max(courseList.length - comp, 0);
       const estUsd = Math.round(remainingCourses * 564.385);
       const estNtd = Math.round(estUsd * 32.55);
-      document.getElementById('metric-tuition-usd').innerHTML = `$${estUsd.toLocaleString()} <span class="text-xs text-slate-400">USD</span>`;
+      document.getElementById('metric-tuition-usd').innerHTML = `$${estUsd.toLocaleString()} <span class="text-[10px] sm:text-xs text-slate-400">USD</span>`;
       document.getElementById('metric-tuition-ntd').textContent = `≈ NT$ ${estNtd.toLocaleString()}`;
 
       const tot = courseList.length || 1;
@@ -1505,7 +1518,7 @@
       ];
       document.getElementById('grade-distribution-bars').innerHTML = gOrder.map(g => {
         const cnt = gCounts[g.l] || 0;
-        return `<div class="flex flex-col items-center"><span class="text-xs font-bold ${g.t} mb-1">${cnt}門</span><div class="w-full bg-slate-800/60 rounded-t-lg h-20 relative flex items-end p-1"><div class="w-full ${g.c} rounded-t-md" style="height:${Math.max(Math.round((cnt/maxG)*100),5)}%"></div></div><span class="text-xs font-semibold text-slate-300 mt-2">${g.l}</span><span class="text-[10px] text-slate-500">${g.s}</span></div>`;
+        return `<div class="flex flex-col items-center"><span class="text-[11px] font-bold ${g.t} mb-1 whitespace-nowrap">${cnt}門</span><div class="w-full bg-slate-800/60 rounded-t-lg h-16 sm:h-20 relative flex items-end p-1"><div class="w-full ${g.c} rounded-t-md" style="height:${Math.max(Math.round((cnt/maxG)*100),6)}%"></div></div><span class="text-xs font-semibold text-slate-300 mt-1.5">${g.l}</span><span class="text-[10px] text-slate-500">${g.s}</span></div>`;
       }).join('');
 
       const rComp = courseList.filter(c => c.type === 'required' && c.status === 'Complete').length;
@@ -1539,17 +1552,37 @@
 
       container.innerHTML = filtered.map(c => {
         const stBadge = c.status === 'Complete'
-          ? `<span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">✓ Complete</span>`
+          ? `<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 whitespace-nowrap">✓ Complete</span>`
           : c.status === 'Ongoing'
-          ? `<span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">⏳ Ongoing</span>`
-          : `<span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-slate-500/10 text-slate-400 border border-slate-500/20">Expected</span>`;
+          ? `<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 whitespace-nowrap">⏳ Ongoing</span>`
+          : `<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-500/10 text-slate-400 border border-slate-500/20 whitespace-nowrap">Expected</span>`;
         const catBadge = c.type === 'required'
-          ? `<span class="text-[10px] font-bold px-2 py-0.5 bg-[#CFB87C]/20 text-[#CFB87C] rounded">必修 CORE</span>`
-          : `<span class="text-[10px] font-bold px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded">選修 ELECTIVE</span>`;
-        const noteHtml = c.note ? `<div class="mt-2 pt-2 border-t border-slate-800/60 text-xs text-slate-400">📝 ${c.note}</div>` : '';
-        const editBtn = isEditMode ? `<button onclick="openEditModal('${c.id}')" class="p-2 rounded-lg bg-slate-800 hover:bg-[#CFB87C] text-slate-300 hover:text-slate-950"><i data-lucide="edit-2" class="w-4 h-4"></i></button>` : '';
+          ? `<span class="text-[10px] font-bold px-2 py-0.5 bg-[#CFB87C]/20 text-[#CFB87C] rounded whitespace-nowrap">必修 CORE</span>`
+          : `<span class="text-[10px] font-bold px-2 py-0.5 bg-blue-500/20 text-blue-400 rounded whitespace-nowrap">選修 ELECTIVE</span>`;
+        const noteHtml = c.note ? `<div class="mt-2 pt-2 border-t border-slate-800/60 text-xs text-slate-400 leading-relaxed">📝 ${c.note}</div>` : '';
+        const editBtn = isEditMode ? `<button onclick="openEditModal('${c.id}')" class="p-1.5 sm:p-2 rounded-lg bg-slate-800 hover:bg-[#CFB87C] text-slate-300 hover:text-slate-950 shrink-0"><i data-lucide="edit-2" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i></button>` : '';
 
-        return `<div class="glass-card rounded-xl p-4"><div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3"><div class="space-y-1"><div class="flex items-center space-x-2 flex-wrap gap-y-1"><span class="font-mono text-xs font-bold text-[#CFB87C] bg-slate-900 px-2 py-0.5 rounded border border-slate-800">${c.code}</span>${catBadge}${stBadge}</div><h3 class="text-sm font-semibold text-slate-100">${c.name}</h3></div><div class="flex items-center justify-between sm:justify-end space-x-4 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800/60 shrink-0"><div class="text-left sm:text-right text-xs text-slate-400"><div>成績: <span class="font-bold text-white text-sm">${c.grade || '--'}</span></div><div>進度: <span class="font-medium text-emerald-400">${c.progress || '--'}</span></div></div>${editBtn}</div></div>${noteHtml}</div>`;
+        return `
+        <div class="glass-card rounded-xl p-3.5 sm:p-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+            <div class="space-y-1 min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="font-mono text-xs font-bold text-[#CFB87C] bg-slate-900 px-2 py-0.5 rounded border border-slate-800 whitespace-nowrap">${c.code}</span>
+                ${catBadge}
+                ${stBadge}
+              </div>
+              <h3 class="text-sm font-semibold text-slate-100 leading-snug pt-0.5">${c.name}</h3>
+            </div>
+            <div class="flex items-center justify-between sm:justify-end gap-3 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800/60 shrink-0">
+              <div class="flex items-center sm:flex-col sm:items-end gap-3 sm:gap-0.5 text-xs text-slate-400">
+                <div>成績: <span class="font-bold text-white text-sm">${c.grade || '--'}</span></div>
+                <div>進度: <span class="font-medium text-emerald-400">${c.progress || '--'}</span></div>
+              </div>
+              ${editBtn}
+            </div>
+          </div>
+          ${noteHtml}
+        </div>`;
       }).join('');
       if (window.lucide) lucide.createIcons();
     };
@@ -1558,8 +1591,8 @@
       activeCategory = cat;
       ['all', 'required', 'electives'].forEach(c => {
         document.getElementById(`tab-${c}`).className = (c === cat)
-          ? "flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 shadow"
-          : "flex-1 md:flex-none px-4 py-2 rounded-lg text-xs font-medium text-slate-300";
+          ? "px-2 sm:px-4 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 shadow whitespace-nowrap text-center"
+          : "px-2 sm:px-4 py-1.5 rounded-lg text-xs font-medium text-slate-300 whitespace-nowrap text-center";
       });
       renderCourses();
     };
