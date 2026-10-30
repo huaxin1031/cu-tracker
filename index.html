@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>CU Tracker</title>
-  <!-- iOS Safari PWA Meta -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="CU Tracker">
@@ -18,7 +17,7 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     body { font-family: 'Inter', -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; padding-top: env(safe-area-inset-top); padding-bottom: calc(5rem + env(safe-area-inset-bottom)); }
     header.sticky { top: env(safe-area-inset-top); }
-    .glass-card { background: rgba(30, 41, 59, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .glass-card { background: rgba(30, 41, 59, 0.78); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
     ::-webkit-scrollbar-thumb { background: #CFB87C; border-radius: 9999px; }
@@ -35,37 +34,36 @@
           <h1 class="font-bold text-sm sm:text-lg leading-tight text-slate-100">CU Boulder Master's</h1>
           <div class="flex items-center space-x-2">
             <p class="text-[11px] sm:text-xs text-[#CFB87C] font-medium">Course Tracker</p>
-            <span id="sync-status-badge" onclick="syncFromCloud(true)" class="cursor-pointer text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center" title="點擊立即從雲端同步此 ID 資料">
-              ☁️ 已同步
-            </span>
+            <span id="sync-status-badge" onclick="syncFromCloud(true)" class="cursor-pointer text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center" title="點擊立即從雲端同步">☁️ 已同步</span>
           </div>
         </div>
       </div>
 
       <nav class="hidden sm:flex p-1 bg-slate-900/90 rounded-xl border border-slate-800 space-x-1 mx-4">
         <button id="nav-home" onclick="switchPage('home')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center"><i data-lucide="layout-dashboard" class="w-3.5 h-3.5 mr-1.5"></i> 主頁</button>
-        <button id="nav-profile" onclick="switchPage('profile')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center"><i data-lucide="user-check" class="w-3.5 h-3.5 mr-1.5"></i> 個人檔案 & 雲端設定</button>
+        <button id="nav-profile" onclick="switchPage('profile')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center"><i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1.5"></i> 帳號安全 & ID/密碼設定</button>
       </nav>
       
       <div class="flex items-center space-x-1.5 sm:space-x-2">
-        <!-- Mode Switcher -->
         <button id="mode-toggle-btn" onclick="toggleEditMode()" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-[#CFB87C]">
           <i data-lucide="lock" class="w-3.5 h-3.5 sm:mr-1 text-slate-400"></i><span id="mode-text" class="hidden sm:inline">瀏覽模式</span>
         </button>
 
-        <!-- User Switcher Dropdown -->
         <div class="relative">
           <button onclick="toggleUserDropdown()" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700 hover:border-[#CFB87C]">
             <i data-lucide="user" class="w-3.5 h-3.5 mr-1 text-[#CFB87C]"></i>
             <span id="current-user-display" class="max-w-[95px] sm:max-w-none truncate">Suri Hua (@suri)</span>
             <i data-lucide="chevron-down" class="w-3 h-3 ml-1 text-slate-400"></i>
           </button>
-          <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-60 glass-card rounded-xl shadow-xl border border-slate-700 py-1 z-50">
-            <div class="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase border-b border-slate-800">切換或輸入同步 ID</div>
+          <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-64 glass-card rounded-xl shadow-xl border border-slate-700 py-1 z-50">
+            <div class="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase border-b border-slate-800 flex justify-between">
+              <span>切換或登入 ID</span>
+              <button onclick="openForgotIdModal()" class="text-[#CFB87C] hover:underline">忘記 ID？</button>
+            </div>
             <div id="user-list-options" class="max-h-48 overflow-y-auto py-1"></div>
             <div class="border-t border-slate-800 pt-1">
               <button onclick="openNewUserModal()" class="w-full text-left px-3 py-2 text-xs text-[#CFB87C] hover:bg-slate-800 font-semibold flex items-center">
-                <i data-lucide="user-plus" class="w-3.5 h-3.5 mr-2"></i> + 輸入 ID 切換 / 建立新使用者
+                <i data-lucide="user-plus" class="w-3.5 h-3.5 mr-2"></i> + 建立新 ID / 登入既有 ID
               </button>
             </div>
           </div>
@@ -79,7 +77,7 @@
     <div class="flex sm:hidden justify-center mt-2.5 border-t border-slate-800/80 pt-2">
       <div class="flex p-1 bg-slate-900 rounded-xl border border-slate-800 w-full justify-around">
         <button id="mobile-nav-home" onclick="switchPage('home')" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950">主頁</button>
-        <button id="mobile-nav-profile" onclick="switchPage('profile')" class="flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300">個人檔案 & 同步</button>
+        <button id="mobile-nav-profile" onclick="switchPage('profile')" class="flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300">帳號安全 & ID/密碼</button>
       </div>
     </div>
   </header>
@@ -127,9 +125,9 @@
             </div>
           </div>
         </div>
-        <div class="mt-3 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between">
-          <span>當前同步代碼：<strong id="footer-sync-id" class="text-[#CFB87C] font-mono">@suri</strong></span>
-          <button onclick="syncFromCloud(true)" class="text-emerald-400 hover:underline">🔄 立即重新整理雲端</button>
+        <div class="mt-3 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between items-center">
+          <span>當前 ID：<strong id="footer-sync-id" class="text-[#CFB87C] font-mono">@suri</strong> <span id="footer-lock-badge" class="ml-1"></span></span>
+          <button onclick="syncFromCloud(true)" class="text-emerald-400 hover:underline">🔄 立即同步雲端</button>
         </div>
       </div>
       <div class="glass-card rounded-2xl p-5 md:col-span-2 flex flex-col justify-between">
@@ -165,56 +163,217 @@
     </section>
   </main>
 
-  <!-- PROFILE & CLOUD SYNC PAGE -->
+  <!-- PROFILE & SECURITY PAGE -->
   <main id="page-profile" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6 hidden">
-    <div class="glass-card rounded-2xl p-6 space-y-6">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-6">
+    <!-- 1. 修改 User ID 與顯示名稱（需驗證密碼） -->
+    <div class="glass-card rounded-2xl p-6 space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-5">
         <div class="flex items-center space-x-4">
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#CFB87C] to-yellow-200 flex items-center justify-center text-slate-950 font-black text-2xl shadow-lg"><i data-lucide="user" class="w-8 h-8"></i></div>
+          <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#CFB87C] to-yellow-200 flex items-center justify-center text-slate-950 font-black text-2xl shadow-lg"><i data-lucide="shield-check" class="w-7 h-7"></i></div>
           <div>
-            <h2 id="profile-display-name" class="text-xl font-bold text-slate-100">Suri Hua</h2>
-            <p class="text-xs text-slate-400 mt-0.5">專屬同步代碼 ID: <span id="profile-display-id" class="text-[#CFB87C] font-mono font-bold">@suri</span></p>
+            <div class="flex items-center space-x-2">
+              <h2 id="profile-display-name" class="text-xl font-bold text-slate-100">Suri Hua</h2>
+              <span id="profile-pwd-badge" class="text-[10px] px-2 py-0.5 rounded-full font-semibold"></span>
+            </div>
+            <p class="text-xs text-slate-400 mt-0.5">當前同步代碼 ID: <span id="profile-display-id" class="text-[#CFB87C] font-mono font-bold">@suri</span></p>
           </div>
         </div>
-        <button onclick="syncFromCloud(true)" class="px-3 py-2 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950 transition-all">
-          🔄 立即同步雲端
-        </button>
+        <div class="flex space-x-2">
+          <button onclick="openForgotIdModal()" class="px-3 py-2 rounded-xl text-xs font-bold bg-slate-800 text-[#CFB87C] border border-slate-700 hover:border-[#CFB87C]">📱 忘記 ID 查詢</button>
+          <button onclick="syncFromCloud(true)" class="px-3 py-2 rounded-xl text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950">🔄 立即同步</button>
+        </div>
       </div>
 
-      <form onsubmit="saveProfile(event)" class="space-y-4">
-        <h3 class="text-sm font-semibold text-slate-200">修改個人顯示名稱與同步 ID</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div><label class="block text-xs text-slate-400 mb-1">顯示姓名 (Display Name)</label><input type="text" id="profile-input-name" required class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100"></div>
-          <div><label class="block text-xs text-slate-400 mb-1">自訂同步代碼 (User ID)</label><input type="text" id="profile-input-id" required class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono"></div>
+      <form onsubmit="handleUpdateUserIdAndName(event)" class="space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-semibold text-slate-200 flex items-center"><i data-lucide="user-cog" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 1. 修改顯示名稱與同步 User ID（需驗證密碼）</h3>
+          <button type="button" onclick="openForgotIdModal()" class="text-xs text-[#CFB87C] hover:underline font-semibold">忘記其他帳號 ID？用手機找回</button>
         </div>
-        <div class="flex justify-end"><button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">儲存並同步</button></div>
+        <p class="text-xs text-slate-400">修改 User ID 的安全原則與修改密碼相同：必須輸入您目前的密碼驗證通過後，系統才會將課程資料安全轉移至新 ID。</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+          <div><label class="block text-xs text-slate-400 mb-1">顯示姓名 (Display Name)</label><input type="text" id="profile-input-name" required class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100"></div>
+          <div><label class="block text-xs text-[#CFB87C] font-semibold mb-1">自訂新的同步代碼 (New User ID)</label><input type="text" id="profile-input-id" required class="w-full px-3 py-2 bg-slate-900 border border-[#CFB87C]/50 rounded-xl text-xs text-slate-100 font-mono"></div>
+        </div>
+        <div id="id-change-pwd-wrapper" class="hidden pt-1">
+          <label class="block text-xs text-amber-400 font-semibold mb-1">🔒 若要修改 User ID，請輸入目前的密碼驗證身分：</label>
+          <input type="password" id="profile-id-verify-pwd" placeholder="請輸入目前的密碼以確認修改 ID" class="w-full px-3 py-2 bg-slate-900 border border-amber-500/40 rounded-xl text-xs text-slate-100">
+        </div>
+        <div class="flex justify-end pt-1"><button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f]">驗證並儲存名稱 / 新 ID</button></div>
       </form>
+    </div>
 
-      <div class="border-t border-slate-800 pt-6 grid grid-cols-3 gap-3 text-center">
-        <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800"><div id="profile-stat-gpa" class="text-lg font-bold text-[#CFB87C]">--</div><div class="text-[10px] text-slate-400">平均 GPA</div></div>
-        <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800"><div id="profile-stat-complete" class="text-lg font-bold text-emerald-400">0</div><div class="text-[10px] text-slate-400">已完成門數</div></div>
-        <div class="p-3 bg-slate-900/60 rounded-xl border border-slate-800"><div id="profile-stat-total" class="text-lg font-bold text-blue-400">0</div><div class="text-[10px] text-slate-400">總課程數</div></div>
+    <!-- 2. 密碼與手機號碼設定卡片 -->
+    <div class="glass-card rounded-2xl p-6 space-y-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-sm font-semibold text-slate-200 flex items-center"><i data-lucide="key-round" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 2. 自訂密碼與救援手機號碼（SHA-256 加密）</h3>
+          <p class="text-xs text-slate-400 mt-0.5">密碼只有您自己知道。更新密碼前必須先輸入舊密碼；綁定手機號碼可用於找回忘記的 ID 或重設密碼。</p>
+        </div>
+        <button type="button" onclick="openForgotModal(activeUserId)" class="text-xs text-[#CFB87C] hover:underline font-semibold shrink-0">忘記密碼？用手機重設</button>
+      </div>
+
+      <form onsubmit="handleUpdatePassword(event)" class="space-y-3 pt-2">
+        <div id="old-password-wrapper" class="hidden">
+          <label class="block text-xs text-amber-400 font-semibold mb-1">🔒 請輸入舊密碼（更新密碼前必須驗證）</label>
+          <input type="password" id="sec-old-pwd" placeholder="輸入目前的舊密碼" class="w-full px-3 py-2 bg-slate-900 border border-amber-500/40 rounded-xl text-xs text-slate-100">
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">🔑 設定新密碼</label>
+            <input type="password" id="sec-new-pwd" required placeholder="請手動輸入新密碼" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">📱 綁定救援手機號碼（找回 ID 與重設密碼用）</label>
+            <input type="tel" id="sec-phone" required placeholder="例如: 0912345678" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
+          </div>
+        </div>
+        <div class="flex justify-end pt-1">
+          <button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f]">儲存新密碼並同步雲端</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- 3. 刪除帳號危險區域 -->
+    <div class="glass-card rounded-2xl p-6 border border-rose-500/30 space-y-3">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h3 class="text-sm font-bold text-rose-400 flex items-center"><i data-lucide="trash-2" class="w-4 h-4 mr-2"></i> 3. 刪除當前帳號 (@<span id="delete-zone-id">suri</span>)</h3>
+          <p class="text-xs text-slate-400 mt-0.5">刪除帳號需要輸入您自己知道的密碼，驗證通過後將清空此帳號的本機與雲端資料。</p>
+        </div>
+        <button type="button" onclick="openDeleteAccountModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500 hover:text-white shrink-0">永久刪除此帳號...</button>
       </div>
     </div>
   </main>
 
-  <!-- Create / Switch User by ID Modal -->
-  <div id="new-user-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+  <!-- 建立新 ID / 登入既有 ID Modal -->
+  <div id="new-user-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="glass-card w-full max-w-md rounded-2xl p-6 border border-slate-700 space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-base text-slate-100">輸入同步 ID 切換 / 建立新使用者</h3>
+        <h3 class="font-bold text-base text-slate-100">建立新 ID 或 登入既有 ID</h3>
         <button onclick="closeNewUserModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
-      <p class="text-xs text-slate-400 leading-relaxed">
-        • 若輸入已存在的雲端 ID（例如 <code class="text-[#CFB87C]">suri</code>），將自動載入該帳號的雲端進度。<br>
-        • 若輸入全新的 ID（例如 <code class="text-emerald-400">alex</code>），系統將自動**清空 Suri 的修課紀錄**，建立一份全空白進度的 30 門課表！
-      </p>
-      <form onsubmit="handleCreateUserSubmit(event)" class="space-y-3">
-        <div><label class="block text-xs text-slate-400 mb-1">使用者同步代碼 (User ID，英數小寫)</label><input type="text" id="create-user-id" required placeholder="例如: alex 或 suri" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono"></div>
-        <div><label class="block text-xs text-slate-400 mb-1">顯示姓名 (選填，若為舊帳號會自動帶入)</label><input type="text" id="create-user-name" placeholder="例如: Alex Chen" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100"></div>
+
+      <div class="flex p-1 bg-slate-900 rounded-xl border border-slate-800">
+        <button type="button" id="tab-mode-register" onclick="switchUserModalTab('register')" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950">✨ 建立全新 ID（必填新密碼）</button>
+        <button type="button" id="tab-mode-login" onclick="switchUserModalTab('login')" class="flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300">🔑 登入已存在的 ID</button>
+      </div>
+
+      <!-- 建立新帳號表單 -->
+      <form id="form-register-user" onsubmit="handleRegisterNewUser(event)" class="space-y-3">
+        <p class="text-[11px] text-slate-400">建立全新 ID 時，必須手動輸入新密碼與手機號碼並儲存。新帳號將自動提供全空白進度（0%）的 30 門課表。</p>
+        <div><label class="block text-xs text-slate-300 mb-1">1. 新使用者同步 ID (英數小寫)</label><input type="text" id="reg-user-id" required placeholder="例如: alex" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono"></div>
+        <div><label class="block text-xs text-slate-300 mb-1">2. 顯示姓名 (Display Name)</label><input type="text" id="reg-user-name" required placeholder="例如: Alex Chen" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100"></div>
+        <div><label class="block text-xs text-[#CFB87C] font-semibold mb-1">3. 設定新密碼 (必填，只有您自己知道)</label><input type="password" id="reg-user-pwd" required placeholder="請手動輸入新密碼" class="w-full px-3 py-2 bg-slate-900 border border-[#CFB87C]/50 rounded-xl text-xs text-slate-100"></div>
+        <div><label class="block text-xs text-emerald-400 font-semibold mb-1">4. 綁定手機號碼 (必填，忘記 ID / 忘記密碼找回用)</label><input type="tel" id="reg-user-phone" required placeholder="例如: 0912345678" class="w-full px-3 py-2 bg-slate-900 border border-emerald-500/40 rounded-xl text-xs text-slate-100 font-mono"></div>
         <div class="flex justify-end space-x-2 pt-2 border-t border-slate-800">
           <button type="button" onclick="closeNewUserModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300">取消</button>
-          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">載入 / 建立帳號</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">儲存新密碼並建立 ID</button>
+        </div>
+      </form>
+
+      <!-- 登入既有帳號表單 -->
+      <form id="form-login-user" onsubmit="handleLoginExistingUser(event)" class="space-y-3 hidden">
+        <p class="text-[11px] text-slate-400">請輸入您的同步 ID 與密碼。若忘記 ID 或密碼，皆可透過手機號碼找回。</p>
+        <div>
+          <div class="flex justify-between mb-1">
+            <label class="text-xs text-slate-300">既有使用者 ID</label>
+            <button type="button" onclick="openForgotIdModal()" class="text-[11px] text-emerald-400 hover:underline font-semibold">忘記 ID？用手機號碼找回</button>
+          </div>
+          <input type="text" id="login-user-id" required placeholder="例如: suri 或 alex" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
+        </div>
+        <div>
+          <div class="flex justify-between mb-1">
+            <label class="text-xs text-slate-300">帳號密碼</label>
+            <button type="button" onclick="openForgotFromLogin()" class="text-[11px] text-[#CFB87C] hover:underline font-semibold">忘記密碼？用手機號碼重設</button>
+          </div>
+          <input type="password" id="login-user-pwd" placeholder="請輸入該 ID 的密碼" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100">
+        </div>
+        <div class="flex justify-end space-x-2 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeNewUserModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300">取消</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">驗證並載入資料</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 忘記 User ID（手機號碼找回 ID）Modal -->
+  <div id="forgot-id-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-md rounded-2xl p-6 border border-slate-700 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-base text-slate-100 flex items-center"><i data-lucide="search" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 忘記 User ID — 手機號碼找回</h3>
+        <button onclick="closeForgotIdModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <p class="text-xs text-slate-400">請輸入您當初建立帳號或設定密碼時綁定的**手機號碼**，系統將為您查詢對應的 User ID：</p>
+      <form onsubmit="handleFindUserIdByPhone(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs text-slate-300 mb-1">📱 綁定的手機號碼</label>
+          <input type="tel" id="find-id-phone-input" required placeholder="例如: 0912345678" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
+        </div>
+        <div id="found-id-result-box" class="hidden p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs space-y-2">
+          <div class="text-emerald-300 font-bold">✅ 成功找回您的帳號資訊：</div>
+          <div id="found-id-list" class="space-y-1.5"></div>
+        </div>
+        <div class="flex justify-end space-x-2 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeForgotIdModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300">關閉</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">立即查詢 User ID</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 切換帳號密碼驗證 Modal -->
+  <div id="verify-pwd-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-sm rounded-2xl p-6 border border-slate-700 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-sm text-slate-100 flex items-center"><i data-lucide="lock" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 請輸入帳號密碼</h3>
+        <button onclick="closeVerifyPwdModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+      <p class="text-xs text-slate-400">帳號 <strong id="verify-target-id" class="text-[#CFB87C] font-mono"></strong> 受密碼保護，請輸入密碼以解鎖：</p>
+      <form onsubmit="submitVerifyPwd(event)" class="space-y-3">
+        <input type="password" id="verify-pwd-input" required placeholder="請輸入密碼" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100">
+        <div class="flex items-center justify-between pt-2">
+          <button type="button" onclick="openForgotModal(pendingSwitchUserId)" class="text-xs text-[#CFB87C] hover:underline">忘記密碼？用手機重設</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">解鎖進入</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 忘記密碼（手機號碼驗證重設）Modal -->
+  <div id="forgot-pwd-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-md rounded-2xl p-6 border border-slate-700 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-base text-slate-100 flex items-center"><i data-lucide="smartphone" class="w-4 h-4 mr-2 text-emerald-400"></i> 忘記密碼 — 手機號碼驗證</h3>
+        <button onclick="closeForgotModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <p class="text-xs text-slate-400">正在重設帳號 <strong id="forgot-target-id" class="text-[#CFB87C] font-mono"></strong> 的密碼。請輸入您當初綁定的手機號碼：</p>
+      <form onsubmit="handleForgotResetSubmit(event)" class="space-y-3">
+        <div><label class="block text-xs text-slate-300 mb-1">📱 綁定的手機號碼</label><input type="tel" id="forgot-phone-input" required placeholder="例如: 0912345678" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono"></div>
+        <div><label class="block text-xs text-[#CFB87C] font-semibold mb-1">🔑 請輸入全新的密碼</label><input type="password" id="forgot-new-pwd" required placeholder="設定您的新密碼" class="w-full px-3 py-2 bg-slate-900 border border-[#CFB87C]/50 rounded-xl text-xs text-slate-100"></div>
+        <div class="flex justify-end space-x-2 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeForgotModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300">取消</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-emerald-500 text-slate-950">驗證手機並儲存新密碼</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 刪除帳號密碼驗證 Modal -->
+  <div id="delete-account-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-md rounded-2xl p-6 border border-rose-500/40 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-base text-rose-400 flex items-center"><i data-lucide="alert-triangle" class="w-5 h-5 mr-2"></i> 確認永久刪除帳號</h3>
+        <button onclick="closeDeleteAccountModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed">您即將刪除帳號 <strong id="del-modal-id" class="text-[#CFB87C] font-mono"></strong>。此操作將清除該帳號的所有課程進度與雲端備份！</p>
+      <form onsubmit="handleConfirmDeleteAccount(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs text-rose-300 font-semibold mb-1">🔒 請輸入此帳號的密碼以確認刪除：</label>
+          <input type="password" id="del-confirm-pwd" required placeholder="必須輸入正確密碼才能刪除" class="w-full px-3 py-2 bg-slate-900 border border-rose-500/40 rounded-xl text-xs text-slate-100">
+        </div>
+        <div class="flex justify-end space-x-2 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeDeleteAccountModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300">取消</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-rose-500 text-white hover:bg-rose-600">驗證密碼並永久刪除</button>
         </div>
       </form>
     </div>
@@ -252,7 +411,7 @@
   </div>
 
   <script>
-    // 1. 產生 iOS 主畫面黑金 CU Icon
+    // iOS Icon 產生器
     (function(){
       try {
         const c = document.createElement('canvas'); c.width = 180; c.height = 180;
@@ -266,10 +425,21 @@
       } catch(e){}
     })();
 
+    // SHA-256 不可逆雜湊加密（保護密碼與手機號碼）
+    async function sha256(str) {
+      const clean = String(str || '').trim();
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('cu_salt_v1_' + clean));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    function normalizePhone(p) { return String(p || '').replace(/[\s\-()]/g, '').trim(); }
+
     const gradePoints = { 'A': 4.0, 'A-': 3.75, 'B+': 3.25, 'B': 3.0, 'B-': 2.75 };
     let isEditMode = false;
-    let usersList = [{ id: 'suri', name: 'Suri Hua' }];
+    let usersList = [{ id: 'suri', name: 'Suri Hua', pwdHash: '', phoneHash: '' }];
     let activeUserId = 'suri';
+    let pendingSwitchUserId = null;
+    let forgotTargetUserId = null;
+    const unlockedSessionUsers = new Set(['suri']);
 
     const safeStorage = {
       getItem: k => { try { return localStorage.getItem(k); } catch(e) { return null; } },
@@ -277,7 +447,6 @@
       removeItem: k => { try { localStorage.removeItem(k); } catch(e) {} }
     };
 
-    // Suri 的專屬預設資料 (30 門課含已修完進度)
     const suriDefaultCourses = [
       { id:'1', type:"required", code:"EMEA 5021", name:"Product Cost and Investment Cash Flow Analysis", status:"Complete", grade:"A", progress:"99%", note:"已註冊，99%，待 12/22 更新成績" },
       { id:'2', type:"required", code:"EMEA 5022", name:"Project Valuation and the Capital Budgeting Process", status:"Complete", grade:"A", progress:"94%", note:"已註冊，94%，待 12/22 更新成績" },
@@ -311,31 +480,15 @@
       { id:'30', type:"electives", code:"DTSA 5304", name:"Fundamentals of Data Visualization 資料可視化基礎", status:"Complete", grade:"A", progress:"100%", note:"" }
     ];
 
-    // 針對新使用者的「清空版預設課程模板」 (把 Suri 修過的進度、成績、備註全部清空歸零)
     function getDefaultCoursesForUser(uid) {
-      if (uid === 'suri') {
-        return JSON.parse(JSON.stringify(suriDefaultCourses));
-      }
-      return suriDefaultCourses.map(c => ({
-        id: c.id,
-        type: c.type,
-        code: c.code,
-        name: c.name,
-        status: 'Expected',
-        grade: '--',
-        progress: '0%',
-        note: ''
-      }));
+      if (uid === 'suri') return JSON.parse(JSON.stringify(suriDefaultCourses));
+      return suriDefaultCourses.map(c => ({ id: c.id, type: c.type, code: c.code, name: c.name, status: 'Expected', grade: '--', progress: '0%', note: '' }));
     }
 
     let courseList = [];
     let activeCategory = 'required', searchQuery = '', statusFilter = 'all';
-
-    // ==========================================
-    // 雲端同步引擎 (以 User ID 為唯一同步鑰匙)
-    // 使用公開免註冊 REST 儲存通道，讓不同裝置輸入相同 ID 自動同步
-    // ==========================================
     const CLOUD_API_BASE = 'https://kvdb.io/A6p8Xz9mK2vL5qR8wT3yN1/cu_tracker_user_';
+    const CLOUD_PHONE_INDEX_BASE = 'https://kvdb.io/A6p8Xz9mK2vL5qR8wT3yN1/cu_tracker_phone_';
 
     function setSyncStatus(text, isSyncing = false) {
       const badge = document.getElementById('sync-status-badge');
@@ -346,11 +499,36 @@
         : "cursor-pointer text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center";
     }
 
+    // 註冊加密手機指紋至雲端索引（供跨裝置「忘記 ID」透過手機號碼找回）
+    async function syncPhoneIndexToCloud(phoneHash, uid, name) {
+      if (!phoneHash || !uid) return;
+      try {
+        await fetch(CLOUD_PHONE_INDEX_BASE + encodeURIComponent(phoneHash), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: uid, name: name || uid, updatedAt: Date.now() })
+        });
+      } catch (e) {}
+    }
+
+    async function fetchCloudUserRecord(uid) {
+      try {
+        const res = await fetch(CLOUD_API_BASE + encodeURIComponent(uid) + '?t=' + Date.now());
+        if (res.ok) {
+          const data = await res.json();
+          if (data && !data.deleted && Array.isArray(data.courses)) return data;
+        }
+      } catch (e) {}
+      return null;
+    }
+
     async function pushToCloud() {
-      const userObj = usersList.find(u => u.id === activeUserId) || { id: activeUserId, name: activeUserId };
+      const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: '', phoneHash: '' };
       const payload = {
         id: activeUserId,
-        name: userObj.name,
+        name: u.name,
+        pwdHash: u.pwdHash || '',
+        phoneHash: u.phoneHash || '',
         updatedAt: Date.now(),
         courses: courseList
       };
@@ -361,6 +539,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
+        if (u.phoneHash) await syncPhoneIndexToCloud(u.phoneHash, activeUserId, u.name);
         setSyncStatus('☁️ 雲端已同步');
       } catch (e) {
         setSyncStatus('☁️ 本機已存');
@@ -369,25 +548,22 @@
 
     window.syncFromCloud = async function(showToast = false) {
       setSyncStatus('☁️ 讀取雲端...', true);
-      try {
-        const res = await fetch(CLOUD_API_BASE + encodeURIComponent(activeUserId) + '?t=' + Date.now());
-        if (res.ok) {
-          const data = await res.json();
-          if (data && Array.isArray(data.courses)) {
-            courseList = data.courses;
-            safeStorage.setItem(`cuboulder_courses_${activeUserId}`, JSON.stringify(courseList));
-            if (data.name) {
-              const idx = usersList.findIndex(u => u.id === activeUserId);
-              if (idx !== -1) usersList[idx].name = data.name;
-              saveUsersSystemState();
-            }
-            window.updateDashboardAndRender();
-            setSyncStatus('☁️ 雲端已同步');
-            if (showToast) alert(`已成功從雲端同步 [@${activeUserId}] 的最新課程紀錄！`);
-            return true;
-          }
+      const data = await fetchCloudUserRecord(activeUserId);
+      if (data) {
+        courseList = data.courses;
+        safeStorage.setItem(`cuboulder_courses_${activeUserId}`, JSON.stringify(courseList));
+        const idx = usersList.findIndex(u => u.id === activeUserId);
+        if (idx !== -1) {
+          if (data.name) usersList[idx].name = data.name;
+          if (data.pwdHash) usersList[idx].pwdHash = data.pwdHash;
+          if (data.phoneHash) usersList[idx].phoneHash = data.phoneHash;
+          saveUsersSystemState();
         }
-      } catch (e) {}
+        window.updateDashboardAndRender();
+        setSyncStatus('☁️ 雲端已同步');
+        if (showToast) alert(`已成功同步 [@${activeUserId}] 的最新雲端資料！`);
+        return true;
+      }
       setSyncStatus('☁️ 已同步');
       return false;
     };
@@ -399,6 +575,14 @@
     }
 
     window.toggleEditMode = function() {
+      const u = usersList.find(x => x.id === activeUserId);
+      if (!isEditMode && u && u.pwdHash && !unlockedSessionUsers.has(activeUserId)) {
+        pendingSwitchUserId = activeUserId;
+        document.getElementById('verify-target-id').textContent = `@${activeUserId}`;
+        document.getElementById('verify-pwd-input').value = '';
+        document.getElementById('verify-pwd-modal').classList.remove('hidden');
+        return;
+      }
       isEditMode = !isEditMode;
       const btn = document.getElementById('mode-toggle-btn');
       const text = document.getElementById('mode-text');
@@ -419,39 +603,294 @@
     };
 
     function updateProfilePageDisplay() {
-      const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId };
+      const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: '' };
       document.getElementById('profile-display-name').textContent = u.name;
       document.getElementById('profile-display-id').textContent = `@${u.id}`;
+      document.getElementById('delete-zone-id').textContent = u.id;
       document.getElementById('profile-input-name').value = u.name;
       document.getElementById('profile-input-id').value = u.id;
-      let pts = 0, grd = 0, cmp = 0;
-      courseList.forEach(c => {
-        if (c.status === 'Complete') cmp++;
-        if (c.grade && gradePoints[c.grade] !== undefined) { pts += gradePoints[c.grade]; grd++; }
-      });
-      document.getElementById('profile-stat-gpa').textContent = grd > 0 ? (pts / grd).toFixed(2) : '--';
-      document.getElementById('profile-stat-complete').textContent = cmp;
-      document.getElementById('profile-stat-total').textContent = courseList.length;
+      document.getElementById('profile-id-verify-pwd').value = '';
+
+      const hasPwd = Boolean(u.pwdHash);
+      const badge = document.getElementById('profile-pwd-badge');
+      badge.textContent = hasPwd ? '🔒 已加密保護' : '🔓 尚未設密碼';
+      badge.className = hasPwd
+        ? 'text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+        : 'text-[10px] px-2 py-0.5 rounded-full font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30';
+
+      document.getElementById('id-change-pwd-wrapper').classList.toggle('hidden', !hasPwd);
+      const oldWrap = document.getElementById('old-password-wrapper');
+      const oldInput = document.getElementById('sec-old-pwd');
+      oldWrap.classList.toggle('hidden', !hasPwd);
+      oldInput.required = hasPwd;
+      oldInput.value = '';
+      document.getElementById('sec-new-pwd').value = '';
+      document.getElementById('sec-phone').value = '';
     }
 
-    window.saveProfile = function(e) {
+    // 1. 修改顯示名稱與 User ID（同密碼修改原則：需驗證目前密碼）
+    window.handleUpdateUserIdAndName = async function(e) {
       e.preventDefault();
+      const idx = usersList.findIndex(u => u.id === activeUserId);
+      if (idx === -1) return;
+      const u = usersList[idx];
+
       const newName = document.getElementById('profile-input-name').value.trim();
       const newId = document.getElementById('profile-input-id').value.trim().toLowerCase();
       if (!newName || !newId) return;
-      const idx = usersList.findIndex(u => u.id === activeUserId);
-      if (idx !== -1) {
-        if (newId !== activeUserId) {
-          const old = safeStorage.getItem(`cuboulder_courses_${activeUserId}`);
-          if (old) { safeStorage.setItem(`cuboulder_courses_${newId}`, old); safeStorage.removeItem(`cuboulder_courses_${activeUserId}`); }
-        }
-        usersList[idx] = { id: newId, name: newName };
+
+      // 若只改名字、沒改 ID
+      if (newId === activeUserId) {
+        u.name = newName;
+        saveUsersSystemState();
+        updateProfilePageDisplay();
+        await pushToCloud();
+        alert('✅ 顯示名稱已更新！');
+        return;
       }
+
+      // 若要修改 User ID：比照密碼修改原則，必須先檢查是否已設密碼並驗證舊密碼
+      if (!u.pwdHash) {
+        alert('⚠️ 為保障帳號安全，修改 User ID 前請先在下方的「2. 自訂密碼與救援手機號碼」設定您的密碼！');
+        document.getElementById('sec-new-pwd').focus();
+        return;
+      }
+
+      const verifyPwd = document.getElementById('profile-id-verify-pwd').value;
+      if (!verifyPwd) {
+        alert('🔒 修改 User ID 必須輸入目前的密碼進行驗證！');
+        document.getElementById('profile-id-verify-pwd').focus();
+        return;
+      }
+
+      const inputHash = await sha256(verifyPwd);
+      if (inputHash !== u.pwdHash) {
+        alert('❌ 密碼驗證錯誤！無法修改 User ID。若忘記密碼請使用手機號碼重設。');
+        return;
+      }
+
+      // 檢查新 ID 是否已被他人使用
+      const cloudCheck = await fetchCloudUserRecord(newId);
+      if (usersList.some(x => x.id === newId) || cloudCheck) {
+        alert(`❌ 新 ID [@${newId}] 已經存在！請換一個其他的 User ID。`);
+        return;
+      }
+
+      const oldId = activeUserId;
+      safeStorage.setItem(`cuboulder_courses_${newId}`, JSON.stringify(courseList));
+      safeStorage.removeItem(`cuboulder_courses_${oldId}`);
+
+      // 將舊雲端節點標記移除
+      try {
+        await fetch(CLOUD_API_BASE + encodeURIComponent(oldId), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: oldId, deleted: true, courses: [] })
+        });
+      } catch(err) {}
+
+      u.id = newId;
+      u.name = newName;
       activeUserId = newId;
+      unlockedSessionUsers.add(newId);
       saveUsersSystemState();
       updateProfilePageDisplay();
-      pushToCloud();
-      alert('個人資料與同步 ID 已更新！');
+      await pushToCloud();
+      alert(`🎉 驗證成功！您的同步代碼已從 [@${oldId}] 更新為 [@${newId}]，所有課程與手機綁定皆已安全轉移！`);
+    };
+
+    // 2. 更新密碼（必須先驗證舊密碼）
+    window.handleUpdatePassword = async function(e) {
+      e.preventDefault();
+      const idx = usersList.findIndex(u => u.id === activeUserId);
+      if (idx === -1) return;
+      const u = usersList[idx];
+
+      if (u.pwdHash) {
+        const oldPwd = document.getElementById('sec-old-pwd').value;
+        const oldHash = await sha256(oldPwd);
+        if (oldHash !== u.pwdHash) {
+          alert('❌ 舊密碼輸入錯誤！若忘記密碼，請點選右上角「忘記密碼？用手機重設」。');
+          return;
+        }
+      }
+
+      const newPwd = document.getElementById('sec-new-pwd').value.trim();
+      const phone = normalizePhone(document.getElementById('sec-phone').value);
+      if (newPwd.length < 4) { alert('新密碼長度請至少輸入 4 個字元！'); return; }
+      if (phone.length < 6) { alert('請輸入有效的手機號碼！'); return; }
+
+      u.pwdHash = await sha256(newPwd);
+      u.phoneHash = await sha256(phone);
+      unlockedSessionUsers.add(activeUserId);
+      saveUsersSystemState();
+      updateProfilePageDisplay();
+      await pushToCloud();
+      alert('✅ 新密碼與救援手機號碼已加密儲存並同步至雲端！');
+    };
+
+    // 忘記 User ID：透過手機號碼找回 ID
+    window.openForgotIdModal = function() {
+      document.getElementById('user-dropdown').classList.add('hidden');
+      document.getElementById('new-user-modal').classList.add('hidden');
+      document.getElementById('find-id-phone-input').value = '';
+      document.getElementById('found-id-result-box').classList.add('hidden');
+      document.getElementById('forgot-id-modal').classList.remove('hidden');
+    };
+    window.closeForgotIdModal = () => document.getElementById('forgot-id-modal').classList.add('hidden');
+
+    window.handleFindUserIdByPhone = async function(e) {
+      e.preventDefault();
+      const phone = normalizePhone(document.getElementById('find-id-phone-input').value);
+      if (!phone) return;
+      const targetPhoneHash = await sha256(phone);
+
+      const matched = [];
+      // 1. 搜尋本機帳號清單
+      usersList.forEach(u => {
+        if (u.phoneHash === targetPhoneHash) matched.push({ id: u.id, name: u.name });
+      });
+
+      // 2. 搜尋雲端手機號碼索引
+      try {
+        const res = await fetch(CLOUD_PHONE_INDEX_BASE + encodeURIComponent(targetPhoneHash) + '?t=' + Date.now());
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.id && !matched.some(m => m.id === data.id)) {
+            matched.push({ id: data.id, name: data.name || data.id });
+          }
+        }
+      } catch (err) {}
+
+      const box = document.getElementById('found-id-result-box');
+      const listEl = document.getElementById('found-id-list');
+      if (!matched.length) {
+        alert('❌ 查無與此手機號碼綁定的 User ID！請確認手機號碼是否輸入正確。');
+        box.classList.add('hidden');
+        return;
+      }
+
+      listEl.innerHTML = matched.map(m => `
+        <div class="flex items-center justify-between bg-slate-900/90 px-3 py-2 rounded-lg border border-slate-800">
+          <div><span class="text-slate-200 font-semibold">${m.name}</span> <span class="text-[#CFB87C] font-mono font-bold ml-1">@${m.id}</span></div>
+          <div class="flex space-x-1.5">
+            <button type="button" onclick="useFoundIdToLogin('${m.id}')" class="px-2.5 py-1 rounded bg-[#CFB87C] text-slate-950 font-bold text-[11px]">前往登入</button>
+            <button type="button" onclick="closeForgotIdModal();openForgotModal('${m.id}')" class="px-2.5 py-1 rounded bg-slate-800 text-emerald-400 border border-emerald-500/30 text-[11px]">重設密碼</button>
+          </div>
+        </div>
+      `).join('');
+      box.classList.remove('hidden');
+    };
+
+    window.useFoundIdToLogin = function(uid) {
+      closeForgotIdModal();
+      openNewUserModal();
+      switchUserModalTab('login');
+      document.getElementById('login-user-id').value = uid;
+      document.getElementById('login-user-pwd').focus();
+    };
+
+    // 忘記密碼：驗證手機號碼重設
+    window.openForgotModal = function(uid) {
+      const targetId = uid || activeUserId;
+      forgotTargetUserId = targetId;
+      document.getElementById('verify-pwd-modal').classList.add('hidden');
+      document.getElementById('new-user-modal').classList.add('hidden');
+      document.getElementById('forgot-target-id').textContent = `@${targetId}`;
+      document.getElementById('forgot-phone-input').value = '';
+      document.getElementById('forgot-new-pwd').value = '';
+      document.getElementById('forgot-pwd-modal').classList.remove('hidden');
+    };
+    window.openForgotFromLogin = function() {
+      const id = document.getElementById('login-user-id').value.trim().toLowerCase();
+      if (!id) { alert('請先在上方欄位輸入您的使用者 ID（若忘記 ID 請點選「忘記 ID？」）！'); return; }
+      openForgotModal(id);
+    };
+    window.closeForgotModal = () => document.getElementById('forgot-pwd-modal').classList.add('hidden');
+
+    window.handleForgotResetSubmit = async function(e) {
+      e.preventDefault();
+      const uid = forgotTargetUserId || activeUserId;
+      const phone = normalizePhone(document.getElementById('forgot-phone-input').value);
+      const newPwd = document.getElementById('forgot-new-pwd').value.trim();
+
+      let u = usersList.find(x => x.id === uid);
+      const cloudData = await fetchCloudUserRecord(uid);
+      if (cloudData && cloudData.phoneHash) {
+        if (!u) {
+          u = { id: uid, name: cloudData.name || uid, pwdHash: cloudData.pwdHash || '', phoneHash: cloudData.phoneHash };
+          usersList.push(u);
+        } else {
+          u.phoneHash = cloudData.phoneHash;
+        }
+      }
+
+      if (!u || !u.phoneHash) {
+        alert(`❌ 帳號 [@${uid}] 尚未綁定手機號碼，無法使用手機重設。`);
+        return;
+      }
+
+      const inputPhoneHash = await sha256(phone);
+      if (inputPhoneHash !== u.phoneHash) {
+        alert('❌ 手機號碼驗證失敗！與當初設定的手機號碼不符。');
+        return;
+      }
+
+      u.pwdHash = await sha256(newPwd);
+      unlockedSessionUsers.add(uid);
+      closeForgotModal();
+      await loadUserData(uid, true);
+      await pushToCloud();
+      updateProfilePageDisplay();
+      alert(`✅ 手機號碼驗證成功！帳號 [@${uid}] 的新密碼已生效。`);
+    };
+
+    // 刪除帳號（必須輸入正確密碼）
+    window.openDeleteAccountModal = function() {
+      document.getElementById('del-modal-id').textContent = `@${activeUserId}`;
+      document.getElementById('del-confirm-pwd').value = '';
+      document.getElementById('delete-account-modal').classList.remove('hidden');
+    };
+    window.closeDeleteAccountModal = () => document.getElementById('delete-account-modal').classList.add('hidden');
+
+    window.handleConfirmDeleteAccount = async function(e) {
+      e.preventDefault();
+      const u = usersList.find(x => x.id === activeUserId);
+      const inputPwd = document.getElementById('del-confirm-pwd').value;
+
+      if (u && u.pwdHash) {
+        const hash = await sha256(inputPwd);
+        if (hash !== u.pwdHash) {
+          alert('❌ 密碼錯誤！必須輸入正確的個人密碼才能刪除帳號。');
+          return;
+        }
+      } else {
+        if (inputPwd.trim().toLowerCase() !== activeUserId) {
+          alert(`此帳號尚未設定密碼，若要確認刪除，請在密碼欄輸入您的 ID「${activeUserId}」以確認刪除。`);
+          return;
+        }
+      }
+
+      const deletedId = activeUserId;
+      safeStorage.removeItem(`cuboulder_courses_${deletedId}`);
+      try {
+        await fetch(CLOUD_API_BASE + encodeURIComponent(deletedId), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: deletedId, deleted: true, courses: [] })
+        });
+      } catch(err) {}
+
+      usersList = usersList.filter(x => x.id !== deletedId);
+      if (!usersList.length) {
+        usersList.push({ id: 'suri', name: 'Suri Hua', pwdHash: '', phoneHash: '' });
+      }
+      closeDeleteAccountModal();
+      const nextUser = usersList[0].id;
+      unlockedSessionUsers.add(nextUser);
+      await loadUserData(nextUser, true);
+      switchPage('home');
+      alert(`🗑️ 帳號 [@${deletedId}] 已徹底刪除！`);
     };
 
     function initUserSystem() {
@@ -459,50 +898,170 @@
         const s = safeStorage.getItem('cuboulder_users_list');
         if (s) usersList = JSON.parse(s).filter(u => u && u.id && u.name);
       } catch(e) {}
-      if (!usersList.some(u => u.id === 'suri')) usersList.unshift({ id: 'suri', name: 'Suri Hua' });
+      if (!usersList.some(u => u.id === 'suri')) usersList.unshift({ id: 'suri', name: 'Suri Hua', pwdHash: '', phoneHash: '' });
       const cur = safeStorage.getItem('cuboulder_current_user');
       activeUserId = (cur && usersList.some(u => u.id === cur)) ? cur : 'suri';
       saveUsersSystemState();
-      loadUserData(activeUserId);
+      loadUserData(activeUserId, true);
     }
 
     function saveUsersSystemState() {
       safeStorage.setItem('cuboulder_users_list', JSON.stringify(usersList));
       safeStorage.setItem('cuboulder_current_user', activeUserId);
-      const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId };
+      const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: '' };
       document.getElementById('current-user-display').textContent = `${u.name} (@${u.id})`;
       const fId = document.getElementById('footer-sync-id');
       if (fId) fId.textContent = `@${u.id}`;
+      const fLock = document.getElementById('footer-lock-badge');
+      if (fLock) fLock.textContent = u.pwdHash ? '🔒' : '';
+
       document.getElementById('user-list-options').innerHTML = usersList.map(x => `
-        <button onclick="switchUser('${x.id}')" class="w-full text-left px-3 py-1.5 text-xs hover:bg-slate-800 flex justify-between ${x.id === activeUserId ? 'text-[#CFB87C] font-bold' : 'text-slate-200'}">
-          <span>${x.name} (@${x.id})</span>${x.id === activeUserId ? '✓' : ''}
+        <button onclick="requestSwitchUser('${x.id}')" class="w-full text-left px-3 py-2 text-xs hover:bg-slate-800 flex justify-between items-center ${x.id === activeUserId ? 'text-[#CFB87C] font-bold' : 'text-slate-200'}">
+          <span>${x.pwdHash ? '🔒 ' : '👤 '}${x.name} (@${x.id})</span>${x.id === activeUserId ? '✓' : ''}
         </button>`).join('');
     }
+
+    window.requestSwitchUser = function(uid) {
+      document.getElementById('user-dropdown').classList.add('hidden');
+      if (uid === activeUserId) return;
+      const target = usersList.find(x => x.id === uid);
+      if (target && target.pwdHash && !unlockedSessionUsers.has(uid)) {
+        pendingSwitchUserId = uid;
+        document.getElementById('verify-target-id').textContent = `@${uid}`;
+        document.getElementById('verify-pwd-input').value = '';
+        document.getElementById('verify-pwd-modal').classList.remove('hidden');
+        return;
+      }
+      loadUserData(uid, true);
+    };
+
+    window.closeVerifyPwdModal = () => { document.getElementById('verify-pwd-modal').classList.add('hidden'); pendingSwitchUserId = null; };
+
+    window.submitVerifyPwd = async function(e) {
+      e.preventDefault();
+      const uid = pendingSwitchUserId;
+      if (!uid) return;
+      const u = usersList.find(x => x.id === uid);
+      const inputHash = await sha256(document.getElementById('verify-pwd-input').value);
+      if (u && u.pwdHash && inputHash !== u.pwdHash) {
+        alert('❌ 密碼錯誤！請重新輸入，或點選「忘記密碼」使用手機號碼重設。');
+        return;
+      }
+      unlockedSessionUsers.add(uid);
+      closeVerifyPwdModal();
+      await loadUserData(uid, true);
+    };
 
     async function loadUserData(uid) {
       activeUserId = (uid || 'suri').toLowerCase();
       saveUsersSystemState();
 
-      // 1. 先載入本機或該使用者的預設模板 (非 suri 自動清空進度)
       const saved = safeStorage.getItem(`cuboulder_courses_${activeUserId}`);
       if (saved) {
-        try {
-          courseList = JSON.parse(saved);
-        } catch(e) {
-          courseList = getDefaultCoursesForUser(activeUserId);
-        }
+        try { courseList = JSON.parse(saved); } catch(e) { courseList = getDefaultCoursesForUser(activeUserId); }
       } else {
         courseList = getDefaultCoursesForUser(activeUserId);
         safeStorage.setItem(`cuboulder_courses_${activeUserId}`, JSON.stringify(courseList));
       }
       window.updateDashboardAndRender();
 
-      // 2. 背景自動從雲端拉取該 ID 的最新進度 (若雲端有紀錄則無縫覆蓋，若無則將新帳號推上雲端)
       const hasCloud = await window.syncFromCloud(false);
-      if (!hasCloud) {
-        pushToCloud();
-      }
+      if (!hasCloud) pushToCloud();
     }
+
+    window.openNewUserModal = () => {
+      document.getElementById('user-dropdown').classList.add('hidden');
+      switchUserModalTab('register');
+      document.getElementById('reg-user-id').value = '';
+      document.getElementById('reg-user-name').value = '';
+      document.getElementById('reg-user-pwd').value = '';
+      document.getElementById('reg-user-phone').value = '';
+      document.getElementById('login-user-id').value = '';
+      document.getElementById('login-user-pwd').value = '';
+      document.getElementById('new-user-modal').classList.remove('hidden');
+    };
+    window.closeNewUserModal = () => document.getElementById('new-user-modal').classList.add('hidden');
+
+    window.switchUserModalTab = function(mode) {
+      const isReg = (mode === 'register');
+      document.getElementById('form-register-user').classList.toggle('hidden', !isReg);
+      document.getElementById('form-login-user').classList.toggle('hidden', isReg);
+      document.getElementById('tab-mode-register').className = isReg ? "flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950" : "flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300";
+      document.getElementById('tab-mode-login').className = !isReg ? "flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950" : "flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300";
+    };
+
+    // 建立全新 ID（強制輸入新密碼與手機並儲存）
+    window.handleRegisterNewUser = async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('reg-user-id').value.trim().toLowerCase();
+      const name = document.getElementById('reg-user-name').value.trim();
+      const pwd = document.getElementById('reg-user-pwd').value.trim();
+      const phone = normalizePhone(document.getElementById('reg-user-phone').value);
+
+      if (!id || !name || !pwd || !phone) return;
+      if (pwd.length < 4) { alert('密碼長度請至少設定 4 個字元！'); return; }
+      if (phone.length < 6) { alert('請輸入有效的救援手機號碼！'); return; }
+
+      const cloudExisting = await fetchCloudUserRecord(id);
+      if (usersList.some(u => u.id === id) || cloudExisting) {
+        alert(`⚠️ ID [@${id}] 已經存在！請切換至右方「🔑 登入已存在的 ID」分頁並輸入密碼登入。`);
+        switchUserModalTab('login');
+        document.getElementById('login-user-id').value = id;
+        return;
+      }
+
+      const pwdHash = await sha256(pwd);
+      const phoneHash = await sha256(phone);
+      const cleanCourses = getDefaultCoursesForUser(id);
+
+      usersList.push({ id, name, pwdHash, phoneHash });
+      safeStorage.setItem(`cuboulder_courses_${id}`, JSON.stringify(cleanCourses));
+      unlockedSessionUsers.add(id);
+      activeUserId = id;
+      courseList = cleanCourses;
+      saveUsersSystemState();
+      window.updateDashboardAndRender();
+      closeNewUserModal();
+      await pushToCloud();
+      alert(`🎉 新帳號 [@${id}] 建立成功！您的專屬密碼、手機綁定與全空白課表已儲存並同步至雲端。`);
+    };
+
+    // 登入已存在的 ID
+    window.handleLoginExistingUser = async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('login-user-id').value.trim().toLowerCase();
+      const pwd = document.getElementById('login-user-pwd').value;
+      if (!id) return;
+
+      const cloudData = await fetchCloudUserRecord(id);
+      let localUser = usersList.find(u => u.id === id);
+
+      if (!cloudData && !localUser) {
+        alert(`❌ 找不到 ID [@${id}]！若忘記 ID 可點選「忘記 ID？用手機號碼找回」，或點選左方分頁建立新 ID。`);
+        return;
+      }
+
+      const targetPwdHash = (cloudData && cloudData.pwdHash) || (localUser && localUser.pwdHash) || '';
+      if (targetPwdHash) {
+        const inputHash = await sha256(pwd);
+        if (inputHash !== targetPwdHash) {
+          alert('❌ 密碼驗證錯誤！若忘記密碼，請點選「忘記密碼？」透過手機號碼重設。');
+          return;
+        }
+      }
+
+      if (!localUser) {
+        usersList.push({
+          id,
+          name: (cloudData && cloudData.name) || id.toUpperCase(),
+          pwdHash: targetPwdHash,
+          phoneHash: (cloudData && cloudData.phoneHash) || ''
+        });
+      }
+      unlockedSessionUsers.add(id);
+      closeNewUserModal();
+      await loadUserData(id);
+    };
 
     window.openAddModal = function() {
       document.getElementById('edit-course-id').value = '';
@@ -559,7 +1118,7 @@
 
     window.deleteCourse = function() {
       const id = document.getElementById('edit-course-id').value;
-      if (id && confirm("確定刪除？")) {
+      if (id && confirm("確定刪除此門課程？")) {
         courseList = courseList.filter(x => x.id !== id);
         closeModal();
         persistData();
@@ -580,7 +1139,6 @@
       document.getElementById('count-status-ongoing').textContent = `${ong} 門`;
       document.getElementById('count-status-expected').textContent = `${exp} 門`;
 
-      // 動態計算剩餘學費 (以未完成門數 * $564.4 USD 估算，Suri 13門未完成時正好為 $7,337 USD)
       const remainingCourses = Math.max(courseList.length - comp, 0);
       const estUsd = Math.round(remainingCourses * 564.385);
       const estNtd = Math.round(estUsd * 32.55);
@@ -674,27 +1232,6 @@
     window.handleSearch = () => { searchQuery = document.getElementById('search-input').value; renderCourses(); };
     window.handleStatusFilter = () => { statusFilter = document.getElementById('status-filter').value; renderCourses(); };
     window.toggleUserDropdown = () => document.getElementById('user-dropdown').classList.toggle('hidden');
-    window.switchUser = uid => { document.getElementById('user-dropdown').classList.add('hidden'); loadUserData(uid); };
-    window.openNewUserModal = () => { document.getElementById('user-dropdown').classList.add('hidden'); document.getElementById('create-user-id').value = ''; document.getElementById('create-user-name').value = ''; document.getElementById('new-user-modal').classList.remove('hidden'); };
-    window.closeNewUserModal = () => document.getElementById('new-user-modal').classList.add('hidden');
-
-    // 輸入 ID 即可切換或建立新帳號 (非 suri 則自動給予清空版 30 門課表，並嘗試從雲端拉取該 ID 的紀錄)
-    window.handleCreateUserSubmit = async function(e) {
-      e.preventDefault();
-      const id = document.getElementById('create-user-id').value.trim().toLowerCase();
-      let name = document.getElementById('create-user-name').value.trim();
-      if (!id) return;
-      if (!name) name = id.charAt(0).toUpperCase() + id.slice(1);
-
-      const existing = usersList.find(u => u.id === id);
-      if (!existing) {
-        usersList.push({ id, name });
-        // 先寫入乾淨版課表（清空 Suri 修過的進度）
-        safeStorage.setItem(`cuboulder_courses_${id}`, JSON.stringify(getDefaultCoursesForUser(id)));
-      }
-      closeNewUserModal();
-      await loadUserData(id);
-    };
 
     window.resetData = function() {
       const msg = activeUserId === 'suri'
