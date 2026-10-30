@@ -44,7 +44,7 @@
           <h1 class="font-bold text-xs sm:text-lg leading-tight text-slate-100 truncate">CU Boulder Master's</h1>
           <div class="flex items-center space-x-1 sm:space-x-1.5 mt-0.5">
             <span class="text-[10px] sm:text-xs text-[#CFB87C] font-medium whitespace-nowrap">Course Tracker</span>
-            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0">v5.2</span>
+            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0">v5.3</span>
             <span id="sync-status-badge" onclick="syncFromCloud(true)" class="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center whitespace-nowrap shrink-0" title="點擊立即與雲端雙向同步最新資料">☁️ 已同步</span>
           </div>
         </div>
@@ -195,13 +195,13 @@
             <option value="Expected">預計中</option>
           </select>
           <select id="sort-by-select" onchange="handleSortChange()" class="px-2 py-1.5 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-300 focus:outline-none focus:border-[#CFB87C] shrink-0">
-            <option value="default">排序: 預設</option>
+            <option value="default">排序: 預設 (Ongoing優先+代號)</option>
             <option value="code">排序: 課程編號</option>
             <option value="name">排序: 課程名稱</option>
             <option value="type">排序: 必修/選修</option>
             <option value="grade">排序: 成績高低</option>
             <option value="progress">排序: 進度%</option>
-            <option value="status">排序: 狀態</option>
+            <option value="status">排序: 狀態 (Ongoing優先)</option>
           </select>
           <button type="button" id="sort-dir-btn" onclick="toggleSortDirection()" class="px-2.5 py-1.5 bg-slate-900 border border-slate-800 hover:border-[#CFB87C] rounded-xl text-xs font-bold text-[#CFB87C] whitespace-nowrap shrink-0">↑ 升冪</button>
         </div>
@@ -217,7 +217,7 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
         <div>
           <h2 class="text-sm sm:text-base font-bold text-slate-100">📋 課程批量編輯表格 (支援多欄位排序 & 備註篩選)</h2>
-          <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">點擊多個表頭欄位可依序疊加「多欄位升冪/降冪排序（顯示 ① ② ③ 順序）」；篩選列順序已與正下方表格欄位完全對齊（科系 → 類別 → 代號/課名 → 狀態 → 成績 → 個人備註）。</p>
+          <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">預設自動將「Ongoing 進行中」排在最上方並依課程代碼排序；篩選列順序與正下方表格欄位完全對齊（科系 → 類別 → 代號/課名 → 狀態 → 成績 → 個人備註）。</p>
         </div>
         <div class="flex flex-wrap items-center gap-2 shrink-0">
           <button type="button" onclick="addBlankRowToBatchTable()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-[#CFB87C] border border-[#CFB87C]/40 hover:bg-slate-700 whitespace-nowrap">+ 新增一列課程</button>
@@ -273,14 +273,14 @@
         <div class="flex items-center gap-1.5">
           <select id="batch-add-sort-select" onchange="addSortRuleFromSelect(this)" class="px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-slate-300">
             <option value="">+ 加入排序欄位...</option>
-            <option value="subject:asc">科系 (A → Z 升冪)</option>
-            <option value="subject:desc">科系 (Z → A 降冪)</option>
+            <option value="status:desc">狀態 (Ongoing 優先置頂)</option>
+            <option value="status:asc">狀態 (Complete 優先置頂)</option>
             <option value="code:asc">代號 (小 → 大 升冪)</option>
             <option value="code:desc">代號 (大 → 小 降冪)</option>
+            <option value="subject:asc">科系 (EMEA → DTSA 優先)</option>
+            <option value="subject:desc">科系 (反序)</option>
             <option value="type:desc">類別 (必修優先)</option>
             <option value="type:asc">類別 (選修優先)</option>
-            <option value="status:desc">狀態 (Complete優先)</option>
-            <option value="status:asc">狀態 (Expected優先)</option>
             <option value="grade:desc">成績 (A → B- 降冪)</option>
             <option value="grade:asc">成績 (B- → A 升冪)</option>
             <option value="progress:desc">進度% (高 → 低)</option>
@@ -290,11 +290,11 @@
             <option value="note:asc">個人備註 (A → Z)</option>
             <option value="note:desc">個人備註 (Z → A)</option>
           </select>
-          <button type="button" onclick="clearBatchMultiSort()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 whitespace-nowrap">清除排序</button>
+          <button type="button" onclick="clearBatchMultiSort()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 whitespace-nowrap">還原預設排序</button>
         </div>
       </div>
 
-      <!-- ③ 下方：與下方表格欄位順序 100% 對齊的篩選列 (科系 → 類別 → 搜尋代號或課程名稱 → 狀態 → 成績 → 篩選備註文字) -->
+      <!-- ③ 下方：與下方表格欄位順序 100% 對齊的篩選列 -->
       <div class="grid grid-cols-2 sm:grid-cols-12 gap-2 bg-slate-950/85 p-2.5 rounded-xl border border-[#CFB87C]/35 text-xs shadow-inner items-center">
         <div class="col-span-1 sm:col-span-2">
           <select id="batch-filter-subject" onchange="handleBatchFilterChange()" class="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
@@ -384,7 +384,7 @@
           </p>
         </div>
 
-        <!-- 試算畢業年月（手機版自動整齊排列不擠壓，唯讀模式下「存為預設目標」反灰鎖死 disabled） -->
+        <!-- 試算畢業年月 -->
         <div class="flex flex-wrap items-center gap-2 bg-slate-900/90 p-2.5 rounded-xl border border-[#CFB87C]/40 w-full lg:w-auto shrink-0">
           <span class="text-xs font-bold text-[#CFB87C] whitespace-nowrap">🎓 試算畢業年月：</span>
           <div class="flex items-center gap-1.5 flex-1 sm:flex-none">
@@ -423,9 +423,8 @@
         </div>
       </div>
 
-      <!-- 4 張智能規劃指標卡（手機版優化：移除所有 truncate 遮擋，數字與單位強制同一行 whitespace-nowrap） -->
+      <!-- 4 張智能規劃指標卡 -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
-        <!-- 卡片 1 -->
         <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3 sm:p-3.5 flex flex-col justify-between">
           <div class="flex items-center justify-between gap-1">
             <span class="text-[11px] text-slate-400 leading-tight">可用修課學期 (避開休假)</span>
@@ -440,7 +439,6 @@
           </div>
         </div>
 
-        <!-- 卡片 2 -->
         <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3 sm:p-3.5 flex flex-col justify-between">
           <div class="flex items-center justify-between gap-1">
             <span class="text-[11px] text-slate-400 leading-tight">每期 (8週) 建議修課配速</span>
@@ -455,7 +453,6 @@
           </div>
         </div>
 
-        <!-- 卡片 3 -->
         <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3 sm:p-3.5 flex flex-col justify-between">
           <div class="flex items-center justify-between gap-1">
             <span class="text-[11px] text-slate-400 leading-tight">每期 (8週) 學費預算建議</span>
@@ -467,7 +464,6 @@
           </div>
         </div>
 
-        <!-- 卡片 4 -->
         <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3 sm:p-3.5 flex flex-col justify-between">
           <div class="flex items-center justify-between gap-1">
             <span class="text-[11px] text-slate-400 leading-tight">待完成課程與總學分</span>
@@ -486,7 +482,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
       <div class="lg:col-span-7 glass-card rounded-2xl p-3.5 sm:p-5 space-y-3.5">
         <div class="border-b border-slate-800 pb-3">
-          <h3 class="text-xs sm:text-sm font-bold text-slate-100">📅 分期修課與學費路線圖 (自動避開休假空檔)</h3>
+          <h3 class="text-xs sm:text-sm font-bold text-slate-100">📅 分期修課與學費路線圖 (點擊未拿 Grade 課名直達 Coursera 作業頁)</h3>
           <p class="text-[11px] text-slate-400 mt-0.5">優先排入「⏳ Ongoing 進行中」科目，接著排入「必修 Core」，最後為「選修 Elective」。</p>
         </div>
         <div id="planner-roadmap-container" class="space-y-3"></div>
@@ -508,7 +504,7 @@
     </div>
   </main>
 
-  <!-- 4. PROFILE & SECURITY PAGE (唯讀模式可進入檢視，但所有輸入框、選單與儲存按鈕全部反灰鎖死 disabled！) -->
+  <!-- 4. PROFILE & SECURITY PAGE -->
   <main id="page-profile" class="max-w-4xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-5 hidden">
     <div id="profile-readonly-banner" class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/35 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
       <div class="text-amber-300 leading-relaxed">
@@ -901,9 +897,35 @@
       { code: 'CSCA', label: 'CSCA - Computer Science' },
       { code: 'ECEA', label: 'ECEA - Electrical & Computer Engr' }
     ];
+    const SUBJECT_RANK_MAP = { 'EMEA': 1, 'DTSA': 2, 'APPA': 3, 'CSCA': 4, 'ECEA': 5 };
 
     const VALID_LETTER_GRADES = { 'A': 4.0, 'A-': 3.75, 'B+': 3.25, 'B': 3.0, 'B-': 2.75 };
     function isValidLetterGradeForGPA(gradeStr) { return Object.prototype.hasOwnProperty.call(VALID_LETTER_GRADES, String(gradeStr || '').trim().toUpperCase()); }
+
+    // 🔗 專屬 Coursera 網址對映表（處理曾改名或特殊網址的課程，如 EMEA 5018 連至 speaking-to-a-technical-group）
+    const COURSERA_CUSTOM_SLUG_MAP = {
+      'EMEA5018': 'speaking-to-a-technical-group',
+      'speaking-to-lead-oral-communication-for-technical-managers': 'speaking-to-a-technical-group'
+    };
+
+    function getCourseraAssignmentsUrl(course) {
+      if (!course || isValidLetterGradeForGPA(course.grade)) return null;
+      const normCode = String(course.code || '').replace(/\s+/g, '').toUpperCase();
+      if (COURSERA_CUSTOM_SLUG_MAP[normCode]) {
+        return `https://www.coursera.org/learn/${COURSERA_CUSTOM_SLUG_MAP[normCode]}/home/assignments`;
+      }
+      // 過濾星號評分 (如 4.9★) 與中文字元，轉為標準英文小寫連字號 slug
+      let clean = String(course.name || '')
+        .replace(/\d+(\.\d+)?\s*[★☆]/g, ' ')
+        .replace(/[^\x00-\x7F]+/g, ' ')
+        .replace(/['’]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+      if (COURSERA_CUSTOM_SLUG_MAP[clean]) clean = COURSERA_CUSTOM_SLUG_MAP[clean];
+      if (!clean) return null;
+      return `https://www.coursera.org/learn/${clean}/home/assignments`;
+    }
 
     const DEFAULT_CU_CALENDAR = [
       { id:'fall2026_s1', type:'session', termName:'Fall 2026 - Session 1', badge:'已結課', status:'past', enrollOpen:'2026-08-10', classStart:'2026-08-24', enrollClose:'2026-10-02', classEnd:'2026-10-16', gradesPost:'2026-10-27', degreeConfer:'2026-11-06', endYear:2026, endMonth:10, note:'秋季第一期（已於 10/16 結課）' },
@@ -1322,47 +1344,83 @@
       return { year: Number((u && u.gradYear) || 2027), month: Number((u && u.gradMonth) || 8) };
     }
 
+    // 🔢 課程代碼比較器（遵循 EMEA -> DTSA -> APPA -> CSCA -> ECEA 科系順序，再依數字升冪）
+    function compareCourseCodeOrder(a, b) {
+      const sa = splitCourseCode(a.code), sb = splitCourseCode(b.code);
+      const ra = SUBJECT_RANK_MAP[sa.subject] || 99, rb = SUBJECT_RANK_MAP[sb.subject] || 99;
+      if (ra !== rb) return ra - rb;
+      return (sa.num || '').localeCompare(sb.num || '', undefined, { numeric: true });
+    }
+
+    // ↕️ 單欄位排序比較器（狀態以 Ongoing 為最優先，同順位自動以課程代碼為次要排序）
     function compareBySingleRule(a, b, field, dirStr) {
       const dir = dirStr === 'asc' ? 1 : -1;
-      const statusRank = { 'Complete': 3, 'Ongoing': 2, 'Expected': 1 };
+      const statusRankOngoingFirst = { 'Ongoing': 3, 'Expected': 2, 'Complete': 1 };
       const typeRank = { 'required': 2, 'electives': 1 };
-      if (field === 'subject') return splitCourseCode(a.code).subject.localeCompare(splitCourseCode(b.code).subject) * dir;
-      if (field === 'code') return (a.code || '').localeCompare(b.code || '', undefined, { numeric: true }) * dir;
-      if (field === 'type') return ((typeRank[a.type] || 0) - (typeRank[b.type] || 0)) * dir;
-      if (field === 'name') return (a.name || '').localeCompare(b.name || '', 'zh-Hant', { numeric: true }) * dir;
-      if (field === 'grade') return ((VALID_LETTER_GRADES[a.grade] ?? -1) - (VALID_LETTER_GRADES[b.grade] ?? -1)) * dir;
-      if (field === 'progress') return (parseProgressNumeric(a.progress) - parseProgressNumeric(b.progress)) * dir;
-      if (field === 'status') return ((statusRank[a.status] || 0) - (statusRank[b.status] || 0)) * dir;
-      if (field === 'note') return (a.note || '').localeCompare(b.note || '', 'zh-Hant') * dir;
-      return 0;
+      let primary = 0;
+
+      if (field === 'subject') {
+        const sa = splitCourseCode(a.code).subject, sb = splitCourseCode(b.code).subject;
+        primary = ((SUBJECT_RANK_MAP[sa] || 99) - (SUBJECT_RANK_MAP[sb] || 99)) * dir;
+      } else if (field === 'code') {
+        primary = compareCourseCodeOrder(a, b) * dir;
+      } else if (field === 'type') {
+        primary = ((typeRank[a.type] || 0) - (typeRank[b.type] || 0)) * dir;
+      } else if (field === 'name') {
+        primary = (a.name || '').localeCompare(b.name || '', 'zh-Hant', { numeric: true }) * dir;
+      } else if (field === 'grade') {
+        primary = ((VALID_LETTER_GRADES[a.grade] ?? -1) - (VALID_LETTER_GRADES[b.grade] ?? -1)) * dir;
+      } else if (field === 'progress') {
+        primary = (parseProgressNumeric(a.progress) - parseProgressNumeric(b.progress)) * dir;
+      } else if (field === 'status') {
+        primary = ((statusRankOngoingFirst[a.status] || 0) - (statusRankOngoingFirst[b.status] || 0)) * dir;
+      } else if (field === 'note') {
+        primary = (a.note || '').localeCompare(b.note || '', 'zh-Hant') * dir;
+      }
+
+      if (primary !== 0) return primary;
+      return compareCourseCodeOrder(a, b);
+    }
+
+    // 🌟 預設排序：自動將 Ongoing (進行中) 排在最上方，次要依課程代碼升冪排序
+    function compareDefaultOngoingFirstThenCode(a, b) {
+      const statusPriority = { 'Ongoing': 1, 'Expected': 2, 'Complete': 3 };
+      const pa = statusPriority[a.status] || 9, pb = statusPriority[b.status] || 9;
+      if (pa !== pb) return pa - pb;
+      return compareCourseCodeOrder(a, b);
     }
 
     function getSortedCoursesForHome(list) {
       const arr = [...list];
-      if (sortByField === 'default') return sortDirection === 'asc' ? arr : arr.reverse();
+      if (sortByField === 'default') {
+        const dir = sortDirection === 'asc' ? 1 : -1;
+        return arr.sort((a, b) => compareDefaultOngoingFirstThenCode(a, b) * dir);
+      }
       return arr.sort((a, b) => compareBySingleRule(a, b, sortByField, sortDirection));
     }
 
     function getMultiSortedBatchCourses(list) {
       const arr = [...list];
-      if (!batchMultiSortRules.length) return arr;
+      if (!batchMultiSortRules.length) {
+        return arr.sort(compareDefaultOngoingFirstThenCode);
+      }
       return arr.sort((a, b) => {
         for (const rule of batchMultiSortRules) {
           const cmp = compareBySingleRule(a, b, rule.field, rule.dir);
           if (cmp !== 0) return cmp;
         }
-        return 0;
+        return compareCourseCodeOrder(a, b);
       });
     }
 
-    const FIELD_LABEL_MAP = { subject:'科系', code:'代號', type:'類別', name:'課程名稱', status:'狀態', grade:'成績', progress:'進度%', note:'個人備註' };
+    const FIELD_LABEL_MAP = { subject:'科系', code:'代號', type:'類別', name:'課程名稱', status:'狀態(Ongoing優先)', grade:'成績', progress:'進度%', note:'個人備註' };
     const CIRCLED_NUMS = ['①','②','③','④','⑤','⑥','⑦','⑧'];
 
     function updateBatchMultiSortUI() {
       const chipsContainer = document.getElementById('batch-multisort-chips');
       if (chipsContainer) {
         chipsContainer.innerHTML = !batchMultiSortRules.length
-          ? `<span class="text-slate-500 text-[11px]">目前為預設順序（可點擊下方任一表頭標題疊加排序）</span>`
+          ? `<span class="text-emerald-400 text-[11px] font-semibold">✓ 預設排序：Ongoing 進行中置頂 › 課程代碼升冪（點擊下方表頭可自訂疊加）</span>`
           : batchMultiSortRules.map((r, i) => `
             <span class="inline-flex items-center px-2 py-0.5 rounded-lg bg-[#CFB87C]/15 border border-[#CFB87C]/40 text-[#CFB87C] text-[11px] font-bold">
               ${CIRCLED_NUMS[i] || (i+1)+'.'} ${FIELD_LABEL_MAP[r.field] || r.field} ${r.dir === 'asc' ? '↑升冪' : '↓降冪'}
@@ -1386,7 +1444,7 @@
     window.toggleBatchColumnMultiSort = function(colName) {
       syncDOMInputsToBatchDraft();
       const idx = batchMultiSortRules.findIndex(r => r.field === colName);
-      if (idx === -1) batchMultiSortRules.push({ field: colName, dir: 'asc' });
+      if (idx === -1) batchMultiSortRules.push({ field: colName, dir: colName === 'status' ? 'desc' : 'asc' });
       else if (batchMultiSortRules[idx].dir === 'asc') batchMultiSortRules[idx].dir = 'desc';
       else batchMultiSortRules.splice(idx, 1);
       batchDraftList = getMultiSortedBatchCourses(batchDraftList);
@@ -1418,7 +1476,7 @@
     window.clearBatchMultiSort = function() {
       syncDOMInputsToBatchDraft();
       batchMultiSortRules = [];
-      batchDraftList = JSON.parse(JSON.stringify(courseList)).map(c => ({ ...c, _checked: false }));
+      batchDraftList = getMultiSortedBatchCourses(batchDraftList);
       updateBatchMultiSortUI();
       renderBatchTable();
       updateDashboardMetricsFromData(batchDraftList);
@@ -1694,7 +1752,6 @@
       } else if (p === 'home') {
         updateDashboardMetricsFromData(courseList);
       }
-      // 切換分頁時自動回到畫面頂端，避免手機版上方標題或選單被 Sticky Header 遮住
       try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
       safeCreateIcons();
     };
@@ -1771,9 +1828,9 @@
       if (simBadge) simBadge.classList.toggle('hidden', !isSimulatingDifferentTarget);
       if (resetBtn) resetBtn.classList.toggle('hidden', !isSimulatingDifferentTarget);
 
-      const ongoingCourses = courseList.filter(c => c.status === 'Ongoing');
-      const expectedReq = courseList.filter(c => c.status === 'Expected' && c.type === 'required');
-      const expectedEle = courseList.filter(c => c.status === 'Expected' && c.type === 'electives');
+      const ongoingCourses = courseList.filter(c => c.status === 'Ongoing').sort(compareCourseCodeOrder);
+      const expectedReq = courseList.filter(c => c.status === 'Expected' && c.type === 'required').sort(compareCourseCodeOrder);
+      const expectedEle = courseList.filter(c => c.status === 'Expected' && c.type === 'electives').sort(compareCourseCodeOrder);
       const remainingQueue = [...ongoingCourses, ...expectedReq, ...expectedEle];
       const remCount = remainingQueue.length;
 
@@ -1858,10 +1915,16 @@
         const bInfo = bucketMap[item.id] || { courses: [], order: '-' };
         const cList = bInfo.courses, termUsd = Math.round(cList.length * costPerCourseUsd), termNtd = Math.round(termUsd * usdToNtd);
         const courseTagsHtml = cList.length
-          ? cList.map(c => `<div class="px-2.5 py-1.5 rounded-lg border ${c.status === 'Ongoing' ? 'text-amber-300 border-amber-500/30 bg-amber-500/10' : 'text-slate-300 border-slate-700 bg-slate-900'} text-[11px] flex items-center justify-between gap-2">
-              <div class="min-w-0 flex-1 break-words">${c.type === 'required' ? '<span class="text-[#CFB87C] font-bold">[必修]</span>' : '<span class="text-sky-400">[選修]</span>'} <span class="font-mono font-bold text-white">${c.code}</span> ${c.name}</div>
-              <span class="font-mono text-[10px] shrink-0 whitespace-nowrap">${c.status === 'Ongoing' ? `⏳ ${c.progress}` : '預計修習'}</span>
-            </div>`).join('')
+          ? cList.map(c => {
+              const courseraUrl = getCourseraAssignmentsUrl(c);
+              const nameNode = courseraUrl
+                ? `<a href="${courseraUrl}" target="_blank" rel="noopener noreferrer" class="underline decoration-[#CFB87C]/50 hover:text-[#CFB87C] transition-colors" title="點擊直達 Coursera 成績與作業頁 (/home/assignments)">${c.name} <span class="text-[10px] text-[#CFB87C] font-mono">↗</span></a>`
+                : c.name;
+              return `<div class="px-2.5 py-1.5 rounded-lg border ${c.status === 'Ongoing' ? 'text-amber-300 border-amber-500/30 bg-amber-500/10' : 'text-slate-300 border-slate-700 bg-slate-900'} text-[11px] flex items-center justify-between gap-2">
+                <div class="min-w-0 flex-1 break-words">${c.type === 'required' ? '<span class="text-[#CFB87C] font-bold">[必修]</span>' : '<span class="text-sky-400">[選修]</span>'} <span class="font-mono font-bold text-white">${c.code}</span> ${nameNode}</div>
+                <span class="font-mono text-[10px] shrink-0 whitespace-nowrap">${c.status === 'Ongoing' ? `⏳ ${c.progress}` : '預計修習'}</span>
+              </div>`;
+            }).join('')
           : `<div class="text-[11px] text-slate-500 italic py-1">本期無須額外排課</div>`;
 
         return `<div class="p-3.5 rounded-xl bg-slate-900/90 border ${item.status === 'current' ? 'border-[#CFB87C]/60' : 'border-slate-800'} space-y-2.5">
@@ -2533,6 +2596,11 @@
         const noteHtml = c.note ? `<div class="mt-2 pt-2 border-t border-slate-800/60 text-xs text-slate-400 leading-relaxed">📝 ${c.note}</div>` : '';
         const editBtn = isEditMode ? `<button type="button" onclick="openEditModal('${c.id}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-[#CFB87C] text-xs text-slate-200 hover:text-slate-950 font-bold shrink-0">✏️ 編輯</button>` : '';
 
+        const courseraUrl = getCourseraAssignmentsUrl(c);
+        const titleHtml = courseraUrl
+          ? `<h3 class="text-sm font-semibold leading-snug pt-0.5"><a href="${courseraUrl}" target="_blank" rel="noopener noreferrer" class="text-slate-100 hover:text-[#CFB87C] underline decoration-slate-600 hover:decoration-[#CFB87C] transition-colors inline-flex items-center flex-wrap gap-1.5" title="點擊直達 Coursera 成績與作業頁 (${courseraUrl})"><span>${c.name}</span><span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#CFB87C]/15 text-[#CFB87C] border border-[#CFB87C]/30 whitespace-nowrap">↗ Assignments</span></a></h3>`
+          : `<h3 class="text-sm font-semibold text-slate-100 leading-snug pt-0.5">${c.name}</h3>`;
+
         return `<div class="glass-card rounded-xl p-3.5 sm:p-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
             <div class="space-y-1 min-w-0">
@@ -2540,7 +2608,7 @@
                 <span class="font-mono text-xs font-bold text-[#CFB87C] bg-slate-900 px-2 py-0.5 rounded border border-slate-800 whitespace-nowrap">${c.code}</span>
                 ${catBadge}${stBadge}
               </div>
-              <h3 class="text-sm font-semibold text-slate-100 leading-snug pt-0.5">${c.name}</h3>
+              ${titleHtml}
             </div>
             <div class="flex items-center justify-between sm:justify-end gap-3 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800/60 shrink-0">
               <div class="flex items-center sm:flex-col sm:items-end gap-3 sm:gap-0.5 text-xs text-slate-400">
