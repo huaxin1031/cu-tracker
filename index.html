@@ -44,7 +44,7 @@
           <h1 class="font-bold text-xs sm:text-lg leading-tight text-slate-100 truncate">CU Boulder Master's</h1>
           <div class="flex items-center space-x-1 sm:space-x-1.5 mt-0.5">
             <span class="text-[10px] sm:text-xs text-[#CFB87C] font-medium whitespace-nowrap">Course Tracker</span>
-            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0">v5.1</span>
+            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0">v5.2</span>
             <span id="sync-status-badge" onclick="syncFromCloud(true)" class="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center whitespace-nowrap shrink-0" title="點擊立即與雲端雙向同步最新資料">☁️ 已同步</span>
           </div>
         </div>
@@ -109,26 +109,26 @@
     </div>
 
     <section class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
-      <div class="glass-card rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between">
+      <div class="glass-card rounded-2xl p-3 sm:p-4 flex flex-col justify-between">
         <div class="flex items-center justify-between"><span class="text-[11px] sm:text-xs text-slate-400">當前 GPA</span><div class="p-1.5 bg-[#CFB87C]/10 text-[#CFB87C] rounded-lg">🏆</div></div>
         <div class="mt-1.5">
           <div class="flex items-baseline space-x-1.5 whitespace-nowrap">
             <span id="metric-gpa" class="text-2xl sm:text-3xl font-extrabold text-white leading-none">3.88</span>
             <span id="metric-gpa-percent" class="text-xs sm:text-sm font-semibold text-slate-400">(97%)</span>
           </div>
-          <div id="metric-gpa-subtext" class="text-[10px] sm:text-[11px] text-emerald-400 mt-1.5 truncate">僅計入 17 門已有 Grade 科目</div>
+          <div id="metric-gpa-subtext" class="text-[10px] sm:text-[11px] text-emerald-400 mt-1.5 leading-snug">僅計入 17 門已有 Grade 科目</div>
         </div>
       </div>
 
-      <div class="glass-card rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between">
+      <div class="glass-card rounded-2xl p-3 sm:p-4 flex flex-col justify-between">
         <div class="flex items-center justify-between"><span class="text-[11px] sm:text-xs text-slate-400">總修課進度</span><div class="p-1.5 bg-emerald-500/10 text-emerald-400 rounded-lg">✅</div></div>
         <div class="mt-1.5">
-          <div class="flex items-baseline space-x-1"><span id="metric-completion-rate" class="text-2xl sm:text-3xl font-extrabold text-white leading-none">57%</span><span id="metric-completed-count" class="text-[11px] text-slate-400">/ 30 門</span></div>
+          <div class="flex items-baseline space-x-1 whitespace-nowrap"><span id="metric-completion-rate" class="text-2xl sm:text-3xl font-extrabold text-white leading-none">57%</span><span id="metric-completed-count" class="text-[11px] text-slate-400">/ 30 門</span></div>
           <div class="w-full bg-slate-800 h-1.5 sm:h-2 rounded-full mt-2 overflow-hidden"><div id="metric-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full rounded-full transition-all duration-500" style="width:57%"></div></div>
         </div>
       </div>
 
-      <div class="glass-card rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between">
+      <div class="glass-card rounded-2xl p-3 sm:p-4 flex flex-col justify-between">
         <div class="flex items-center justify-between"><span class="text-[11px] sm:text-xs text-slate-400">課程狀態統計</span><div class="p-1.5 bg-blue-500/10 text-blue-400 rounded-lg">📚</div></div>
         <div class="mt-1 space-y-0.5 text-[11px] sm:text-xs">
           <div class="flex justify-between"><span class="text-emerald-400">● 已完成</span><span id="count-status-complete" class="font-semibold">17 門</span></div>
@@ -137,9 +137,9 @@
         </div>
       </div>
 
-      <div class="glass-card rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between">
+      <div class="glass-card rounded-2xl p-3 sm:p-4 flex flex-col justify-between">
         <div class="flex items-center justify-between"><span class="text-[11px] sm:text-xs text-slate-400">剩餘估計學費</span><div class="p-1.5 bg-purple-500/10 text-purple-400 rounded-lg">💵</div></div>
-        <div class="mt-1.5"><div id="metric-tuition-usd" class="text-lg sm:text-2xl font-bold text-white leading-none">$7,337 <span class="text-[10px] sm:text-xs text-slate-400">USD</span></div><div id="metric-tuition-ntd" class="text-[10px] sm:text-xs text-slate-400 mt-1.5 font-mono truncate">≈ NT$ 238,832</div></div>
+        <div class="mt-1.5"><div id="metric-tuition-usd" class="text-lg sm:text-2xl font-bold text-white leading-none whitespace-nowrap">$7,337 <span class="text-[10px] sm:text-xs text-slate-400">USD</span></div><div id="metric-tuition-ntd" class="text-[10px] sm:text-xs text-slate-400 mt-1.5 font-mono leading-snug">≈ NT$ 238,832</div></div>
       </div>
     </section>
 
@@ -371,100 +371,120 @@
 
   <!-- 3. GRADUATION & TUITION PLANNER PAGE -->
   <main id="page-planner" class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-4 sm:space-y-5 hidden">
-    <div class="glass-card rounded-2xl p-4 sm:p-5 space-y-4">
+    <div class="glass-card rounded-2xl p-3.5 sm:p-5 space-y-4">
       <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-slate-800 pb-3.5">
         <div>
-          <div class="flex flex-wrap items-center gap-2">
+          <div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
             <h2 class="text-sm sm:text-lg font-bold text-slate-100">🗺️ 預計畢業時程、學分與學費智能規劃師</h2>
-            <span id="calendar-sync-badge" onclick="syncOfficialCalendarFromWeb(true)" class="cursor-pointer text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold hover:bg-emerald-500/25" title="點擊立即連線至 CU Boulder 官網檢查最新行事曆">🌐 已內建 CU 官方行事曆 (點擊檢查官網更新)</span>
+            <span id="calendar-sync-badge" onclick="syncOfficialCalendarFromWeb(true)" class="cursor-pointer text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold hover:bg-emerald-500/25" title="點擊立即連線至 CU Boulder 官網檢查最新行事曆">🌐 已內建 CU 官方行事曆</span>
             <span id="planner-sim-mode-badge" class="hidden text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold">👀 暫時試算中（不會覆蓋預設目標）</span>
           </div>
-          <p class="text-[11px] sm:text-xs text-slate-400 mt-1">
+          <p class="text-[11px] sm:text-xs text-slate-400 mt-1 leading-relaxed">
             自動根據您設定的預計畢業年、月，對齊 <a href="https://www.colorado.edu/registrar/cu-boulder-coursera-calendar#ucb-accordion-id--4-content2" target="_blank" rel="noopener" class="text-[#CFB87C] underline hover:text-yellow-200">CU Boulder on Coursera 官方行事曆</a> 的 8 週學期（Session 1 & 2），支援<strong>自由切換試算</strong>與<strong>避開寒暑假無課空檔</strong>！
           </p>
         </div>
 
-        <!-- 試算畢業年月（唯讀模式可自由切換選單試算，但「存為預設目標」按鈕反灰鎖死 disabled！） -->
-        <div class="flex flex-wrap items-center gap-2 bg-slate-900/90 p-2.5 rounded-xl border border-[#CFB87C]/40 shrink-0">
-          <span class="text-xs font-bold text-[#CFB87C]">🎓 試算畢業年月：</span>
-          <select id="planner-sim-year" onchange="handlePlannerTargetChange()" class="px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs font-mono font-bold text-white focus:border-[#CFB87C] focus:outline-none">
-            <option value="2026">2026 年</option>
-            <option value="2027" selected>2027 年</option>
-            <option value="2028">2028 年</option>
-            <option value="2029">2029 年</option>
-            <option value="2030">2030 年</option>
-          </select>
-          <select id="planner-sim-month" onchange="handlePlannerTargetChange()" class="px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs font-mono font-bold text-white focus:border-[#CFB87C] focus:outline-none">
-            <option value="1">01 月 (Fall S2 結算)</option>
-            <option value="2">02 月</option>
-            <option value="3">03 月 (Spring S1 結算)</option>
-            <option value="4">04 月</option>
-            <option value="5">05 月 (Spring S2 結算)</option>
-            <option value="6">06 月</option>
-            <option value="7">07 月 (Summer S1 結算)</option>
-            <option value="8" selected>08 月 (Summer S2 結算)</option>
-            <option value="9">09 月</option>
-            <option value="10">10 月 (Fall S1 結算)</option>
-            <option value="11">11 月</option>
-            <option value="12">12 月 (Fall S2 結課)</option>
-          </select>
+        <!-- 試算畢業年月（手機版自動整齊排列不擠壓，唯讀模式下「存為預設目標」反灰鎖死 disabled） -->
+        <div class="flex flex-wrap items-center gap-2 bg-slate-900/90 p-2.5 rounded-xl border border-[#CFB87C]/40 w-full lg:w-auto shrink-0">
+          <span class="text-xs font-bold text-[#CFB87C] whitespace-nowrap">🎓 試算畢業年月：</span>
+          <div class="flex items-center gap-1.5 flex-1 sm:flex-none">
+            <select id="planner-sim-year" onchange="handlePlannerTargetChange()" class="px-2 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs font-mono font-bold text-white focus:border-[#CFB87C] focus:outline-none">
+              <option value="2026">2026 年</option>
+              <option value="2027" selected>2027 年</option>
+              <option value="2028">2028 年</option>
+              <option value="2029">2029 年</option>
+              <option value="2030">2030 年</option>
+            </select>
+            <select id="planner-sim-month" onchange="handlePlannerTargetChange()" class="flex-1 sm:flex-none px-2 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs font-mono font-bold text-white focus:border-[#CFB87C] focus:outline-none">
+              <option value="1">01 月 (Fall S2 結算)</option>
+              <option value="2">02 月</option>
+              <option value="3">03 月 (Spring S1 結算)</option>
+              <option value="4">04 月</option>
+              <option value="5">05 月 (Spring S2 結算)</option>
+              <option value="6">06 月</option>
+              <option value="7">07 月 (Summer S1 結算)</option>
+              <option value="8" selected>08 月 (Summer S2 結算)</option>
+              <option value="9">09 月</option>
+              <option value="10">10 月 (Fall S1 結算)</option>
+              <option value="11">11 月</option>
+              <option value="12">12 月 (Fall S2 結課)</option>
+            </select>
+          </div>
 
-          <button type="button" id="btn-planner-reset-default" onclick="resetPlannerToSavedTarget()" class="hidden px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-emerald-400 border border-emerald-500/30 hover:bg-slate-700 whitespace-nowrap" title="還原為此帳號儲存的預設畢業年月">
-            ↺ 還原預設 (<span id="planner-saved-target-label">2027/08</span>)
-          </button>
+          <div class="flex items-center gap-1.5 w-full sm:w-auto">
+            <button type="button" id="btn-planner-reset-default" onclick="resetPlannerToSavedTarget()" class="hidden px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-emerald-400 border border-emerald-500/30 hover:bg-slate-700 whitespace-nowrap" title="還原為此帳號儲存的預設畢業年月">
+              ↺ 還原預設 (<span id="planner-saved-target-label">2027/08</span>)
+            </button>
 
-          <button type="button" id="btn-planner-save-target" disabled onclick="savePlannerTargetToAccount()" class="ro-disabled px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700 whitespace-nowrap" title="唯讀模式下已鎖定，請先點右上角解鎖編輯模式才能覆蓋儲存預設目標">
-            🔒 存為預設目標 (唯讀鎖定)
-          </button>
+            <button type="button" id="btn-planner-save-target" disabled onclick="savePlannerTargetToAccount()" class="ro-disabled flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700 whitespace-nowrap text-center" title="唯讀模式下已鎖定，請先點右上角解鎖編輯模式才能覆蓋儲存預設目標">
+              🔒 存為預設目標 (唯讀鎖定)
+            </button>
+          </div>
         </div>
       </div>
 
-      <!-- 4 張智能規劃指標卡 -->
+      <!-- 4 張智能規劃指標卡（手機版優化：移除所有 truncate 遮擋，數字與單位強制同一行 whitespace-nowrap） -->
       <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
-        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 flex flex-col justify-between">
-          <div class="flex items-center justify-between"><span class="text-[11px] text-slate-400">可用修課學期 (避開休假)</span><span>📅</span></div>
+        <!-- 卡片 1 -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3 sm:p-3.5 flex flex-col justify-between">
+          <div class="flex items-center justify-between gap-1">
+            <span class="text-[11px] text-slate-400 leading-tight">可用修課學期 (避開休假)</span>
+            <span class="shrink-0 text-sm">📅</span>
+          </div>
           <div class="mt-2">
-            <div class="flex items-baseline space-x-1.5">
-              <span id="plan-active-sessions" class="text-xl sm:text-2xl font-extrabold text-white">-- 期</span>
-              <span id="plan-remaining-months" class="text-xs text-slate-400">(-- 個月)</span>
+            <div class="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
+              <span id="plan-active-sessions" class="text-lg sm:text-2xl font-extrabold text-white whitespace-nowrap">-- 個學期</span>
+              <span id="plan-remaining-months" class="text-[11px] sm:text-xs text-slate-400 whitespace-nowrap">(約 -- 個月)</span>
             </div>
-            <div id="plan-break-summary" class="text-[10px] sm:text-[11px] text-amber-400 mt-1 truncate">自動避開寒暑假無課空檔</div>
+            <div id="plan-break-summary" class="text-[10px] sm:text-[11px] text-amber-400 mt-1.5 leading-snug break-words">自動避開寒暑假無課空檔</div>
           </div>
         </div>
 
-        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 flex flex-col justify-between">
-          <div class="flex items-center justify-between"><span class="text-[11px] text-slate-400">每期 (8週) 建議修課配速</span><span>⚡</span></div>
+        <!-- 卡片 2 -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3 sm:p-3.5 flex flex-col justify-between">
+          <div class="flex items-center justify-between gap-1">
+            <span class="text-[11px] text-slate-400 leading-tight">每期 (8週) 建議修課配速</span>
+            <span class="shrink-0 text-sm">⚡</span>
+          </div>
           <div class="mt-2">
-            <div class="flex items-baseline space-x-1.5">
-              <span id="plan-courses-per-session" class="text-xl sm:text-2xl font-extrabold text-white">-- 門 / 期</span>
-              <span id="plan-pace-badge" class="text-[10px] px-1.5 py-0.5 rounded font-bold">--</span>
+            <div class="flex flex-wrap items-center gap-1.5">
+              <span id="plan-courses-per-session" class="text-lg sm:text-2xl font-extrabold text-white whitespace-nowrap">-- 門/期</span>
+              <span id="plan-pace-badge" class="text-[10px] px-1.5 py-0.5 rounded font-bold whitespace-nowrap shrink-0">--</span>
             </div>
-            <div id="plan-hours-per-week" class="text-[10px] sm:text-[11px] text-slate-400 mt-1 truncate">平均每月約 -- 門課</div>
+            <div id="plan-hours-per-week" class="text-[10px] sm:text-[11px] text-slate-400 mt-1.5 leading-snug break-words">平均每月約 -- 門課</div>
           </div>
         </div>
 
-        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 flex flex-col justify-between">
-          <div class="flex items-center justify-between"><span class="text-[11px] text-slate-400">每期 (8週) 學費預算建議</span><span>💰</span></div>
+        <!-- 卡片 3 -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3 sm:p-3.5 flex flex-col justify-between">
+          <div class="flex items-center justify-between gap-1">
+            <span class="text-[11px] text-slate-400 leading-tight">每期 (8週) 學費預算建議</span>
+            <span class="shrink-0 text-sm">💰</span>
+          </div>
           <div class="mt-2">
-            <div id="plan-tuition-per-session" class="text-lg sm:text-2xl font-extrabold text-white">$-- <span class="text-[10px] text-slate-400">USD/期</span></div>
-            <div id="plan-tuition-per-month" class="text-[10px] sm:text-[11px] text-purple-300 mt-1 font-mono truncate">≈ NT$ -- / 期</div>
+            <div id="plan-tuition-per-session" class="text-lg sm:text-2xl font-extrabold text-white whitespace-nowrap">$-- <span class="text-[10px] text-slate-400 font-normal">USD/期</span></div>
+            <div id="plan-tuition-per-month" class="text-[10px] sm:text-[11px] text-purple-300 mt-1.5 font-mono leading-snug break-words">≈ NT$ -- / 期</div>
           </div>
         </div>
 
-        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3.5 flex flex-col justify-between">
-          <div class="flex items-center justify-between"><span class="text-[11px] text-slate-400">待完成課程與總學分</span><span>🎯</span></div>
+        <!-- 卡片 4 -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-3 sm:p-3.5 flex flex-col justify-between">
+          <div class="flex items-center justify-between gap-1">
+            <span class="text-[11px] text-slate-400 leading-tight">待完成課程與總學分</span>
+            <span class="shrink-0 text-sm">🎯</span>
+          </div>
           <div class="mt-2">
-            <div id="plan-remaining-courses" class="text-xl sm:text-2xl font-extrabold text-white">-- 門未完成</div>
-            <div id="plan-remaining-breakdown" class="text-[10px] sm:text-[11px] text-sky-400 mt-1 truncate">進行中 -- 門 + 預計 -- 門</div>
+            <div id="plan-remaining-courses" class="text-lg sm:text-2xl font-extrabold text-white whitespace-nowrap">-- 門 (-- 學分)</div>
+            <div id="plan-remaining-breakdown" class="text-[10px] sm:text-[11px] text-sky-400 mt-1.5 leading-snug break-words">進行中 -- 門 + 預計 -- 門</div>
           </div>
         </div>
       </div>
 
-      <div id="plan-strategy-advice" class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 text-xs text-slate-200 leading-relaxed space-y-1"></div>
+      <div id="plan-strategy-advice" class="p-3.5 rounded-xl bg-slate-900/90 border border-slate-800 text-xs text-slate-200 leading-relaxed space-y-1.5"></div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-      <div class="lg:col-span-7 glass-card rounded-2xl p-4 sm:p-5 space-y-3.5">
+      <div class="lg:col-span-7 glass-card rounded-2xl p-3.5 sm:p-5 space-y-3.5">
         <div class="border-b border-slate-800 pb-3">
           <h3 class="text-xs sm:text-sm font-bold text-slate-100">📅 分期修課與學費路線圖 (自動避開休假空檔)</h3>
           <p class="text-[11px] text-slate-400 mt-0.5">優先排入「⏳ Ongoing 進行中」科目，接著排入「必修 Core」，最後為「選修 Elective」。</p>
@@ -472,7 +492,7 @@
         <div id="planner-roadmap-container" class="space-y-3"></div>
       </div>
 
-      <div class="lg:col-span-5 glass-card rounded-2xl p-4 sm:p-5 space-y-3.5">
+      <div class="lg:col-span-5 glass-card rounded-2xl p-3.5 sm:p-5 space-y-3.5">
         <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
           <div>
             <h3 class="text-xs sm:text-sm font-bold text-slate-100">🏛️ CU Boulder 官方行事曆 & 休假空檔</h3>
@@ -490,7 +510,6 @@
 
   <!-- 4. PROFILE & SECURITY PAGE (唯讀模式可進入檢視，但所有輸入框、選單與儲存按鈕全部反灰鎖死 disabled！) -->
   <main id="page-profile" class="max-w-4xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-5 hidden">
-    <!-- 唯讀鎖定提示橫幅 -->
     <div id="profile-readonly-banner" class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/35 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
       <div class="text-amber-300 leading-relaxed">
         🔒 <strong>目前為「瀏覽模式 (唯讀)」</strong>：您可以檢視下方帳號安全資訊與預計畢業目標，但<strong>所有選項與儲存按鈕均已反灰鎖死</strong>。若要修改或儲存設定，請先驗證密碼解鎖編輯模式。
@@ -1034,7 +1053,7 @@
           if (badge) badge.textContent = `✅ 已連線核對 CU 官網最新公告 (${timeStr})`;
           if (isManualClick) alert(`✅ 已成功連線至 CU Boulder 官網核對完畢！目前所有學期日期皆與官網最新公告一致。`);
         } else {
-          if (badge) badge.textContent = `🌐 已內建 CU 官方行事曆 (離線保護中)`;
+          if (badge) badge.textContent = `🌐 已內建 CU 官方行事曆`;
         }
       } else {
         if (badge) badge.textContent = `🛡️ 已啟用內建官方行事曆 (離線秒開保護)`;
@@ -1594,26 +1613,23 @@
       setTimeout(() => inp.focus(), 50);
     }
 
-    // 🔒 控管「畢業規劃」頁的儲存按鈕與「帳號安全」頁的所有控制項反灰鎖死狀態
     function updateReadOnlyControlsAcrossPages() {
       const canEdit = isEditMode && isAccountUnlockedForEdit(activeUserId);
 
-      // 1. 畢業規劃頁：試算下拉選單保持開放，但「存為預設目標」按鈕在唯讀模式下直接 disabled 反灰鎖死！
       const saveTargetBtn = document.getElementById('btn-planner-save-target');
       if (saveTargetBtn) {
         saveTargetBtn.disabled = !canEdit;
         if (canEdit) {
           saveTargetBtn.textContent = '💾 存為預設目標並同步';
-          saveTargetBtn.className = 'ro-disabled px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shadow whitespace-nowrap';
+          saveTargetBtn.className = 'ro-disabled flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shadow whitespace-nowrap text-center';
           saveTargetBtn.title = '將目前選取的畢業年月儲存為此帳號的預設目標並同步雲端';
         } else {
           saveTargetBtn.textContent = '🔒 存為預設目標 (唯讀鎖定)';
-          saveTargetBtn.className = 'ro-disabled px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700 whitespace-nowrap';
+          saveTargetBtn.className = 'ro-disabled flex-1 sm:flex-none px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700 whitespace-nowrap text-center';
           saveTargetBtn.title = '唯讀模式下已鎖定，請先點右上角解鎖編輯模式才能覆蓋儲存預設目標';
         }
       }
 
-      // 2. 帳號安全頁：唯讀模式下可檢視，但所有 .profile-ro-control 欄位與按鈕全部設為 disabled 反灰鎖死！
       const roBanner = document.getElementById('profile-readonly-banner');
       if (roBanner) roBanner.classList.toggle('hidden', canEdit);
       document.querySelectorAll('.profile-ro-control').forEach(el => {
@@ -1639,7 +1655,6 @@
         if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit', activeUserId); return; }
         setEditModeUI(true);
       } else {
-        // 切回唯讀模式：立即撤銷解鎖憑證，並將帳號安全頁與畢業規劃儲存鈕反灰鎖死
         unlockedEditSessionUsers.delete(activeUserId);
         syncAllGradSelectorsAcrossPages();
         setEditModeUI(false);
@@ -1648,7 +1663,6 @@
     };
 
     window.switchPage = function(p) {
-      // 只有「批量表格」需要強制先解鎖；「帳號安全」在唯讀模式下可直接進入檢視（所有控制項反灰鎖死）
       if (p === 'table' && !isAccountUnlockedForEdit(activeUserId)) {
         promptUnlockForAction('table', activeUserId);
         return;
@@ -1680,6 +1694,8 @@
       } else if (p === 'home') {
         updateDashboardMetricsFromData(courseList);
       }
+      // 切換分頁時自動回到畫面頂端，避免手機版上方標題或選單被 Sticky Header 遮住
+      try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
       safeCreateIcons();
     };
 
@@ -1783,33 +1799,33 @@
       document.getElementById('plan-active-sessions').textContent = `${activeSessions.length} 個學期`;
       document.getElementById('plan-remaining-months').textContent = `(約 ${totalMonthsDiff} 個月)`;
       document.getElementById('plan-break-summary').textContent = `已避開 ${breakPeriods.length} 個寒暑假/休假無課空檔`;
-      document.getElementById('plan-courses-per-session').textContent = `${avgPerSession} 門 / 期`;
+      document.getElementById('plan-courses-per-session').textContent = `${avgPerSession} 門/期`;
       document.getElementById('plan-hours-per-week').textContent = `折合每月約 ${avgPerMonth} 門 (每週約 ${Math.round(avgPerSession * 3)}~${Math.round(avgPerSession * 5)} hrs)`;
 
       const paceBadge = document.getElementById('plan-pace-badge');
       if (remCount === 0) {
         paceBadge.textContent = '🎉 已全部修畢';
-        paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300';
+        paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300 whitespace-nowrap shrink-0';
       } else if (avgPerSession <= 2.5) {
         paceBadge.textContent = '🟢 輕鬆穩健';
-        paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+        paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0';
       } else if (avgPerSession <= 4.0) {
         paceBadge.textContent = '🟡 適中緊湊';
-        paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30';
+        paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 whitespace-nowrap shrink-0';
       } else {
         paceBadge.textContent = '🔴 密集衝刺';
-        paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30';
+        paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30 whitespace-nowrap shrink-0';
       }
 
-      document.getElementById('plan-tuition-per-session').innerHTML = `$${usdPerSession.toLocaleString()} <span class="text-[10px] text-slate-400">USD / 期</span>`;
+      document.getElementById('plan-tuition-per-session').innerHTML = `$${usdPerSession.toLocaleString()} <span class="text-[10px] text-slate-400 font-normal">USD/期</span>`;
       document.getElementById('plan-tuition-per-month').textContent = `≈ NT$ ${ntdPerSession.toLocaleString()} / 期 (每月預存 NT$ ${ntdPerMonth.toLocaleString()})`;
       document.getElementById('plan-remaining-courses').textContent = `${remCount} 門 (${remCount} 學分)`;
       document.getElementById('plan-remaining-breakdown').textContent = `進行中 ${ongoingCourses.length} 門 + 預計 ${expectedReq.length + expectedEle.length} 門`;
 
       const adviceEl = document.getElementById('plan-strategy-advice');
       const simNoteHtml = isSimulatingDifferentTarget
-        ? `<span class="ml-2 text-[11px] font-normal text-amber-300">（👀 目前為暫時試算畫面，帳號預設目標仍為 ${savedStr}）</span>`
-        : `<span class="ml-2 text-[11px] font-normal text-emerald-400">（✓ 目前顯示為帳號預設畢業目標）</span>`;
+        ? `<div class="text-[11px] font-normal text-amber-300 mt-0.5">（👀 目前為暫時試算畫面，帳號預設目標仍為 ${savedStr}）</div>`
+        : `<div class="text-[11px] font-normal text-emerald-400 mt-0.5">（✓ 目前顯示為帳號預設畢業目標）</div>`;
 
       adviceEl.innerHTML = remCount === 0
         ? `🎉 <strong>恭喜！您已完成所有 30 門碩士課程！</strong>`
@@ -1843,24 +1859,24 @@
         const cList = bInfo.courses, termUsd = Math.round(cList.length * costPerCourseUsd), termNtd = Math.round(termUsd * usdToNtd);
         const courseTagsHtml = cList.length
           ? cList.map(c => `<div class="px-2.5 py-1.5 rounded-lg border ${c.status === 'Ongoing' ? 'text-amber-300 border-amber-500/30 bg-amber-500/10' : 'text-slate-300 border-slate-700 bg-slate-900'} text-[11px] flex items-center justify-between gap-2">
-              <div class="truncate">${c.type === 'required' ? '<span class="text-[#CFB87C] font-bold">[必修]</span>' : '<span class="text-sky-400">[選修]</span>'} <span class="font-mono font-bold text-white">${c.code}</span> ${c.name}</div>
-              <span class="font-mono text-[10px] shrink-0">${c.status === 'Ongoing' ? `⏳ ${c.progress}` : '預計修習'}</span>
+              <div class="min-w-0 flex-1 break-words">${c.type === 'required' ? '<span class="text-[#CFB87C] font-bold">[必修]</span>' : '<span class="text-sky-400">[選修]</span>'} <span class="font-mono font-bold text-white">${c.code}</span> ${c.name}</div>
+              <span class="font-mono text-[10px] shrink-0 whitespace-nowrap">${c.status === 'Ongoing' ? `⏳ ${c.progress}` : '預計修習'}</span>
             </div>`).join('')
           : `<div class="text-[11px] text-slate-500 italic py-1">本期無須額外排課</div>`;
 
         return `<div class="p-3.5 rounded-xl bg-slate-900/90 border ${item.status === 'current' ? 'border-[#CFB87C]/60' : 'border-slate-800'} space-y-2.5">
           <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
             <div class="flex items-center space-x-2">
-              <span class="w-5 h-5 rounded-full bg-[#CFB87C] text-slate-950 font-extrabold text-[11px] flex items-center justify-center">${bInfo.order}</span>
+              <span class="w-5 h-5 rounded-full bg-[#CFB87C] text-slate-950 font-extrabold text-[11px] flex items-center justify-center shrink-0">${bInfo.order}</span>
               <span class="text-xs sm:text-sm font-bold text-white">${item.termName}</span>
-              <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">${item.badge}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 whitespace-nowrap">${item.badge}</span>
             </div>
-            <div class="text-right">
-              <span class="text-xs font-extrabold text-[#CFB87C]">建議修 ${cList.length} 門 (${cList.length} 學分)</span>
-              <span class="text-[11px] font-mono text-purple-300 ml-2">$${termUsd.toLocaleString()} USD (≈NT$${termNtd.toLocaleString()})</span>
+            <div class="flex flex-wrap items-baseline gap-x-2 text-xs">
+              <span class="font-extrabold text-[#CFB87C] whitespace-nowrap">建議修 ${cList.length} 門 (${cList.length} 學分)</span>
+              <span class="text-[11px] font-mono text-purple-300 whitespace-nowrap">$${termUsd.toLocaleString()} USD (≈NT$${termNtd.toLocaleString()})</span>
             </div>
           </div>
-          <div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 text-[11px] text-slate-400 font-mono bg-slate-950/60 p-2 rounded-lg">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-1.5 text-[11px] text-slate-400 font-mono bg-slate-950/60 p-2 rounded-lg">
             <div>🟢 開課：${item.classStart}</div>
             <div>💳 繳費截止：${item.enrollClose}</div>
             <div>🏁 結課/退選：${item.classEnd}</div>
@@ -1873,23 +1889,23 @@
       document.getElementById('official-calendar-list').innerHTML = activeOfficialCalendar.map(item => {
         if (item.type === 'break') {
           return `<div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs space-y-1">
-            <div class="flex items-center justify-between"><span class="font-bold text-rose-300">${item.termName}</span><span class="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-200 font-mono">${item.badge}</span></div>
+            <div class="flex items-center justify-between gap-1"><span class="font-bold text-rose-300">${item.termName}</span><span class="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-200 font-mono whitespace-nowrap shrink-0">${item.badge}</span></div>
             <div class="text-[11px] font-mono text-slate-300">時段：${item.classStart} ～ ${item.classEnd}</div>
-            <div class="text-[11px] text-slate-400">${item.note}</div>
+            <div class="text-[11px] text-slate-400 leading-relaxed">${item.note}</div>
           </div>`;
         }
         const editBtnHtml = canEdit
-          ? `<button type="button" onclick="openCalEditModal('${item.id}')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-[#CFB87C] text-[10px] text-slate-300 hover:text-slate-950 font-bold border border-slate-700">✏️ 微調日期</button>`
+          ? `<button type="button" onclick="openCalEditModal('${item.id}')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-[#CFB87C] text-[10px] text-slate-300 hover:text-slate-950 font-bold border border-slate-700 whitespace-nowrap">✏️ 微調日期</button>`
           : '';
         return `<div class="p-3 rounded-xl bg-slate-900/80 border ${item.status === 'current' ? 'border-[#CFB87C]' : 'border-slate-800'} text-xs space-y-1.5">
-          <div class="flex items-center justify-between gap-1">
+          <div class="flex flex-wrap items-center justify-between gap-1">
             <span class="font-bold text-slate-100">${item.termName}</span>
             <div class="flex items-center gap-1.5">
-              <span class="text-[10px] px-2 py-0.5 rounded ${item.status === 'current' ? 'bg-[#CFB87C] text-slate-950 font-bold' : 'bg-slate-800 text-slate-300'}">${item.badge}</span>
+              <span class="text-[10px] px-2 py-0.5 rounded whitespace-nowrap ${item.status === 'current' ? 'bg-[#CFB87C] text-slate-950 font-bold' : 'bg-slate-800 text-slate-300'}">${item.badge}</span>
               ${editBtnHtml}
             </div>
           </div>
-          <div class="grid grid-cols-2 gap-1 text-[11px] font-mono text-slate-300 pt-0.5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 text-[11px] font-mono text-slate-300 pt-0.5">
             <div>🔓 選課開放: ${item.enrollOpen}</div>
             <div>🏫 開學日: ${item.classStart}</div>
             <div class="text-amber-300">💳 選課截止: ${item.enrollClose}</div>
