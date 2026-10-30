@@ -129,7 +129,7 @@
           </div>
         </div>
         <div class="mt-3 pt-3 border-t border-slate-800 text-[11px] text-slate-400 flex justify-between items-center">
-          <span>此裝置預設/當前 ID：<strong id="footer-sync-id" class="text-[#CFB87C] font-mono">@surihua</strong> <span id="footer-lock-badge" class="ml-1"></span></span>
+          <span>此裝置預設/當前 ID：<strong id="footer-sync-id" class="text-[#CFB87C] font-mono">@surihua</strong> <span id="footer-lock-badge" class="ml-1">🔒</span></span>
           <button onclick="syncFromCloud(true)" class="text-emerald-400 hover:underline">🔄 立即同步雲端</button>
         </div>
       </div>
@@ -198,9 +198,9 @@
           <div><label class="block text-xs text-slate-400 mb-1">顯示姓名 (Display Name)</label><input type="text" id="profile-input-name" required class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100"></div>
           <div><label class="block text-xs text-[#CFB87C] font-semibold mb-1">自訂新的同步代碼 (New User ID)</label><input type="text" id="profile-input-id" required class="w-full px-3 py-2 bg-slate-900 border border-[#CFB87C]/50 rounded-xl text-xs text-slate-100 font-mono"></div>
         </div>
-        <div id="id-change-pwd-wrapper" class="hidden pt-1">
-          <label class="block text-xs text-amber-400 font-semibold mb-1">🔒 若要修改 User ID，請輸入目前的密碼驗證身分：</label>
-          <input type="password" id="profile-id-verify-pwd" placeholder="請輸入目前的密碼以確認修改 ID" class="w-full px-3 py-2 bg-slate-900 border border-amber-500/40 rounded-xl text-xs text-slate-100">
+        <div id="id-change-pwd-wrapper" class="pt-1">
+          <label class="block text-xs text-amber-400 font-semibold mb-1">🔒 若要修改姓名或 User ID，請輸入目前的密碼驗證身分：</label>
+          <input type="password" id="profile-id-verify-pwd" required placeholder="請輸入目前的密碼以確認修改" class="w-full px-3 py-2 bg-slate-900 border border-amber-500/40 rounded-xl text-xs text-slate-100">
         </div>
         <div class="flex justify-end pt-1"><button type="submit" class="px-5 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f]">驗證並儲存名稱 / 新 ID</button></div>
       </form>
@@ -217,9 +217,9 @@
       </div>
 
       <form onsubmit="handleUpdatePassword(event)" class="space-y-3 pt-2">
-        <div id="old-password-wrapper" class="hidden">
+        <div id="old-password-wrapper">
           <label class="block text-xs text-amber-400 font-semibold mb-1">🔒 請輸入舊密碼（更新密碼前必須驗證）</label>
-          <input type="password" id="sec-old-pwd" placeholder="輸入目前的舊密碼" class="w-full px-3 py-2 bg-slate-900 border border-amber-500/40 rounded-xl text-xs text-slate-100">
+          <input type="password" id="sec-old-pwd" required placeholder="輸入目前的舊密碼" class="w-full px-3 py-2 bg-slate-900 border border-amber-500/40 rounded-xl text-xs text-slate-100">
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
@@ -263,15 +263,15 @@
         <button id="device-setup-close-btn" onclick="closeDeviceSetupModal()" class="text-slate-400 hover:text-white hidden"><i data-lucide="x" class="w-5 h-5"></i></button>
       </div>
 
-      <!-- 選項 1：一鍵選擇預設主帳號 @surihua -->
+      <!-- 選項 1：選擇預設主帳號 @surihua（受密碼保護） -->
       <div class="p-3.5 rounded-xl bg-slate-900/90 border border-[#CFB87C]/40 space-y-2">
         <div class="flex items-center justify-between">
           <div>
-            <div class="text-xs font-bold text-[#CFB87C]">👑 系統預設主帳號</div>
+            <div class="text-xs font-bold text-[#CFB87C]">👑 系統預設主帳號（🔒 密碼保護）</div>
             <div class="text-sm font-bold text-white mt-0.5">Suri Hua (<span class="font-mono text-[#CFB87C]">@surihua</span>)</div>
           </div>
           <button type="button" onclick="chooseDefaultSurihuaForDevice()" class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shadow">
-            設為此裝置預設
+            驗證密碼並設為預設
           </button>
         </div>
       </div>
@@ -341,7 +341,7 @@
             <label class="text-xs text-slate-300">帳號密碼</label>
             <button type="button" onclick="openForgotFromLogin()" class="text-[11px] text-[#CFB87C] hover:underline font-semibold">忘記密碼？用手機號碼重設</button>
           </div>
-          <input type="password" id="login-user-pwd" placeholder="請輸入該 ID 的密碼" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100">
+          <input type="password" id="login-user-pwd" required placeholder="請輸入該 ID 的密碼" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100">
         </div>
         <div class="flex justify-end space-x-2 pt-2 border-t border-slate-800">
           <button type="button" onclick="closeNewUserModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300">取消</button>
@@ -468,6 +468,9 @@
   <script>
     const DEFAULT_USER_ID = 'surihua';
     const LEGACY_USER_ID = 'suri';
+    // 預先將 @surihua 的預設密碼與預設手機號碼轉為 SHA-256 不可逆加密指紋，防止新使用者覆蓋或從原始碼窺探明文
+    const SURIHUA_DEFAULT_PWD_HASH = '867f9888ff6f99f62467c72f7ba193aa1bdca083ab8191e6b32dc182ee1f340c';
+    const SURIHUA_DEFAULT_PHONE_HASH = '49bd88743934a546950351a71f638a1b2fb55059296cc22f0a5c8861d8ca0ab6';
 
     // iOS Icon 產生器
     (function(){
@@ -493,11 +496,17 @@
 
     const gradePoints = { 'A': 4.0, 'A-': 3.75, 'B+': 3.25, 'B': 3.0, 'B-': 2.75 };
     let isEditMode = false;
-    let usersList = [{ id: DEFAULT_USER_ID, name: 'Suri Hua', pwdHash: '', phoneHash: '' }];
+    let usersList = [{
+      id: DEFAULT_USER_ID,
+      name: 'Suri Hua',
+      pwdHash: SURIHUA_DEFAULT_PWD_HASH,
+      phoneHash: SURIHUA_DEFAULT_PHONE_HASH
+    }];
     let activeUserId = DEFAULT_USER_ID;
     let pendingSwitchUserId = null;
     let forgotTargetUserId = null;
-    const unlockedSessionUsers = new Set([DEFAULT_USER_ID]);
+    // 預設不自動解鎖任何受保護帳號，確保必須輸入密碼才能進入編輯或設為裝置預設
+    const unlockedSessionUsers = new Set();
 
     const safeStorage = {
       getItem: k => { try { return localStorage.getItem(k); } catch(e) { return null; } },
@@ -582,6 +591,10 @@
     async function pushToCloud() {
       if (activeUserId === LEGACY_USER_ID) return;
       const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: '', phoneHash: '' };
+      if (u.id === DEFAULT_USER_ID) {
+        if (!u.pwdHash) u.pwdHash = SURIHUA_DEFAULT_PWD_HASH;
+        if (!u.phoneHash) u.phoneHash = SURIHUA_DEFAULT_PHONE_HASH;
+      }
       const payload = {
         id: activeUserId,
         name: u.name,
@@ -613,8 +626,8 @@
         const idx = usersList.findIndex(u => u.id === activeUserId);
         if (idx !== -1) {
           if (data.name) usersList[idx].name = data.name;
-          if (data.pwdHash) usersList[idx].pwdHash = data.pwdHash;
-          if (data.phoneHash) usersList[idx].phoneHash = data.phoneHash;
+          usersList[idx].pwdHash = data.pwdHash || (activeUserId === DEFAULT_USER_ID ? SURIHUA_DEFAULT_PWD_HASH : usersList[idx].pwdHash);
+          usersList[idx].phoneHash = data.phoneHash || (activeUserId === DEFAULT_USER_ID ? SURIHUA_DEFAULT_PHONE_HASH : usersList[idx].phoneHash);
           saveUsersSystemState();
         }
         window.updateDashboardAndRender();
@@ -642,20 +655,19 @@
     window.closeDeviceSetupModal = () => document.getElementById('device-setup-modal').classList.add('hidden');
 
     window.chooseDefaultSurihuaForDevice = async function() {
-      safeStorage.setItem('cuboulder_device_default_user', DEFAULT_USER_ID);
       closeDeviceSetupModal();
-      const target = usersList.find(x => x.id === DEFAULT_USER_ID);
-      if (target && target.pwdHash && !unlockedSessionUsers.has(DEFAULT_USER_ID)) {
+      if (!unlockedSessionUsers.has(DEFAULT_USER_ID)) {
         pendingSwitchUserId = DEFAULT_USER_ID;
         document.getElementById('verify-target-id').textContent = `@${DEFAULT_USER_ID}`;
         document.getElementById('verify-pwd-input').value = '';
         document.getElementById('verify-pwd-modal').classList.remove('hidden');
         return;
       }
+      safeStorage.setItem('cuboulder_device_default_user', DEFAULT_USER_ID);
       await loadUserData(DEFAULT_USER_ID);
     };
 
-    // 徹底清除舊的 `suri` 帳號並將資料遷移至 `surihua`
+    // 徹底清除舊的 `suri` 帳號並將資料遷移至 `surihua`（強制套用預設密碼與手機保護）
     async function purgeLegacySuriAndMigrate() {
       const legacyCourses = safeStorage.getItem(`cuboulder_courses_${LEGACY_USER_ID}`);
       if (legacyCourses && !safeStorage.getItem(`cuboulder_courses_${DEFAULT_USER_ID}`)) {
@@ -663,25 +675,38 @@
       }
       safeStorage.removeItem(`cuboulder_courses_${LEGACY_USER_ID}`);
 
-      // 從雲端將舊 `suri` 標記刪除，若 `surihua` 雲端尚無資料則繼承過去
       try {
         const oldCloud = await fetchCloudUserRecord(LEGACY_USER_ID);
+        const newCloud = await fetchCloudUserRecord(DEFAULT_USER_ID);
+        if (!newCloud) {
+          await fetch(CLOUD_API_BASE + encodeURIComponent(DEFAULT_USER_ID), {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: DEFAULT_USER_ID,
+              name: 'Suri Hua',
+              pwdHash: (oldCloud && oldCloud.pwdHash) || SURIHUA_DEFAULT_PWD_HASH,
+              phoneHash: (oldCloud && oldCloud.phoneHash) || SURIHUA_DEFAULT_PHONE_HASH,
+              updatedAt: Date.now(),
+              courses: (oldCloud && oldCloud.courses) || suriDefaultCourses
+            })
+          });
+          await syncPhoneIndexToCloud(SURIHUA_DEFAULT_PHONE_HASH, DEFAULT_USER_ID, 'Suri Hua');
+        } else if (!newCloud.pwdHash || !newCloud.phoneHash) {
+          await fetch(CLOUD_API_BASE + encodeURIComponent(DEFAULT_USER_ID), {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              ...newCloud,
+              id: DEFAULT_USER_ID,
+              pwdHash: newCloud.pwdHash || SURIHUA_DEFAULT_PWD_HASH,
+              phoneHash: newCloud.phoneHash || SURIHUA_DEFAULT_PHONE_HASH,
+              updatedAt: Date.now()
+            })
+          });
+          await syncPhoneIndexToCloud(newCloud.phoneHash || SURIHUA_DEFAULT_PHONE_HASH, DEFAULT_USER_ID, newCloud.name || 'Suri Hua');
+        }
         if (oldCloud) {
-          const newCloud = await fetchCloudUserRecord(DEFAULT_USER_ID);
-          if (!newCloud) {
-            await fetch(CLOUD_API_BASE + encodeURIComponent(DEFAULT_USER_ID), {
-              method: 'PUT',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                id: DEFAULT_USER_ID,
-                name: 'Suri Hua',
-                pwdHash: oldCloud.pwdHash || '',
-                phoneHash: oldCloud.phoneHash || '',
-                updatedAt: Date.now(),
-                courses: oldCloud.courses || suriDefaultCourses
-              })
-            });
-          }
           await fetch(CLOUD_API_BASE + encodeURIComponent(LEGACY_USER_ID), {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
@@ -720,7 +745,7 @@
     };
 
     function updateProfilePageDisplay() {
-      const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: '' };
+      const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: SURIHUA_DEFAULT_PWD_HASH };
       document.getElementById('profile-display-name').textContent = u.name;
       document.getElementById('profile-display-id').textContent = `@${u.id}`;
       document.getElementById('delete-zone-id').textContent = u.id;
@@ -760,31 +785,32 @@
         return;
       }
 
-      if (newId === activeUserId) {
-        u.name = newName;
-        saveUsersSystemState();
-        updateProfilePageDisplay();
-        await pushToCloud();
-        alert('✅ 顯示名稱已更新！');
-        return;
-      }
-
       if (!u.pwdHash) {
-        alert('⚠️ 為保障帳號安全，修改 User ID 前請先在下方的「2. 自訂密碼與救援手機號碼」設定您的密碼！');
+        alert('⚠️ 為保障帳號安全，修改前請先在下方的「2. 自訂密碼與救援手機號碼」設定您的密碼！');
         document.getElementById('sec-new-pwd').focus();
         return;
       }
 
       const verifyPwd = document.getElementById('profile-id-verify-pwd').value;
       if (!verifyPwd) {
-        alert('🔒 修改 User ID 必須輸入目前的密碼進行驗證！');
+        alert('🔒 必須輸入目前的密碼進行驗證！');
         document.getElementById('profile-id-verify-pwd').focus();
         return;
       }
 
       const inputHash = await sha256(verifyPwd);
       if (inputHash !== u.pwdHash) {
-        alert('❌ 密碼驗證錯誤！無法修改 User ID。若忘記密碼請使用手機號碼重設。');
+        alert('❌ 密碼驗證錯誤！無法修改帳號資訊。若忘記密碼請使用手機號碼重設。');
+        return;
+      }
+
+      if (newId === activeUserId) {
+        u.name = newName;
+        unlockedSessionUsers.add(activeUserId);
+        saveUsersSystemState();
+        updateProfilePageDisplay();
+        await pushToCloud();
+        alert('✅ 密碼驗證通過，顯示名稱已更新！');
         return;
       }
 
@@ -864,8 +890,13 @@
       const targetPhoneHash = await sha256(phone);
 
       const matched = [];
+      if (targetPhoneHash === SURIHUA_DEFAULT_PHONE_HASH) {
+        matched.push({ id: DEFAULT_USER_ID, name: 'Suri Hua' });
+      }
       usersList.forEach(u => {
-        if (u.phoneHash === targetPhoneHash && u.id !== LEGACY_USER_ID) matched.push({ id: u.id, name: u.name });
+        if (u.phoneHash === targetPhoneHash && u.id !== LEGACY_USER_ID && !matched.some(m => m.id === u.id)) {
+          matched.push({ id: u.id, name: u.name });
+        }
       });
 
       try {
@@ -940,6 +971,9 @@
           u.phoneHash = cloudData.phoneHash;
         }
       }
+      if (uid === DEFAULT_USER_ID && u && !u.phoneHash) {
+        u.phoneHash = SURIHUA_DEFAULT_PHONE_HASH;
+      }
 
       if (!u || !u.phoneHash) {
         alert(`❌ 帳號 [@${uid}] 尚未綁定手機號碼，無法使用手機重設。`);
@@ -975,17 +1009,11 @@
       const u = usersList.find(x => x.id === activeUserId);
       const inputPwd = document.getElementById('del-confirm-pwd').value;
 
-      if (u && u.pwdHash) {
-        const hash = await sha256(inputPwd);
-        if (hash !== u.pwdHash) {
-          alert('❌ 密碼錯誤！必須輸入正確的個人密碼才能刪除帳號。');
-          return;
-        }
-      } else {
-        if (inputPwd.trim().toLowerCase() !== activeUserId) {
-          alert(`此帳號尚未設定密碼，若要確認刪除，請在密碼欄輸入您的 ID「${activeUserId}」以確認刪除。`);
-          return;
-        }
+      const expectedHash = (u && u.pwdHash) || (activeUserId === DEFAULT_USER_ID ? SURIHUA_DEFAULT_PWD_HASH : '');
+      const hash = await sha256(inputPwd);
+      if (expectedHash && hash !== expectedHash) {
+        alert('❌ 密碼錯誤！必須輸入正確的個人密碼才能刪除帳號。');
+        return;
       }
 
       const deletedId = activeUserId;
@@ -1000,15 +1028,19 @@
 
       usersList = usersList.filter(x => x.id !== deletedId && x.id !== LEGACY_USER_ID);
       if (!usersList.length) {
-        usersList.push({ id: DEFAULT_USER_ID, name: 'Suri Hua', pwdHash: '', phoneHash: '' });
+        usersList.push({
+          id: DEFAULT_USER_ID,
+          name: 'Suri Hua',
+          pwdHash: SURIHUA_DEFAULT_PWD_HASH,
+          phoneHash: SURIHUA_DEFAULT_PHONE_HASH
+        });
       }
       closeDeleteAccountModal();
       const nextUser = usersList[0].id;
       safeStorage.setItem('cuboulder_device_default_user', nextUser);
-      unlockedSessionUsers.add(nextUser);
       await loadUserData(nextUser);
       switchPage('home');
-      alert(`🗑️ 帳號 [@${deletedId}] 已徹底刪除！`);
+      alert(`🗑️ 帳號 [@${deletedId}] 已刪除！`);
     };
 
     async function initUserSystem() {
@@ -1019,18 +1051,33 @@
         if (s) {
           usersList = JSON.parse(s)
             .map(u => {
-              if (u && u.id === LEGACY_USER_ID) return { ...u, id: DEFAULT_USER_ID, name: 'Suri Hua' };
+              if (u && (u.id === LEGACY_USER_ID || u.id === DEFAULT_USER_ID)) {
+                return {
+                  id: DEFAULT_USER_ID,
+                  name: u.name || 'Suri Hua',
+                  pwdHash: u.pwdHash || SURIHUA_DEFAULT_PWD_HASH,
+                  phoneHash: u.phoneHash || SURIHUA_DEFAULT_PHONE_HASH
+                };
+              }
               return u;
             })
             .filter((u, idx, arr) => u && u.id && u.id !== LEGACY_USER_ID && arr.findIndex(x => x.id === u.id) === idx);
         }
       } catch(e) {}
 
-      if (!usersList.some(u => u.id === DEFAULT_USER_ID)) {
-        usersList.unshift({ id: DEFAULT_USER_ID, name: 'Suri Hua', pwdHash: '', phoneHash: '' });
+      const suriIdx = usersList.findIndex(u => u.id === DEFAULT_USER_ID);
+      if (suriIdx === -1) {
+        usersList.unshift({
+          id: DEFAULT_USER_ID,
+          name: 'Suri Hua',
+          pwdHash: SURIHUA_DEFAULT_PWD_HASH,
+          phoneHash: SURIHUA_DEFAULT_PHONE_HASH
+        });
+      } else {
+        if (!usersList[suriIdx].pwdHash) usersList[suriIdx].pwdHash = SURIHUA_DEFAULT_PWD_HASH;
+        if (!usersList[suriIdx].phoneHash) usersList[suriIdx].phoneHash = SURIHUA_DEFAULT_PHONE_HASH;
       }
 
-      // 檢查此裝置是否已經選擇過預設使用的 ID
       let deviceDefaultId = safeStorage.getItem('cuboulder_device_default_user');
       if (deviceDefaultId === LEGACY_USER_ID) {
         deviceDefaultId = DEFAULT_USER_ID;
@@ -1038,7 +1085,6 @@
       }
 
       if (!deviceDefaultId) {
-        // 首次使用此裝置：先載入預設畫面，並立即彈出「選擇此裝置預設 ID」視窗
         activeUserId = DEFAULT_USER_ID;
         saveUsersSystemState();
         await loadUserData(DEFAULT_USER_ID);
@@ -1054,7 +1100,7 @@
       usersList = usersList.filter(u => u && u.id && u.id !== LEGACY_USER_ID);
       safeStorage.setItem('cuboulder_users_list', JSON.stringify(usersList));
       safeStorage.setItem('cuboulder_current_user', activeUserId);
-      const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: '' };
+      const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: SURIHUA_DEFAULT_PWD_HASH };
       document.getElementById('current-user-display').textContent = `${u.name} (@${u.id})`;
       const fId = document.getElementById('footer-sync-id');
       if (fId) fId.textContent = `@${u.id}`;
@@ -1071,7 +1117,7 @@
 
     window.requestSwitchUser = function(uid) {
       document.getElementById('user-dropdown').classList.add('hidden');
-      if (uid === activeUserId) return;
+      if (uid === activeUserId && unlockedSessionUsers.has(uid)) return;
       const target = usersList.find(x => x.id === uid);
       if (target && target.pwdHash && !unlockedSessionUsers.has(uid)) {
         pendingSwitchUserId = uid;
@@ -1091,8 +1137,9 @@
       const uid = pendingSwitchUserId;
       if (!uid) return;
       const u = usersList.find(x => x.id === uid);
+      const expectedHash = (u && u.pwdHash) || (uid === DEFAULT_USER_ID ? SURIHUA_DEFAULT_PWD_HASH : '');
       const inputHash = await sha256(document.getElementById('verify-pwd-input').value);
-      if (u && u.pwdHash && inputHash !== u.pwdHash) {
+      if (expectedHash && inputHash !== expectedHash) {
         alert('❌ 密碼錯誤！請重新輸入，或點選「忘記密碼」使用手機號碼重設。');
         return;
       }
@@ -1105,6 +1152,14 @@
     async function loadUserData(uid) {
       activeUserId = (uid || DEFAULT_USER_ID).toLowerCase();
       if (activeUserId === LEGACY_USER_ID) activeUserId = DEFAULT_USER_ID;
+      isEditMode = false;
+      const btn = document.getElementById('mode-toggle-btn');
+      const text = document.getElementById('mode-text');
+      document.getElementById('btn-add-course').classList.add('hidden');
+      document.getElementById('btn-reset-data').classList.add('hidden');
+      if (btn) btn.className = "inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700";
+      if (text) text.textContent = "瀏覽模式";
+
       saveUsersSystemState();
 
       const saved = safeStorage.getItem(`cuboulder_courses_${activeUserId}`);
@@ -1141,7 +1196,7 @@
       document.getElementById('tab-mode-login').className = !isReg ? "flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950" : "flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300";
     };
 
-    // 建立全新 ID（強制輸入新密碼與手機並儲存，並設為此裝置預設 ID）
+    // 建立全新 ID（絕對禁止註冊或覆蓋 surihua）
     window.handleRegisterNewUser = async function(e) {
       e.preventDefault();
       const id = document.getElementById('reg-user-id').value.trim().toLowerCase();
@@ -1150,7 +1205,12 @@
       const phone = normalizePhone(document.getElementById('reg-user-phone').value);
 
       if (!id || !name || !pwd || !phone) return;
-      if (id === LEGACY_USER_ID) { alert('`@suri` 已停用，請使用 `@surihua` 或其他 ID！'); return; }
+      if (id === LEGACY_USER_ID || id === DEFAULT_USER_ID) {
+        alert(`⚠️ [@${DEFAULT_USER_ID}] 為系統受保護的主帳號，無法重新註冊或覆蓋！請切換至右方分頁輸入密碼登入，或取一個新的 ID。`);
+        switchUserModalTab('login');
+        document.getElementById('login-user-id').value = DEFAULT_USER_ID;
+        return;
+      }
       if (pwd.length < 4) { alert('密碼長度請至少設定 4 個字元！'); return; }
       if (phone.length < 6) { alert('請輸入有效的救援手機號碼！'); return; }
 
@@ -1195,7 +1255,7 @@
         return;
       }
 
-      const targetPwdHash = (cloudData && cloudData.pwdHash) || (localUser && localUser.pwdHash) || '';
+      const targetPwdHash = (cloudData && cloudData.pwdHash) || (localUser && localUser.pwdHash) || (id === DEFAULT_USER_ID ? SURIHUA_DEFAULT_PWD_HASH : '');
       if (targetPwdHash) {
         const inputHash = await sha256(pwd);
         if (inputHash !== targetPwdHash) {
@@ -1207,9 +1267,9 @@
       if (!localUser) {
         usersList.push({
           id,
-          name: (cloudData && cloudData.name) || id.toUpperCase(),
+          name: (cloudData && cloudData.name) || (id === DEFAULT_USER_ID ? 'Suri Hua' : id.toUpperCase()),
           pwdHash: targetPwdHash,
-          phoneHash: (cloudData && cloudData.phoneHash) || ''
+          phoneHash: (cloudData && cloudData.phoneHash) || (id === DEFAULT_USER_ID ? SURIHUA_DEFAULT_PHONE_HASH : '')
         });
       }
       safeStorage.setItem('cuboulder_device_default_user', id);
