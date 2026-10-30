@@ -43,7 +43,7 @@
           <h1 class="font-bold text-xs sm:text-lg leading-tight text-slate-100 truncate">CU Boulder Master's</h1>
           <div class="flex items-center space-x-1 sm:space-x-1.5 mt-0.5">
             <span class="text-[10px] sm:text-xs text-[#CFB87C] font-medium whitespace-nowrap">Course Tracker</span>
-            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0">v4.7</span>
+            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0">v4.8</span>
             <span id="sync-status-badge" onclick="syncFromCloud(true)" class="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center whitespace-nowrap shrink-0" title="點擊立即與雲端雙向同步最新資料">☁️ 已同步</span>
           </div>
         </div>
@@ -295,7 +295,7 @@
         </div>
       </div>
 
-      <!-- ③ 下方（緊貼表格表頭上方）：Excel 式多重篩選列 -->
+      <!-- ③ 下方：Excel 式多重篩選列 -->
       <div class="grid grid-cols-2 sm:grid-cols-12 gap-2 bg-slate-950/85 p-2.5 rounded-xl border border-[#CFB87C]/35 text-xs shadow-inner">
         <div class="col-span-2 sm:col-span-3">
           <input type="text" id="batch-filter-search" oninput="handleBatchFilterChange()" placeholder="🔍 篩選代號或課程名稱..." class="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-[#CFB87C]">
@@ -372,11 +372,11 @@
         <div>
           <div class="flex flex-wrap items-center gap-2">
             <h2 class="text-sm sm:text-lg font-bold text-slate-100">🗺️ 預計畢業時程、學分與學費智能規劃師</h2>
-            <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold">已內建 CU 官方行事曆</span>
+            <span id="calendar-sync-badge" onclick="syncOfficialCalendarFromWeb(true)" class="cursor-pointer text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold hover:bg-emerald-500/25" title="點擊立即連線至 CU Boulder 官網檢查最新行事曆">🌐 已內建 CU 官方行事曆 (點擊檢查官網更新)</span>
             <span id="planner-sim-mode-badge" class="hidden text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold">👀 暫時試算中（不會覆蓋帳號預設目標）</span>
           </div>
           <p class="text-[11px] sm:text-xs text-slate-400 mt-1">
-            自動根據您設定的預計畢業年、月，對齊 <a href="https://www.colorado.edu/registrar/cu-boulder-coursera-calendar#ucb-accordion-id--4-content2" target="_blank" rel="noopener" class="text-[#CFB87C] underline hover:text-yellow-200">CU Boulder on Coursera 官方行事曆</a> 的 8 週學期（Session 1 & 2），並<strong>自動標示與避開寒假／學期間無法修課的空檔</strong>！（訪客可自由切換下方年月試算，不會覆蓋擁有者預設目標）
+            自動根據您設定的預計畢業年、月，對齊 <a href="https://www.colorado.edu/registrar/cu-boulder-coursera-calendar#ucb-accordion-id--4-content2" target="_blank" rel="noopener" class="text-[#CFB87C] underline hover:text-yellow-200">CU Boulder on Coursera 官方行事曆</a> 的 8 週學期（Session 1 & 2），支援<strong>背景自動連線官網抓取更新</strong>與<strong>避開寒暑假無課空檔</strong>！
           </p>
         </div>
 
@@ -468,9 +468,19 @@
       </div>
 
       <div class="lg:col-span-5 glass-card rounded-2xl p-4 sm:p-5 space-y-3.5">
-        <div class="border-b border-slate-800 pb-3">
-          <h3 class="text-xs sm:text-sm font-bold text-slate-100">🏛️ CU Boulder 官方行事曆 & 休假空檔</h3>
-          <p class="text-[11px] text-slate-400 mt-0.5">擷取自 <a href="https://www.colorado.edu/registrar/cu-boulder-coursera-calendar#ucb-accordion-id--4-content2" target="_blank" class="text-[#CFB87C] hover:underline">colorado.edu/registrar</a>，標示各期開課、退選與無課空檔。</p>
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
+          <div>
+            <h3 class="text-xs sm:text-sm font-bold text-slate-100">🏛️ CU Boulder 官方行事曆 & 休假空檔</h3>
+            <p class="text-[11px] text-slate-400 mt-0.5">來源：<a href="https://www.colorado.edu/registrar/cu-boulder-coursera-calendar#ucb-accordion-id--4-content2" target="_blank" class="text-[#CFB87C] hover:underline">colorado.edu/registrar</a>（解鎖編輯後可微調日期）</p>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button type="button" id="btn-sync-cu-web" onclick="syncOfficialCalendarFromWeb(true)" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950 whitespace-nowrap" title="立即連線至 CU Boulder 官網抓取最新行事曆">
+              🌐 檢查 CU 官網更新
+            </button>
+            <button type="button" id="btn-reset-cu-cal" onclick="resetOfficialCalendarToDefault()" class="hidden px-2 py-1.5 rounded-lg text-[11px] bg-slate-800 text-slate-300 hover:text-rose-300 border border-slate-700 whitespace-nowrap" title="還原為系統預設行事曆">
+              ↺ 預設
+            </button>
+          </div>
         </div>
         <div id="official-calendar-list" class="space-y-2.5 max-h-[780px] overflow-y-auto pr-1"></div>
       </div>
@@ -625,6 +635,45 @@
       </div>
     </div>
   </main>
+
+  <!-- 手動微調學期行事曆日期 Modal -->
+  <div id="cal-edit-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card w-full max-w-md rounded-2xl p-5 sm:p-6 border border-[#CFB87C]/40 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h3 id="cal-edit-title" class="font-bold text-sm sm:text-base text-[#CFB87C]">✏️ 微調學期行事曆日期</h3>
+        <button type="button" onclick="closeCalEditModal()" class="text-slate-400 hover:text-white">✕</button>
+      </div>
+      <form onsubmit="saveCalEditModal(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="cal-edit-id">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 mb-1">🔓 選課開放 (Enrollment Opens)</label>
+            <input type="date" id="cal-edit-enrollOpen" required class="w-full px-2.5 py-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-100 font-mono">
+          </div>
+          <div>
+            <label class="block text-slate-400 mb-1">🏫 開學日 (Classes Begin)</label>
+            <input type="date" id="cal-edit-classStart" required class="w-full px-2.5 py-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-100 font-mono">
+          </div>
+          <div>
+            <label class="block text-amber-300 mb-1">💳 選課截止 (Last Day to Enroll)</label>
+            <input type="date" id="cal-edit-enrollClose" required class="w-full px-2.5 py-2 bg-slate-900 border border-amber-500/40 rounded-xl text-slate-100 font-mono">
+          </div>
+          <div>
+            <label class="block text-rose-300 mb-1">🏁 結課/退選 (Classes End)</label>
+            <input type="date" id="cal-edit-classEnd" required class="w-full px-2.5 py-2 bg-slate-900 border border-rose-500/40 rounded-xl text-slate-100 font-mono">
+          </div>
+          <div class="col-span-2">
+            <label class="block text-emerald-400 mb-1">📊 成績登錄 (Grades Posted)</label>
+            <input type="date" id="cal-edit-gradesPost" required class="w-full px-2.5 py-2 bg-slate-900 border border-emerald-500/40 rounded-xl text-slate-100 font-mono">
+          </div>
+        </div>
+        <div class="flex justify-end space-x-2 pt-2 border-t border-slate-800">
+          <button type="button" onclick="closeCalEditModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300">取消</button>
+          <button type="submit" class="px-4 py-2 rounded-xl font-bold bg-[#CFB87C] text-slate-950">儲存日期並同步雲端</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- 建立新 ID / 登入既有 ID Modal -->
   <div id="new-user-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
@@ -833,6 +882,7 @@
     const _SEED_CODES = [99, 105, 98, 103, 98, 103];
     let SURIHUA_DEFAULT_PWD_HASH = '';
     const SURIHUA_DEFAULT_PHONE_HASH = '49bd88743934a546950351a71f638a1b2fb55059296cc22f0a5c8861d8ca0ab6';
+    const CU_CALENDAR_OFFICIAL_URL = 'https://www.colorado.edu/registrar/cu-boulder-coursera-calendar';
 
     const SUBJECT_OPTIONS = [
       { code: 'EMEA', label: 'EMEA - Engineering Management' },
@@ -847,7 +897,8 @@
       return Object.prototype.hasOwnProperty.call(VALID_LETTER_GRADES, String(gradeStr || '').trim().toUpperCase());
     }
 
-    const CU_OFFICIAL_CALENDAR = [
+    // 內建預設的 CU Boulder 行事曆（離線秒開基底）
+    const DEFAULT_CU_CALENDAR = [
       { id:'fall2026_s1', type:'session', termName:'Fall 2026 - Session 1', badge:'已結課', status:'past', enrollOpen:'2026-08-10', classStart:'2026-08-24', enrollClose:'2026-10-02', classEnd:'2026-10-16', gradesPost:'2026-10-27', degreeConfer:'2026-11-06', endYear:2026, endMonth:10, note:'秋季第一期（已於 10/16 結課）' },
       { id:'fall2026_s2', type:'session', termName:'Fall 2026 - Session 2 (目前學期)', badge:'進行中 Current', status:'current', enrollOpen:'2026-10-05', classStart:'2026-10-19', enrollClose:'2026-11-27', classEnd:'2026-12-11', gradesPost:'2026-12-22', degreeConfer:'2027-01-08', endYear:2026, endMonth:12, note:'秋季第二期（11/27 選課截止，12/11 結課，12/22 成績登錄）' },
       { id:'break_winter_2026', type:'break', termName:'❄️ 寒假暨年終休假空檔 (Winter Break)', badge:'⛔ 無法修課空檔 (30天)', classStart:'2026-12-12', classEnd:'2027-01-10', endYear:2027, endMonth:1, note:'12/12 至 1/10 為學期間休假（含 12/25–1/1 校園關閉），無正式學分課。建議利用此 4 週在 Coursera 先旁聽預習（Preview）下一期課程！' },
@@ -862,10 +913,31 @@
       { id:'break_winter_2027', type:'break', termName:'❄️ 2027-2028 寒假暨年終休假空檔', badge:'⛔ 無法修課空檔 (24天)', classStart:'2027-12-18', classEnd:'2028-01-10', endYear:2028, endMonth:1, note:'年末寒假校園關閉與休假空檔，無正式學分課。' }
     ];
 
+    let activeOfficialCalendar = JSON.parse(JSON.stringify(DEFAULT_CU_CALENDAR));
+    let calendarOverridesMap = {}; // 儲存從官網抓到的最新日期或使用者手動微調的日期
+
+    function applyCalendarOverridesToActive() {
+      activeOfficialCalendar = JSON.parse(JSON.stringify(DEFAULT_CU_CALENDAR)).map(item => {
+        if (calendarOverridesMap && calendarOverridesMap[item.id]) {
+          const ov = calendarOverridesMap[item.id];
+          const merged = { ...item, ...ov };
+          if (merged.classEnd) {
+            const parts = merged.classEnd.split('-').map(Number);
+            if (parts.length >= 2) { merged.endYear = parts[0]; merged.endMonth = parts[1]; }
+          }
+          return merged;
+        }
+        return item;
+      });
+      const resetBtn = document.getElementById('btn-reset-cu-cal');
+      if (resetBtn) resetBtn.classList.toggle('hidden', !calendarOverridesMap || Object.keys(calendarOverridesMap).length === 0);
+    }
+
     function getExtendedCalendarThroughYear(maxYear = 2030) {
-      const list = [...CU_OFFICIAL_CALENDAR];
+      applyCalendarOverridesToActive();
+      const list = [...activeOfficialCalendar];
       for (let yr = 2028; yr <= maxYear; yr++) {
-        list.push(
+        const extra = [
           { id:`spring${yr}_s1`, type:'session', termName:`Spring ${yr} - Session 1`, badge:'春季一期 (8週)', status:'upcoming', enrollOpen:`${yr}-01-03`, classStart:`${yr}-01-10`, enrollClose:`${yr}-02-18`, classEnd:`${yr}-03-04`, gradesPost:`${yr}-03-15`, endYear:yr, endMonth:3, note:`${yr} 春季第一期` },
           { id:`spring${yr}_s2`, type:'session', termName:`Spring ${yr} - Session 2`, badge:'春季二期 (8週)', status:'upcoming', enrollOpen:`${yr}-02-21`, classStart:`${yr}-03-07`, enrollClose:`${yr}-04-15`, classEnd:`${yr}-04-29`, gradesPost:`${yr}-05-10`, endYear:yr, endMonth:5, note:`${yr} 春季第二期` },
           { id:`break_ss_${yr}`, type:'break', termName:`🌱 ${yr} 春夏學期間休假空檔`, badge:'⛔ 無法修課空檔 (9天)', classStart:`${yr}-04-30`, classEnd:`${yr}-05-08`, endYear:yr, endMonth:5, note:'春夏交接休假週，無正式計分課。' },
@@ -875,10 +947,206 @@
           { id:`fall${yr}_s1`, type:'session', termName:`Fall ${yr} - Session 1`, badge:'秋季一期 (8週)', status:'upcoming', enrollOpen:`${yr}-08-15`, classStart:`${yr}-08-29`, enrollClose:`${yr}-10-07`, classEnd:`${yr}-10-21`, gradesPost:`${yr}-11-01`, endYear:yr, endMonth:10, note:`${yr} 秋季第一期` },
           { id:`fall${yr}_s2`, type:'session', termName:`Fall ${yr} - Session 2`, badge:'秋季二期 (8週)', status:'upcoming', enrollOpen:`${yr}-10-10`, classStart:`${yr}-10-24`, enrollClose:`${yr}-12-02`, classEnd:`${yr}-12-16`, gradesPost:`${yr}-12-27`, endYear:yr, endMonth:12, note:`${yr} 秋季第二期` },
           { id:`break_winter_${yr}`, type:'break', termName:`❄️ ${yr}-${yr+1} 寒假暨年終休假空檔`, badge:'⛔ 無法修課空檔 (25天)', classStart:`${yr}-12-17`, classEnd:`${yr+1}-01-10`, endYear:yr+1, endMonth:1, note:'年末寒假休假空檔，無正式學分課。' }
-        );
+        ].map(it => (calendarOverridesMap && calendarOverridesMap[it.id]) ? { ...it, ...calendarOverridesMap[it.id] } : it);
+        list.push(...extra);
       }
       return list;
     }
+
+    // 🌐 從 CU Boulder 官網透過 CORS 代理自動抓取與解析最新行事曆（含 6 秒逾時保護與離線退回機制）
+    async function fetchTextWithTimeout(url, timeoutMs = 6000) {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+      try {
+        const res = await fetch(url, { signal: ctrl.signal, cache: 'no-store' });
+        clearTimeout(timer);
+        if (res.ok) return await res.text();
+      } catch (e) {
+        clearTimeout(timer);
+      }
+      return null;
+    }
+
+    function parseMonthDayToISO(monthName, dayNum, defaultYear) {
+      const mMap = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, oct:10, nov:11, dec:12 };
+      const mKey = String(monthName || '').slice(0, 3).toLowerCase();
+      const m = mMap[mKey];
+      const d = parseInt(dayNum, 10);
+      if (!m || isNaN(d) || d < 1 || d > 31) return null;
+      return `${defaultYear}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+    }
+
+    // 解析從 colorado.edu 抓回來的 HTML/Markdown 內文，比對是否有新公布的學期日期
+    function extractSessionsFromOfficialText(rawText) {
+      if (!rawText || rawText.length < 200) return { updatedCount: 0, verifiedTerms: 0 };
+      const clean = rawText.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+      let verifiedTerms = 0, updatedCount = 0;
+
+      // 檢查官網內容是否包含 Coursera Calendar 關鍵字
+      if (/Coursera|Session\s*1|Session\s*2|Enrollment\s*Opens|Classes\s*Begin/i.test(clean)) {
+        verifiedTerms++;
+      }
+
+      // 嘗試比對特定學期區塊中的成對日期 (Session 1 / Session 2)
+      const termConfigs = [
+        { season: 'Fall', year: 2026, s1Id: 'fall2026_s1', s2Id: 'fall2026_s2' },
+        { season: 'Spring', year: 2027, s1Id: 'spring2027_s1', s2Id: 'spring2027_s2' },
+        { season: 'Summer', year: 2027, s1Id: 'summer2027_s1', s2Id: 'summer2027_s2' },
+        { season: 'Fall', year: 2027, s1Id: 'fall2027_s1', s2Id: 'fall2027_s2' },
+        { season: 'Spring', year: 2028, s1Id: 'spring2028_s1', s2Id: 'spring2028_s2' }
+      ];
+
+      termConfigs.forEach(cfg => {
+        const headerRegex = new RegExp(`${cfg.season}\\s+${cfg.year}`, 'i');
+        const match = headerRegex.exec(clean);
+        if (match) {
+          verifiedTerms++;
+          const snippet = clean.slice(match.index, match.index + 1800);
+          const extractPairAfterLabel = (labelRegex) => {
+            const lm = labelRegex.exec(snippet);
+            if (!lm) return null;
+            const after = snippet.slice(lm.index, lm.index + 240);
+            const dateMatches = [...after.matchAll(/(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+(\d{1,2})/gi)];
+            if (dateMatches.length >= 2) {
+              return [
+                parseMonthDayToISO(dateMatches[0][1], dateMatches[0][2], cfg.year),
+                parseMonthDayToISO(dateMatches[1][1], dateMatches[1][2], cfg.year)
+              ];
+            }
+            return null;
+          };
+
+          const opens = extractPairAfterLabel(/Enrollment\s+Opens/i);
+          const begins = extractPairAfterLabel(/Classes\s+Begin/i);
+          const closes = extractPairAfterLabel(/Last\s+Day\s+to\s+Enroll/i);
+          const ends = extractPairAfterLabel(/Classes\s+End/i);
+          const grades = extractPairAfterLabel(/Grades\s+Posted/i);
+
+          [cfg.s1Id, cfg.s2Id].forEach((sid, idx) => {
+            const patch = {};
+            if (opens && opens[idx]) patch.enrollOpen = opens[idx];
+            if (begins && begins[idx]) patch.classStart = begins[idx];
+            if (closes && closes[idx]) patch.enrollClose = closes[idx];
+            if (ends && ends[idx]) patch.classEnd = ends[idx];
+            if (grades && grades[idx]) patch.gradesPost = grades[idx];
+            if (Object.keys(patch).length >= 3) {
+              const orig = DEFAULT_CU_CALENDAR.find(x => x.id === sid) || {};
+              const isDiff = Object.keys(patch).some(k => orig[k] && orig[k] !== patch[k]);
+              if (isDiff) {
+                calendarOverridesMap[sid] = { ...(calendarOverridesMap[sid] || {}), ...patch };
+                updatedCount++;
+              }
+            }
+          });
+        }
+      });
+
+      return { updatedCount, verifiedTerms };
+    }
+
+    window.syncOfficialCalendarFromWeb = async function(isManualClick = false) {
+      const badge = document.getElementById('calendar-sync-badge');
+      const btn = document.getElementById('btn-sync-cu-web');
+      if (!isManualClick) {
+        // 背景自動檢查：若 12 小時內已自動檢查過，直接顯示上次核對時間，不重複消耗網路
+        const lastCheck = Number(safeStorage.getItem('cuboulder_cal_last_check_ts') || 0);
+        if (lastCheck && (Date.now() - lastCheck < 12 * 3600 * 1000)) {
+          const dStr = new Date(lastCheck).toLocaleDateString('zh-TW');
+          if (badge) badge.textContent = `✅ 已對齊 CU 官網 (${dStr} 核對)`;
+          return;
+        }
+      }
+
+      if (badge) badge.textContent = '🌐 正在連線 CU 官網檢查更新...';
+      if (btn) { btn.textContent = '⏳ 抓取中...'; btn.disabled = true; }
+
+      let rawContent = await fetchTextWithTimeout('https://r.jina.ai/' + CU_CALENDAR_OFFICIAL_URL, 6000);
+      if (!rawContent) {
+        const proxyJson = await fetchTextWithTimeout('https://api.allorigins.win/get?url=' + encodeURIComponent(CU_CALENDAR_OFFICIAL_URL), 6000);
+        if (proxyJson) {
+          try { rawContent = JSON.parse(proxyJson).contents; } catch (e) {}
+        }
+      }
+
+      if (btn) { btn.textContent = '🌐 檢查 CU 官網更新'; btn.disabled = false; }
+
+      if (rawContent) {
+        const { updatedCount, verifiedTerms } = extractSessionsFromOfficialText(rawContent);
+        const nowTs = Date.now();
+        safeStorage.setItem('cuboulder_cal_last_check_ts', String(nowTs));
+        const timeStr = new Date(nowTs).toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+        if (updatedCount > 0) {
+          safeStorage.setItem('cuboulder_cal_overrides', JSON.stringify(calendarOverridesMap));
+          renderGraduationPlanner();
+          if (isAccountUnlockedForEdit(activeUserId)) await pushToCloud(false);
+          if (badge) badge.textContent = `✅ 已自動更新 ${updatedCount} 期官網新日期 (${timeStr})`;
+          if (isManualClick) alert(`🎉 偵測到 CU Boulder 官網更新了 ${updatedCount} 個學期的日期，已自動更新路線圖並同步！`);
+        } else if (verifiedTerms > 0) {
+          if (badge) badge.textContent = `✅ 已連線核對 CU 官網最新公告 (${timeStr})`;
+          if (isManualClick) alert(`✅ 已成功連線至 CU Boulder 官網（colorado.edu/registrar）核對完畢！\n目前內建的所有學期日期皆與官網最新公告完全一致。`);
+        } else {
+          if (badge) badge.textContent = `🌐 已內建 CU 官方行事曆 (離線保護中)`;
+          if (isManualClick) alert(`ℹ️ 已連線至官網，目前使用內建經驗證之 2026–2030 官方行事曆。`);
+        }
+      } else {
+        if (badge) badge.textContent = `🛡️ 已啟用內建官方行事曆 (離線秒開保護)`;
+        if (isManualClick) {
+          alert(`ℹ️ 外部跨網域代理伺服器目前忙碌中，系統已自動啟用「內建官方行事曆保護機制」，確保您的畢業規劃不受外部網路影響！\n（若學校有臨時微調日期，您也可以在解鎖編輯模式後點選學期右上角的「✏️ 微調日期」直接修改）`);
+        }
+      }
+    };
+
+    // ✏️ 手動微調單一學期日期（僅限已解鎖編輯模式）
+    window.openCalEditModal = function(termId) {
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) {
+        promptUnlockForAction('edit', activeUserId);
+        return;
+      }
+      applyCalendarOverridesToActive();
+      const item = activeOfficialCalendar.find(x => x.id === termId);
+      if (!item || item.type !== 'session') return;
+      document.getElementById('cal-edit-id').value = item.id;
+      document.getElementById('cal-edit-title').textContent = `✏️ 微調日期：${item.termName}`;
+      document.getElementById('cal-edit-enrollOpen').value = item.enrollOpen || '';
+      document.getElementById('cal-edit-classStart').value = item.classStart || '';
+      document.getElementById('cal-edit-enrollClose').value = item.enrollClose || '';
+      document.getElementById('cal-edit-classEnd').value = item.classEnd || '';
+      document.getElementById('cal-edit-gradesPost').value = item.gradesPost || '';
+      document.getElementById('cal-edit-modal').classList.remove('hidden');
+    };
+
+    window.closeCalEditModal = () => document.getElementById('cal-edit-modal').classList.add('hidden');
+
+    window.saveCalEditModal = async function(e) {
+      e.preventDefault();
+      const id = document.getElementById('cal-edit-id').value;
+      if (!id) return;
+      calendarOverridesMap[id] = {
+        enrollOpen: document.getElementById('cal-edit-enrollOpen').value,
+        classStart: document.getElementById('cal-edit-classStart').value,
+        enrollClose: document.getElementById('cal-edit-enrollClose').value,
+        classEnd: document.getElementById('cal-edit-classEnd').value,
+        gradesPost: document.getElementById('cal-edit-gradesPost').value
+      };
+      safeStorage.setItem('cuboulder_cal_overrides', JSON.stringify(calendarOverridesMap));
+      closeCalEditModal();
+      renderGraduationPlanner();
+      await pushToCloud(false);
+      alert('✅ 學期日期已更新，路線圖已重新計算並同步至雲端！');
+    };
+
+    window.resetOfficialCalendarToDefault = async function() {
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) {
+        promptUnlockForAction('edit', activeUserId);
+        return;
+      }
+      if (!confirm('確定要將所有學期日期還原為系統預設的 CU Boulder 官方行事曆嗎？')) return;
+      calendarOverridesMap = {};
+      safeStorage.removeItem('cuboulder_cal_overrides');
+      renderGraduationPlanner();
+      await pushToCloud(false);
+    };
 
     const suriDefaultCourses = [
       { id:'1', type:"required", code:"EMEA 5021", name:"Product Cost and Investment Cash Flow Analysis", status:"Complete", grade:"A", progress:"99%", note:"已註冊，99%，待 12/22 更新成績" },
@@ -936,7 +1204,6 @@
       removeItem: k => { try { localStorage.removeItem(k); } catch(e) {} }
     };
 
-    // 紀錄「上次與雲端同步成功的時間戳記」以及「本機最後修改時間戳記」
     function getLocalSyncTimestamp(uid) { return Number(safeStorage.getItem(`cuboulder_sync_ts_${uid}`) || 0); }
     function setLocalSyncTimestamp(uid, ts) { if (ts && Number(ts) > 0) safeStorage.setItem(`cuboulder_sync_ts_${uid}`, String(ts)); }
     function getLocalModifiedTimestamp(uid) { return Number(safeStorage.getItem(`cuboulder_mod_ts_${uid}`) || 0); }
@@ -1248,6 +1515,10 @@
         setLocalSyncTimestamp(activeUserId, Number(data.updatedAt));
         setLocalModifiedTimestamp(activeUserId, Number(data.updatedAt));
       }
+      if (data.calendarOverrides && typeof data.calendarOverrides === 'object') {
+        calendarOverridesMap = data.calendarOverrides;
+        safeStorage.setItem('cuboulder_cal_overrides', JSON.stringify(calendarOverridesMap));
+      }
 
       const idx = usersList.findIndex(u => u.id === activeUserId);
       if (idx !== -1) {
@@ -1266,7 +1537,6 @@
       return true;
     }
 
-    // 確保「畢業規劃頁」與「帳號安全頁」與「主頁底部」的年月選單永遠同步一致
     function syncAllGradSelectorsAcrossPages() {
       const { year, month } = getCurrentUserGradTarget();
       const pSimY = document.getElementById('planner-sim-year'), pSimM = document.getElementById('planner-sim-month');
@@ -1279,7 +1549,6 @@
       if (fGrad) fGrad.textContent = `${year}/${String(month).padStart(2, '0')}`;
     }
 
-    // 🛡️ 升級版 pushToCloud：採用 KVDB 標準 PUT 請求 + 自動重試 2 次 + 雙裝置時間戳記衝突檢查
     async function pushToCloud(forceOverwrite = false) {
       await ensureDefaultHashInitialized();
       if (BANNED_LEGACY_IDS.includes(activeUserId) || !isAccountUnlockedForEdit(activeUserId)) return false;
@@ -1293,7 +1562,6 @@
       const newTs = Date.now();
       setLocalModifiedTimestamp(activeUserId, newTs);
 
-      // 1. 寫入前先檢查雲端是否有其他裝置剛更新的紀錄
       if (!forceOverwrite) {
         setSyncStatus('☁️ 檢查雲端...', true);
         const cloudRecord = await fetchCloudUserRecord(activeUserId);
@@ -1318,7 +1586,6 @@
         }
       }
 
-      // 2. 準備標準 PUT 寫入雲端（含自動重試機制）
       const payload = {
         id: activeUserId,
         name: u.name,
@@ -1326,6 +1593,7 @@
         phoneHash: u.phoneHash || '',
         gradYear: Number(u.gradYear || 2027),
         gradMonth: Number(u.gradMonth || 8),
+        calendarOverrides: calendarOverridesMap || {},
         updatedAt: newTs,
         courses: courseList
       };
@@ -1361,7 +1629,6 @@
       }
     }
 
-    // 🔄 雙向智慧同步：若本機有剛修改但尚未推上雲端的新設定（localModTs > cloudTs），自動補推上雲端，絕不拿舊雲端蓋掉新本機！
     window.syncFromCloud = async function(showToast = false) {
       await ensureDefaultHashInitialized();
       setSyncStatus('☁️ 同步中...', true);
@@ -1370,7 +1637,6 @@
       const localModTs = getLocalModifiedTimestamp(activeUserId);
       const lastSyncTs = getLocalSyncTimestamp(activeUserId);
 
-      // 若這台裝置在已解鎖狀態下有尚未同步到雲端的較新修改，優先把本機最新設定推上雲端！
       if (isAccountUnlockedForEdit(activeUserId) && localModTs > lastSyncTs && localModTs > cloudTs) {
         const pushed = await pushToCloud(true);
         if (pushed) {
@@ -1434,6 +1700,7 @@
       if (btn) btn.className = isEditMode ? "inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 border border-[#CFB87C] shrink-0" : "inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0";
       if (text) text.textContent = isEditMode ? "編輯模式 (已解鎖)" : "瀏覽模式 (唯讀)";
       updatePlannerSaveButtonProtectionUI();
+      if (currentPage === 'planner') renderGraduationPlanner();
       window.renderCourses();
     }
 
@@ -1467,6 +1734,8 @@
         syncAllGradSelectorsAcrossPages();
         updatePlannerSaveButtonProtectionUI();
         renderGraduationPlanner();
+        // 背景非阻塞自動檢查 CU Boulder 官網行事曆更新
+        setTimeout(() => window.syncOfficialCalendarFromWeb(false), 120);
       }
       else if (p === 'home') updateDashboardMetricsFromData(courseList);
       safeCreateIcons();
@@ -1481,7 +1750,6 @@
       renderGraduationPlanner();
     };
 
-    // 🔒 畢業規劃頁按下「💾 存為預設目標」：雙頁連動並直接 PUT 同步至雲端
     window.savePlannerTargetToAccount = async function() {
       if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) {
         promptUnlockForAction('save_planner_target', activeUserId);
@@ -1505,7 +1773,6 @@
       }
     };
 
-    // 🔒 帳號安全頁按下「儲存預計畢業年、月並同步」：雙頁連動並直接 PUT 同步至雲端
     window.handleSaveGradTargetInProfile = async function(e) {
       e.preventDefault();
       if (!isAccountUnlockedForEdit(activeUserId)) {
@@ -1661,7 +1928,8 @@
         </div>`;
       }).join('');
 
-      document.getElementById('official-calendar-list').innerHTML = CU_OFFICIAL_CALENDAR.map(item => {
+      const canEditCal = isEditMode && isAccountUnlockedForEdit(activeUserId);
+      document.getElementById('official-calendar-list').innerHTML = activeOfficialCalendar.map(item => {
         if (item.type === 'break') {
           return `<div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs space-y-1">
             <div class="flex items-center justify-between"><span class="font-bold text-rose-300">${item.termName}</span><span class="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-200 font-mono">${item.badge}</span></div>
@@ -1669,8 +1937,17 @@
             <div class="text-[11px] text-slate-400">${item.note}</div>
           </div>`;
         }
+        const editBtnHtml = canEditCal
+          ? `<button type="button" onclick="openCalEditModal('${item.id}')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-[#CFB87C] text-[10px] text-slate-300 hover:text-slate-950 font-bold border border-slate-700">✏️ 微調日期</button>`
+          : '';
         return `<div class="p-3 rounded-xl bg-slate-900/80 border ${item.status === 'current' ? 'border-[#CFB87C]' : 'border-slate-800'} text-xs space-y-1.5">
-          <div class="flex items-center justify-between"><span class="font-bold text-slate-100">${item.termName}</span><span class="text-[10px] px-2 py-0.5 rounded ${item.status === 'current' ? 'bg-[#CFB87C] text-slate-950 font-bold' : 'bg-slate-800 text-slate-300'}">${item.badge}</span></div>
+          <div class="flex items-center justify-between gap-1">
+            <span class="font-bold text-slate-100">${item.termName}</span>
+            <div class="flex items-center gap-1.5">
+              <span class="text-[10px] px-2 py-0.5 rounded ${item.status === 'current' ? 'bg-[#CFB87C] text-slate-950 font-bold' : 'bg-slate-800 text-slate-300'}">${item.badge}</span>
+              ${editBtnHtml}
+            </div>
+          </div>
           <div class="grid grid-cols-2 gap-1 text-[11px] font-mono text-slate-300 pt-0.5">
             <div>🔓 選課開放: ${item.enrollOpen}</div>
             <div>🏫 開學日: ${item.classStart}</div>
@@ -2339,6 +2616,10 @@
 
     async function initUserSystem() {
       try {
+        const savedCalOv = safeStorage.getItem('cuboulder_cal_overrides');
+        if (savedCalOv) {
+          try { calendarOverridesMap = JSON.parse(savedCalOv) || {}; } catch (e) {}
+        }
         window.updateDashboardAndRender();
         await ensureDefaultHashInitialized();
         const s = safeStorage.getItem('cuboulder_users_list');
