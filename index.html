@@ -45,8 +45,8 @@
       </nav>
       
       <div class="flex items-center space-x-1.5 sm:space-x-2">
-        <button id="mode-toggle-btn" onclick="toggleEditMode()" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-[#CFB87C]">
-          <i data-lucide="lock" class="w-3.5 h-3.5 sm:mr-1 text-slate-400"></i><span id="mode-text" class="hidden sm:inline">瀏覽模式</span>
+        <button id="mode-toggle-btn" onclick="toggleEditMode()" class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-[#CFB87C]" title="切換為編輯模式（需驗證密碼）">
+          <i data-lucide="lock" class="w-3.5 h-3.5 sm:mr-1 text-slate-400"></i><span id="mode-text" class="hidden sm:inline">瀏覽模式 (唯讀)</span>
         </button>
 
         <div class="relative">
@@ -82,26 +82,7 @@
     </div>
   </header>
 
-  <!-- 未解鎖時的內容鎖定畫面 (防止新裝置未輸入密碼直接檢視內容) -->
-  <section id="locked-view-screen" class="max-w-lg mx-auto px-4 pt-14 hidden">
-    <div class="glass-card rounded-2xl p-8 border border-[#CFB87C]/40 text-center space-y-4 shadow-2xl">
-      <div class="w-14 h-14 rounded-2xl bg-[#CFB87C]/15 text-[#CFB87C] flex items-center justify-center mx-auto">
-        <i data-lucide="lock" class="w-7 h-7"></i>
-      </div>
-      <h2 class="text-lg font-bold text-white">帳號 <span id="locked-screen-id" class="text-[#CFB87C] font-mono">@surihua</span> 內容受密碼保護</h2>
-      <p class="text-xs text-slate-400 leading-relaxed">此裝置尚未解鎖該帳號。請輸入密碼以檢視修課進度與成績，或點選下方按鈕切換/建立其他帳號。</p>
-      <div class="flex flex-col sm:flex-row gap-2 justify-center pt-2">
-        <button onclick="promptUnlockCurrentAccount()" class="px-5 py-2.5 rounded-xl text-xs font-extrabold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f]">
-          🔑 輸入密碼解鎖檢視
-        </button>
-        <button onclick="openNewUserModal('login')" class="px-4 py-2.5 rounded-xl text-xs font-semibold bg-slate-800 text-slate-200 border border-slate-700 hover:border-[#CFB87C]">
-          👤 切換 / 建立其他 ID
-        </button>
-      </div>
-    </div>
-  </section>
-
-  <!-- HOME PAGE -->
+  <!-- HOME PAGE (訪客可直接唯讀瀏覽初步狀態，點擊編輯時才需驗證密碼) -->
   <main id="page-home" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6">
     <section class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
       <div class="glass-card rounded-2xl p-4 sm:p-5 flex flex-col justify-between">
@@ -182,7 +163,7 @@
     </section>
   </main>
 
-  <!-- PROFILE & SECURITY PAGE -->
+  <!-- PROFILE & SECURITY PAGE (進入此頁或編輯需先通過密碼驗證) -->
   <main id="page-profile" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6 hidden">
     <!-- 頂部帳號狀態與「此裝置預設顯示 ID」專屬設定卡片 -->
     <div class="glass-card rounded-2xl p-6 space-y-5">
@@ -322,7 +303,7 @@
 
       <!-- 登入既有帳號表單 -->
       <form id="form-login-user" onsubmit="handleLoginExistingUser(event)" class="space-y-3 hidden">
-        <p class="text-[11px] text-slate-400">請輸入同步 ID 與密碼以切換瀏覽（此操作僅為臨時切換，若要變更此裝置預設開啟 ID，請於登入後至「帳號安全」頁面設定）。</p>
+        <p class="text-[11px] text-slate-400">請輸入同步 ID 與密碼以切換並解鎖編輯權限（此操作僅為臨時切換，若要變更此裝置預設開啟 ID，請於登入後至「帳號安全」頁面設定）。</p>
         <div>
           <div class="flex justify-between mb-1">
             <label class="text-xs text-slate-300">既有使用者 ID</label>
@@ -370,23 +351,23 @@
     </div>
   </div>
 
-  <!-- 密碼驗證解鎖 Modal -->
+  <!-- 啟用編輯模式 / 進入安全設定的密碼驗證 Modal -->
   <div id="verify-pwd-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="glass-card w-full max-w-sm rounded-2xl p-6 border border-[#CFB87C]/40 space-y-4 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-sm text-slate-100 flex items-center"><i data-lucide="lock" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 請輸入密碼以檢視內容</h3>
+        <h3 class="font-bold text-sm text-slate-100 flex items-center"><i data-lucide="lock" class="w-4 h-4 mr-2 text-[#CFB87C]"></i> 請輸入密碼以啟用編輯 / 設定</h3>
         <button onclick="closeVerifyPwdModal()" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
       </div>
-      <p class="text-xs text-slate-300 leading-relaxed">帳號 <strong id="verify-target-id" class="text-[#CFB87C] font-mono"></strong> 受密碼保護，新裝置必須先驗證密碼才能檢視或編輯其內容：</p>
+      <p class="text-xs text-slate-300 leading-relaxed">帳號 <strong id="verify-target-id" class="text-[#CFB87C] font-mono"></strong> 目前為**訪客唯讀模式**。請輸入擁有者密碼以啟用課程編輯或修改安全設定：</p>
       <form onsubmit="submitVerifyPwd(event)" class="space-y-3">
         <input type="password" id="verify-pwd-input" required placeholder="請輸入此帳號的密碼" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100">
         <div class="flex items-center justify-between pt-2">
-          <button type="button" onclick="openForgotModal(pendingSwitchUserId)" class="text-xs text-[#CFB87C] hover:underline">忘記密碼？用手機重設</button>
-          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">驗證並解鎖檢視</button>
+          <button type="button" onclick="openForgotModal(pendingSwitchUserId || activeUserId)" class="text-xs text-[#CFB87C] hover:underline">忘記密碼？用手機重設</button>
+          <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">驗證並解鎖編輯</button>
         </div>
       </form>
       <div class="border-t border-slate-800 pt-2.5 flex justify-between items-center text-[11px] text-slate-400">
-        <span>不是您的帳號？</span>
+        <span>想建立自己的課表？</span>
         <button type="button" onclick="closeVerifyPwdModal();openNewUserModal('register')" class="text-emerald-400 hover:underline font-semibold">+ 建立或登入其他 ID</button>
       </div>
     </div>
@@ -465,7 +446,7 @@
 
   <script>
     const DEFAULT_USER_ID = 'surihua';
-    // 清除的舊帳號清單（保留 dolly 等其他使用者新建的帳號）
+    // 清除的舊帳號清單（保留 surihua 以及 dolly 等其他使用者新建的帳號）
     const BANNED_LEGACY_IDS = ['suri', 'suri1031'];
     // @surihua 預設密碼与預設手機號碼的 SHA-256 雜湊指紋
     const SURIHUA_DEFAULT_PWD_HASH = '867f9888ff6f99f62467c72f7ba193aa1bdca083ab8191e6b32dc182ee1f340c';
@@ -503,7 +484,11 @@
     }];
     let activeUserId = DEFAULT_USER_ID;
     let pendingSwitchUserId = null;
+    let pendingActionAfterUnlock = null; // 'edit' | 'profile' | 'switch'
     let forgotTargetUserId = null;
+
+    // 紀錄本次瀏覽器工作階段中，已經輸入過正確密碼解鎖「編輯與安全設定權限」的帳號
+    const unlockedEditSessionUsers = new Set();
 
     const safeStorage = {
       getItem: k => { try { return localStorage.getItem(k); } catch(e) { return null; } },
@@ -511,23 +496,11 @@
       removeItem: k => { try { localStorage.removeItem(k); } catch(e) {} }
     };
 
-    // 紀錄這台裝置已經輸入過正確密碼解鎖的帳號清單（新裝置未輸入密碼前無法檢視 @surihua）
-    let unlockedDeviceUsers = new Set();
-    try {
-      const savedUnlocked = safeStorage.getItem('cuboulder_unlocked_device_users');
-      if (savedUnlocked) unlockedDeviceUsers = new Set(JSON.parse(savedUnlocked));
-    } catch(e) {}
-
-    function markUserUnlockedOnDevice(uid) {
-      unlockedDeviceUsers.add(uid);
-      safeStorage.setItem('cuboulder_unlocked_device_users', JSON.stringify(Array.from(unlockedDeviceUsers)));
-    }
-
-    function isAccountUnlockedForView(uid) {
+    function isAccountUnlockedForEdit(uid) {
       const u = usersList.find(x => x.id === uid);
       const needsPwd = (u && u.pwdHash) || uid === DEFAULT_USER_ID;
       if (!needsPwd) return true;
-      return unlockedDeviceUsers.has(uid);
+      return unlockedEditSessionUsers.has(uid);
     }
 
     const suriDefaultCourses = [
@@ -607,6 +580,8 @@
 
     async function pushToCloud() {
       if (BANNED_LEGACY_IDS.includes(activeUserId)) return;
+      // 唯有已驗證過編輯權限的使用者才允許推送變更至雲端，防止訪客覆蓋雲端資料
+      if (!isAccountUnlockedForEdit(activeUserId)) return;
       const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: '', phoneHash: '' };
       if (u.id === DEFAULT_USER_ID) {
         if (!u.pwdHash) u.pwdHash = SURIHUA_DEFAULT_PWD_HASH;
@@ -635,10 +610,6 @@
     }
 
     window.syncFromCloud = async function(showToast = false) {
-      if (!isAccountUnlockedForView(activeUserId)) {
-        promptUnlockCurrentAccount();
-        return false;
-      }
       setSyncStatus('☁️ 讀取雲端...', true);
       const data = await fetchCloudUserRecord(activeUserId);
       if (data) {
@@ -653,7 +624,7 @@
         }
         window.updateDashboardAndRender();
         setSyncStatus('☁️ 雲端已同步');
-        if (showToast) alert(`已成功同步 [@${activeUserId}] 的最新雲端資料！`);
+        if (showToast) alert(`已成功從雲端讀取 [@${activeUserId}] 的最新資料！`);
         return true;
       }
       setSyncStatus('☁️ 已同步');
@@ -661,6 +632,10 @@
     };
 
     function persistData() {
+      if (!isAccountUnlockedForEdit(activeUserId)) {
+        promptUnlockForAction('edit');
+        return;
+      }
       safeStorage.setItem(`cuboulder_courses_${activeUserId}`, JSON.stringify(courseList));
       window.updateDashboardAndRender();
       pushToCloud();
@@ -703,53 +678,43 @@
       } catch(e) {}
     }
 
-    window.promptUnlockCurrentAccount = function() {
-      pendingSwitchUserId = activeUserId;
-      document.getElementById('verify-target-id').textContent = `@${activeUserId}`;
+    function promptUnlockForAction(actionType, targetUid = activeUserId) {
+      pendingSwitchUserId = targetUid;
+      pendingActionAfterUnlock = actionType;
+      document.getElementById('verify-target-id').textContent = `@${targetUid}`;
       document.getElementById('verify-pwd-input').value = '';
       document.getElementById('verify-pwd-modal').classList.remove('hidden');
       setTimeout(() => document.getElementById('verify-pwd-input').focus(), 50);
-    };
-
-    function updateLockVisibilityState() {
-      const unlocked = isAccountUnlockedForView(activeUserId);
-      const lockedScreen = document.getElementById('locked-view-screen');
-      const homeMain = document.getElementById('page-home');
-      const profileMain = document.getElementById('page-profile');
-
-      if (!unlocked) {
-        document.getElementById('locked-screen-id').textContent = `@${activeUserId}`;
-        lockedScreen.classList.remove('hidden');
-        homeMain.classList.add('hidden');
-        profileMain.classList.add('hidden');
-        if (window.lucide) lucide.createIcons();
-      } else {
-        lockedScreen.classList.add('hidden');
-        homeMain.classList.toggle('hidden', currentPage !== 'home');
-        profileMain.classList.toggle('hidden', currentPage === 'home');
-      }
     }
 
-    window.toggleEditMode = function() {
-      if (!isAccountUnlockedForView(activeUserId)) {
-        promptUnlockCurrentAccount();
-        return;
-      }
-      isEditMode = !isEditMode;
+    function setEditModeUI(enabled) {
+      isEditMode = enabled;
       const btn = document.getElementById('mode-toggle-btn');
       const text = document.getElementById('mode-text');
       document.getElementById('btn-add-course').classList.toggle('hidden', !isEditMode);
       document.getElementById('btn-reset-data').classList.toggle('hidden', !isEditMode);
-      btn.className = isEditMode
-        ? "inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 border border-[#CFB87C]"
-        : "inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700";
-      if (text) text.textContent = isEditMode ? "編輯模式" : "瀏覽模式";
+      if (btn) {
+        btn.className = isEditMode
+          ? "inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 border border-[#CFB87C]"
+          : "inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700 hover:border-[#CFB87C]";
+      }
+      if (text) text.textContent = isEditMode ? "編輯模式 (已解鎖)" : "瀏覽模式 (唯讀)";
       window.renderCourses();
+    }
+
+    // 點擊「瀏覽模式 / 編輯模式」按鈕：若要啟用編輯模式，必須先輸入密碼驗證
+    window.toggleEditMode = function() {
+      if (!isEditMode && !isAccountUnlockedForEdit(activeUserId)) {
+        promptUnlockForAction('edit', activeUserId);
+        return;
+      }
+      setEditModeUI(!isEditMode);
     };
 
+    // 切換主頁 / 帳號安全設定頁：若要進入「帳號安全 & ID/密碼設定」，必須先輸入該帳號密碼
     window.switchPage = function(p) {
-      if (!isAccountUnlockedForView(activeUserId)) {
-        promptUnlockCurrentAccount();
+      if (p === 'profile' && !isAccountUnlockedForEdit(activeUserId)) {
+        promptUnlockForAction('profile', activeUserId);
         return;
       }
       currentPage = p;
@@ -777,7 +742,6 @@
       document.getElementById('profile-input-id').value = u.id;
       document.getElementById('profile-id-verify-pwd').value = '';
 
-      // 填充「此裝置預設顯示 ID」下拉選單（僅在帳號安全頁可設定）
       const selectEl = document.getElementById('profile-device-default-select');
       selectEl.innerHTML = usersList.map(x => `<option value="${x.id}" ${x.id === devDef ? 'selected' : ''}>${x.name} (@${x.id})${x.id === devDef ? ' [目前預設]' : ''}</option>`).join('');
       document.getElementById('profile-device-default-pwd').value = '';
@@ -816,7 +780,7 @@
         }
       }
 
-      markUserUnlockedOnDevice(targetId);
+      unlockedEditSessionUsers.add(targetId);
       safeStorage.setItem('cuboulder_device_default_user', targetId);
       saveUsersSystemState();
       updateProfilePageDisplay();
@@ -875,7 +839,6 @@
         });
       } catch(err) {}
 
-      // 若原本這台裝置預設是 oldId，才跟著連動更新
       if (safeStorage.getItem('cuboulder_device_default_user') === oldId) {
         safeStorage.setItem('cuboulder_device_default_user', newId);
       }
@@ -883,7 +846,7 @@
       u.id = newId;
       u.name = newName;
       activeUserId = newId;
-      markUserUnlockedOnDevice(newId);
+      unlockedEditSessionUsers.add(newId);
       saveUsersSystemState();
       updateProfilePageDisplay();
       await pushToCloud();
@@ -914,7 +877,7 @@
 
       u.pwdHash = await sha256(newPwd);
       u.phoneHash = await sha256(phone);
-      markUserUnlockedOnDevice(activeUserId);
+      unlockedEditSessionUsers.add(activeUserId);
       saveUsersSystemState();
       updateProfilePageDisplay();
       await pushToCloud();
@@ -1035,12 +998,12 @@
       }
 
       u.pwdHash = await sha256(newPwd);
-      markUserUnlockedOnDevice(uid);
+      unlockedEditSessionUsers.add(uid);
       closeForgotModal();
       await loadUserData(uid);
       await pushToCloud();
       updateProfilePageDisplay();
-      alert(`✅ 手機號碼驗證成功！帳號 [@${uid}] 的新密碼已生效。`);
+      alert(`✅ 手機號碼驗證成功！帳號 [@${uid}] 的新密碼已生效並已解鎖編輯權限。`);
     };
 
     // 刪除帳號（必須輸入正確密碼）
@@ -1096,7 +1059,6 @@
         const s = safeStorage.getItem('cuboulder_users_list');
         if (s) {
           usersList = JSON.parse(s)
-            // 徹底過濾掉 suri 與 suri1031，但保留 surihua 與其他使用者（如 dolly）
             .filter(u => u && u.id && !BANNED_LEGACY_IDS.includes(u.id.toLowerCase()))
             .map(u => {
               if (u.id === DEFAULT_USER_ID) {
@@ -1158,23 +1120,26 @@
         </button>`).join('');
     }
 
-    // 右上角選單切換帳號：僅為「臨時切換」，不會修改 cuboulder_device_default_user
+    // 右上角選單切換帳號：僅為「臨時切換」，可先唯讀瀏覽，若在安全設定頁則自動切回主頁唯讀模式
     window.requestSwitchUser = function(uid) {
       document.getElementById('user-dropdown').classList.add('hidden');
-      const target = usersList.find(x => x.id === uid);
-      const needsPwd = (target && target.pwdHash) || uid === DEFAULT_USER_ID;
-      if (needsPwd && !unlockedDeviceUsers.has(uid)) {
-        pendingSwitchUserId = uid;
-        document.getElementById('verify-target-id').textContent = `@${uid}`;
-        document.getElementById('verify-pwd-input').value = '';
-        document.getElementById('verify-pwd-modal').classList.remove('hidden');
-        setTimeout(() => document.getElementById('verify-pwd-input').focus(), 50);
-        return;
+      if (currentPage === 'profile' && !isAccountUnlockedForEdit(uid)) {
+        currentPage = 'home';
+        document.getElementById('page-home').classList.remove('hidden');
+        document.getElementById('page-profile').classList.add('hidden');
+        document.getElementById('nav-home').className = "px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center";
+        document.getElementById('nav-profile').className = "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center";
+        document.getElementById('mobile-nav-home').className = "flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950";
+        document.getElementById('mobile-nav-profile').className = "flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300";
       }
       loadUserData(uid);
     };
 
-    window.closeVerifyPwdModal = () => { document.getElementById('verify-pwd-modal').classList.add('hidden'); pendingSwitchUserId = null; };
+    window.closeVerifyPwdModal = () => {
+      document.getElementById('verify-pwd-modal').classList.add('hidden');
+      pendingSwitchUserId = null;
+      pendingActionAfterUnlock = null;
+    };
 
     window.submitVerifyPwd = async function(e) {
       e.preventDefault();
@@ -1187,33 +1152,27 @@
         alert('❌ 密碼錯誤！請重新輸入，或點選「忘記密碼」使用手機號碼重設。');
         return;
       }
-      markUserUnlockedOnDevice(uid);
+      unlockedEditSessionUsers.add(uid);
+      const action = pendingActionAfterUnlock;
       closeVerifyPwdModal();
-      await loadUserData(uid);
+
+      if (uid !== activeUserId) {
+        await loadUserData(uid);
+      }
+      if (action === 'edit') {
+        setEditModeUI(true);
+      } else if (action === 'profile') {
+        switchPage('profile');
+      }
     };
 
     async function loadUserData(uid) {
       activeUserId = (uid || DEFAULT_USER_ID).toLowerCase();
       if (BANNED_LEGACY_IDS.includes(activeUserId)) activeUserId = DEFAULT_USER_ID;
-      isEditMode = false;
-      const btn = document.getElementById('mode-toggle-btn');
-      const text = document.getElementById('mode-text');
-      document.getElementById('btn-add-course').classList.add('hidden');
-      document.getElementById('btn-reset-data').classList.add('hidden');
-      if (btn) btn.className = "inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 border border-slate-700";
-      if (text) text.textContent = "瀏覽模式";
 
+      // 切換或初始載入時預設為「瀏覽模式 (唯讀)」，讓訪客能直接查看初步狀態
+      setEditModeUI(false);
       saveUsersSystemState();
-
-      // 若該裝置尚未輸入密碼解鎖此帳號，先遮蔽畫面並強制彈出密碼框，不直接顯示內容
-      if (!isAccountUnlockedForView(activeUserId)) {
-        courseList = [];
-        updateLockVisibilityState();
-        promptUnlockCurrentAccount();
-        return;
-      }
-
-      updateLockVisibilityState();
 
       const saved = safeStorage.getItem(`cuboulder_courses_${activeUserId}`);
       if (saved) {
@@ -1224,8 +1183,7 @@
       }
       window.updateDashboardAndRender();
 
-      const hasCloud = await window.syncFromCloud(false);
-      if (!hasCloud) pushToCloud();
+      await window.syncFromCloud(false);
     }
 
     window.openNewUserModal = (defaultTab = 'register') => {
@@ -1279,18 +1237,17 @@
 
       usersList.push({ id, name, pwdHash, phoneHash });
       safeStorage.setItem(`cuboulder_courses_${id}`, JSON.stringify(cleanCourses));
-      markUserUnlockedOnDevice(id);
+      unlockedEditSessionUsers.add(id);
       activeUserId = id;
       courseList = cleanCourses;
       saveUsersSystemState();
-      updateLockVisibilityState();
       window.updateDashboardAndRender();
       closeNewUserModal();
       await pushToCloud();
       alert(`🎉 新帳號 [@${id}] 建立成功！（若想將此 ID 設為這台裝置的預設開啟帳號，請至「帳號安全 & ID/密碼設定」頁面設定）`);
     };
 
-    // 登入已存在的 ID（僅臨時切換，不自動改變裝置預設開啟 ID）
+    // 登入已存在的 ID（僅臨時切換並解鎖編輯權限，不自動改變裝置預設開啟 ID）
     window.handleLoginExistingUser = async function(e) {
       e.preventDefault();
       const id = document.getElementById('login-user-id').value.trim().toLowerCase();
@@ -1326,12 +1283,14 @@
           phoneHash: (cloudData && cloudData.phoneHash) || (id === DEFAULT_USER_ID ? SURIHUA_DEFAULT_PHONE_HASH : '')
         });
       }
-      markUserUnlockedOnDevice(id);
+      unlockedEditSessionUsers.add(id);
       closeNewUserModal();
       await loadUserData(id);
+      setEditModeUI(true);
     };
 
     window.openAddModal = function() {
+      if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
       document.getElementById('edit-course-id').value = '';
       document.getElementById('input-code').value = '';
       document.getElementById('input-name').value = '';
@@ -1345,6 +1304,7 @@
     };
 
     window.openEditModal = function(id) {
+      if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
       const c = courseList.find(x => x.id === id);
       if (!c) return;
       document.getElementById('edit-course-id').value = c.id;
@@ -1363,6 +1323,7 @@
 
     window.saveCourse = function(e) {
       e.preventDefault();
+      if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
       const id = document.getElementById('edit-course-id').value;
       const item = {
         id: id || Date.now().toString(),
@@ -1385,6 +1346,7 @@
     };
 
     window.deleteCourse = function() {
+      if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
       const id = document.getElementById('edit-course-id').value;
       if (id && confirm("確定刪除此門課程？")) {
         courseList = courseList.filter(x => x.id !== id);
@@ -1394,7 +1356,6 @@
     };
 
     window.updateDashboardAndRender = function() {
-      if (!isAccountUnlockedForView(activeUserId)) return;
       const reqCount = courseList.filter(c => c.type === 'required').length;
       const eleCount = courseList.filter(c => c.type === 'electives').length;
       document.getElementById('count-all').textContent = courseList.length;
@@ -1458,7 +1419,6 @@
     };
 
     window.renderCourses = function() {
-      if (!isAccountUnlockedForView(activeUserId)) return;
       const filtered = courseList.filter(c => {
         const mCat = activeCategory === 'all' || c.type === activeCategory;
         const mQ = c.code.toLowerCase().includes(searchQuery.toLowerCase()) || c.name.toLowerCase().includes(searchQuery.toLowerCase()) || (c.note && c.note.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -1504,6 +1464,7 @@
     window.toggleUserDropdown = () => document.getElementById('user-dropdown').classList.toggle('hidden');
 
     window.resetData = function() {
+      if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
       const msg = activeUserId === DEFAULT_USER_ID
         ? `確定要將 [@surihua] 的資料重設為預設的 17 門完成狀態嗎？`
         : `確定要將 [@${activeUserId}] 的所有課程重設為 0% 未開始狀態嗎？`;
