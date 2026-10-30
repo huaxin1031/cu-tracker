@@ -43,7 +43,7 @@
           <h1 class="font-bold text-xs sm:text-lg leading-tight text-slate-100 truncate">CU Boulder Master's</h1>
           <div class="flex items-center space-x-1 sm:space-x-1.5 mt-0.5">
             <span class="text-[10px] sm:text-xs text-[#CFB87C] font-medium whitespace-nowrap">Course Tracker</span>
-            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0">v4.8</span>
+            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0">v4.9</span>
             <span id="sync-status-badge" onclick="syncFromCloud(true)" class="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center whitespace-nowrap shrink-0" title="點擊立即與雲端雙向同步最新資料">☁️ 已同步</span>
           </div>
         </div>
@@ -218,7 +218,7 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
         <div>
           <h2 class="text-sm sm:text-base font-bold text-slate-100">📋 課程批量編輯表格 (支援多欄位排序 & 備註篩選)</h2>
-          <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">點擊多個表頭欄位可依序疊加「多欄位升冪/降冪排序（顯示 ① ② ③ 順序）」；篩選列已移至表頭正上方，方便就近對照且不易誤觸上方批量修改按鈕。</p>
+          <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">點擊多個表頭欄位可依序疊加「多欄位升冪/降冪排序（顯示 ① ② ③ 順序）」；篩選列順序已與正下方表格欄位完全對齊（科系 → 類別 → 代號/課名 → 狀態 → 成績 → 個人備註）。</p>
         </div>
         <div class="flex flex-wrap items-center gap-2 shrink-0">
           <button type="button" onclick="addBlankRowToBatchTable()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-[#CFB87C] border border-[#CFB87C]/40 hover:bg-slate-700 whitespace-nowrap">+ 新增一列課程</button>
@@ -295,16 +295,11 @@
         </div>
       </div>
 
-      <!-- ③ 下方：Excel 式多重篩選列 -->
-      <div class="grid grid-cols-2 sm:grid-cols-12 gap-2 bg-slate-950/85 p-2.5 rounded-xl border border-[#CFB87C]/35 text-xs shadow-inner">
-        <div class="col-span-2 sm:col-span-3">
-          <input type="text" id="batch-filter-search" oninput="handleBatchFilterChange()" placeholder="🔍 篩選代號或課程名稱..." class="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-[#CFB87C]">
-        </div>
-        <div class="col-span-2 sm:col-span-3">
-          <input type="text" id="batch-filter-note" oninput="handleBatchFilterChange()" placeholder="📝 篩選個人備註文字 (如: 已註冊, hrs)..." class="w-full px-3 py-1.5 bg-slate-900 border border-[#CFB87C]/40 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-[#CFB87C]">
-        </div>
-        <div class="col-span-1 sm:col-span-1">
-          <select id="batch-filter-subject" onchange="handleBatchFilterChange()" class="w-full px-1.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200">
+      <!-- ③ 下方（緊貼表格表頭上方）：與下方表格欄位順序 100% 對齊的篩選列 (科系 → 類別 → 搜尋代號或課程名稱 → 狀態 → 成績 → 篩選備註文字) -->
+      <div class="grid grid-cols-2 sm:grid-cols-12 gap-2 bg-slate-950/85 p-2.5 rounded-xl border border-[#CFB87C]/35 text-xs shadow-inner items-center">
+        <!-- 1. 科系 -->
+        <div class="col-span-1 sm:col-span-2">
+          <select id="batch-filter-subject" onchange="handleBatchFilterChange()" class="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
             <option value="all">科系: 全部</option>
             <option value="EMEA">EMEA</option>
             <option value="DTSA">DTSA</option>
@@ -313,23 +308,34 @@
             <option value="ECEA">ECEA</option>
           </select>
         </div>
+
+        <!-- 2. 類別 -->
         <div class="col-span-1 sm:col-span-2">
-          <select id="batch-filter-type" onchange="handleBatchFilterChange()" class="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200">
+          <select id="batch-filter-type" onchange="handleBatchFilterChange()" class="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
             <option value="all">類別: 全部</option>
             <option value="required">必修 (Core)</option>
             <option value="electives">選修 (Elective)</option>
           </select>
         </div>
+
+        <!-- 3. 搜尋代號或課程名稱 -->
+        <div class="col-span-2 sm:col-span-3">
+          <input type="text" id="batch-filter-search" oninput="handleBatchFilterChange()" placeholder="🔍 搜尋代號或課程名稱..." class="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-[#CFB87C]">
+        </div>
+
+        <!-- 4. 狀態 -->
         <div class="col-span-1 sm:col-span-1">
-          <select id="batch-filter-status" onchange="handleBatchFilterChange()" class="w-full px-1.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200">
+          <select id="batch-filter-status" onchange="handleBatchFilterChange()" class="w-full px-1.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
             <option value="all">狀態: 全部</option>
             <option value="Complete">Complete</option>
             <option value="Ongoing">Ongoing</option>
             <option value="Expected">Expected</option>
           </select>
         </div>
-        <div class="col-span-1 sm:col-span-2 flex items-center gap-1">
-          <select id="batch-filter-grade" onchange="handleBatchFilterChange()" class="flex-1 min-w-0 px-1.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200">
+
+        <!-- 5. 成績 -->
+        <div class="col-span-1 sm:col-span-1">
+          <select id="batch-filter-grade" onchange="handleBatchFilterChange()" class="w-full px-1.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
             <option value="all">成績: 全部</option>
             <option value="A">A</option>
             <option value="A-">A-</option>
@@ -338,7 +344,12 @@
             <option value="B-">B-</option>
             <option value="--">未計分 (--)</option>
           </select>
-          <button type="button" onclick="resetBatchFilters()" class="px-2 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 shrink-0">重置</button>
+        </div>
+
+        <!-- 6. 篩選個人備註文字 + 重置按鈕 -->
+        <div class="col-span-2 sm:col-span-3 flex items-center gap-1.5">
+          <input type="text" id="batch-filter-note" oninput="handleBatchFilterChange()" placeholder="📝 篩選個人備註文字 (如: 已註冊, hrs)..." class="flex-1 min-w-0 px-3 py-1.5 bg-slate-900 border border-[#CFB87C]/40 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-[#CFB87C]">
+          <button type="button" onclick="resetBatchFilters()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 shrink-0 whitespace-nowrap">重置</button>
         </div>
       </div>
 
@@ -897,7 +908,6 @@
       return Object.prototype.hasOwnProperty.call(VALID_LETTER_GRADES, String(gradeStr || '').trim().toUpperCase());
     }
 
-    // 內建預設的 CU Boulder 行事曆（離線秒開基底）
     const DEFAULT_CU_CALENDAR = [
       { id:'fall2026_s1', type:'session', termName:'Fall 2026 - Session 1', badge:'已結課', status:'past', enrollOpen:'2026-08-10', classStart:'2026-08-24', enrollClose:'2026-10-02', classEnd:'2026-10-16', gradesPost:'2026-10-27', degreeConfer:'2026-11-06', endYear:2026, endMonth:10, note:'秋季第一期（已於 10/16 結課）' },
       { id:'fall2026_s2', type:'session', termName:'Fall 2026 - Session 2 (目前學期)', badge:'進行中 Current', status:'current', enrollOpen:'2026-10-05', classStart:'2026-10-19', enrollClose:'2026-11-27', classEnd:'2026-12-11', gradesPost:'2026-12-22', degreeConfer:'2027-01-08', endYear:2026, endMonth:12, note:'秋季第二期（11/27 選課截止，12/11 結課，12/22 成績登錄）' },
@@ -914,7 +924,7 @@
     ];
 
     let activeOfficialCalendar = JSON.parse(JSON.stringify(DEFAULT_CU_CALENDAR));
-    let calendarOverridesMap = {}; // 儲存從官網抓到的最新日期或使用者手動微調的日期
+    let calendarOverridesMap = {};
 
     function applyCalendarOverridesToActive() {
       activeOfficialCalendar = JSON.parse(JSON.stringify(DEFAULT_CU_CALENDAR)).map(item => {
@@ -953,7 +963,6 @@
       return list;
     }
 
-    // 🌐 從 CU Boulder 官網透過 CORS 代理自動抓取與解析最新行事曆（含 6 秒逾時保護與離線退回機制）
     async function fetchTextWithTimeout(url, timeoutMs = 6000) {
       const ctrl = new AbortController();
       const timer = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -976,18 +985,15 @@
       return `${defaultYear}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     }
 
-    // 解析從 colorado.edu 抓回來的 HTML/Markdown 內文，比對是否有新公布的學期日期
     function extractSessionsFromOfficialText(rawText) {
       if (!rawText || rawText.length < 200) return { updatedCount: 0, verifiedTerms: 0 };
       const clean = rawText.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
       let verifiedTerms = 0, updatedCount = 0;
 
-      // 檢查官網內容是否包含 Coursera Calendar 關鍵字
       if (/Coursera|Session\s*1|Session\s*2|Enrollment\s*Opens|Classes\s*Begin/i.test(clean)) {
         verifiedTerms++;
       }
 
-      // 嘗試比對特定學期區塊中的成對日期 (Session 1 / Session 2)
       const termConfigs = [
         { season: 'Fall', year: 2026, s1Id: 'fall2026_s1', s2Id: 'fall2026_s2' },
         { season: 'Spring', year: 2027, s1Id: 'spring2027_s1', s2Id: 'spring2027_s2' },
@@ -1048,7 +1054,6 @@
       const badge = document.getElementById('calendar-sync-badge');
       const btn = document.getElementById('btn-sync-cu-web');
       if (!isManualClick) {
-        // 背景自動檢查：若 12 小時內已自動檢查過，直接顯示上次核對時間，不重複消耗網路
         const lastCheck = Number(safeStorage.getItem('cuboulder_cal_last_check_ts') || 0);
         if (lastCheck && (Date.now() - lastCheck < 12 * 3600 * 1000)) {
           const dStr = new Date(lastCheck).toLocaleDateString('zh-TW');
@@ -1097,7 +1102,6 @@
       }
     };
 
-    // ✏️ 手動微調單一學期日期（僅限已解鎖編輯模式）
     window.openCalEditModal = function(termId) {
       if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) {
         promptUnlockForAction('edit', activeUserId);
@@ -1734,7 +1738,6 @@
         syncAllGradSelectorsAcrossPages();
         updatePlannerSaveButtonProtectionUI();
         renderGraduationPlanner();
-        // 背景非阻塞自動檢查 CU Boulder 官網行事曆更新
         setTimeout(() => window.syncOfficialCalendarFromWeb(false), 120);
       }
       else if (p === 'home') updateDashboardMetricsFromData(courseList);
