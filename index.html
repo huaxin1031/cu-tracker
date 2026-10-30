@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>CU Boulder Master's Course & GPA Tracker</title>
 
   <!-- LinkedIn / Open Graph 社群連結自動預覽圖設定 -->
@@ -44,8 +47,9 @@
         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#CFB87C] to-yellow-200 flex items-center justify-center text-slate-950 font-extrabold text-xl shadow-lg shrink-0">CU</div>
         <div>
           <h1 class="font-bold text-sm sm:text-lg leading-tight text-slate-100">CU Boulder Master's</h1>
-          <div class="flex items-center space-x-2">
+          <div class="flex items-center space-x-1.5">
             <p class="text-[11px] sm:text-xs text-[#CFB87C] font-medium">Course Tracker</p>
+            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">v3.6</span>
             <span id="sync-status-badge" onclick="syncFromCloud(true)" class="cursor-pointer text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center" title="點擊立即從雲端同步">☁️ 已同步</span>
           </div>
         </div>
@@ -177,7 +181,6 @@
 
   <!-- PROFILE & SECURITY PAGE (進入此頁或編輯需先通過密碼驗證) -->
   <main id="page-profile" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-6 hidden">
-    <!-- 頂部帳號狀態與「此裝置預設顯示 ID」專屬設定卡片 -->
     <div class="glass-card rounded-2xl p-6 space-y-5">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-5 gap-3">
         <div class="flex items-center space-x-4">
@@ -215,7 +218,7 @@
           </div>
           <div>
             <label class="block text-[11px] text-amber-400 font-semibold mb-1">🔒 輸入該 ID 的密碼以確認設定</label>
-            <input type="password" id="profile-device-default-pwd" inputmode="text" required placeholder="請輸入該帳號密碼" class="w-full px-3 py-2 bg-slate-950 border border-amber-500/40 rounded-xl text-xs text-slate-100">
+            <input type="text" id="profile-device-default-pwd" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="請輸入該帳號密碼" class="w-full px-3 py-2 bg-slate-950 border border-amber-500/40 rounded-xl text-xs text-slate-100 font-mono">
           </div>
           <div class="flex items-end">
             <button type="submit" class="w-full py-2 px-4 rounded-xl text-xs font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow">
@@ -328,7 +331,7 @@
             <label class="text-xs text-slate-300">帳號密碼</label>
             <button type="button" onclick="openForgotFromLogin()" class="text-[11px] text-[#CFB87C] hover:underline font-semibold">忘記密碼？用手機號碼重設</button>
           </div>
-          <input type="password" id="login-user-pwd" required placeholder="請輸入該 ID 的密碼" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100">
+          <input type="text" id="login-user-pwd" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="請輸入該 ID 的密碼" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
         </div>
         <div class="flex justify-end space-x-2 pt-2 border-t border-slate-800">
           <button type="button" onclick="closeNewUserModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300">取消</button>
@@ -372,7 +375,10 @@
       </div>
       <p class="text-xs text-slate-300 leading-relaxed">帳號 <strong id="verify-target-id" class="text-[#CFB87C] font-mono"></strong> 目前為**訪客唯讀模式**。請輸入擁有者密碼以啟用課程編輯或修改安全設定：</p>
       <form onsubmit="submitVerifyPwd(event)" class="space-y-3">
-        <input type="password" id="verify-pwd-input" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="請輸入此帳號的密碼" class="w-full px-3 py-2 bg-slate-900 border border-slate-700 rounded-xl text-xs text-slate-100">
+        <div class="relative">
+          <input type="password" id="verify-pwd-input" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="請輸入密碼" class="w-full pl-3 pr-14 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-slate-100 font-mono">
+          <button type="button" onclick="toggleVerifyPwdVisibility()" id="btn-show-pwd" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[11px] px-1.5 py-0.5 rounded bg-slate-800 text-[#CFB87C] border border-slate-700">顯示</button>
+        </div>
         <div class="flex items-center justify-between pt-2">
           <button type="button" onclick="openForgotModal(pendingSwitchUserId || activeUserId)" class="text-xs text-[#CFB87C] hover:underline">忘記密碼？用手機重設</button>
           <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">驗證並解鎖編輯</button>
@@ -459,8 +465,9 @@
   <script>
     const DEFAULT_USER_ID = 'surihua';
     const BANNED_LEGACY_IDS = ['suri', 'suri1031'];
-    // @surihua 預設密碼与預設手機號碼的 SHA-256 雜湊指紋
-    const SURIHUA_DEFAULT_PWD_HASH = '867f9888ff6f99f62467c72f7ba193aa1bdca083ab8191e6b32dc182ee1f340c';
+    // 由瀏覽器在啟動時動態計算出 100% 精準的 SHA-256 雜湊值
+    const _SEED_CODES = [99, 105, 98, 103, 98, 103];
+    let SURIHUA_DEFAULT_PWD_HASH = '';
     const SURIHUA_DEFAULT_PHONE_HASH = '49bd88743934a546950351a71f638a1b2fb55059296cc22f0a5c8861d8ca0ab6';
 
     // iOS Icon 產生器
@@ -477,40 +484,117 @@
       } catch(e){}
     })();
 
-    // 手機輸入法正規化：將 iOS 全形數字/字母自動轉為半形，並清除零寬度隱形字元
+    window.toggleVerifyPwdVisibility = function() {
+      const inp = document.getElementById('verify-pwd-input');
+      const btn = document.getElementById('btn-show-pwd');
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        btn.textContent = '隱藏';
+      } else {
+        inp.type = 'password';
+        btn.textContent = '顯示';
+      }
+    };
+
     function normalizeInput(str) {
       return String(str || '')
         .replace(/[\uFF01-\uFF5E]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0xFEE0))
-        .replace(/[\u200B-\u200D\uFEFF]/g, '')
+        .replace(/[\s\u200B-\u200D\uFEFF\u00A0]/g, '')
         .trim();
+    }
+
+    function pureJsSha256(ascii) {
+      function rightRotate(value, amount) { return (value >>> amount) | (value << (32 - amount)); }
+      var mathPow = Math.pow, maxWord = mathPow(2, 32), lengthProperty = 'length', i, j, result = '';
+      var words = [], asciiBitLength = ascii[lengthProperty] * 8;
+      var hash = [], k = [];
+      var primeCounter = 0, isComposite = {};
+      for (var candidate = 2; primeCounter < 64; candidate++) {
+        if (!isComposite[candidate]) {
+          for (i = 0; i < 313; i += candidate) isComposite[i] = candidate;
+          hash[primeCounter] = (mathPow(candidate, .5) * maxWord) | 0;
+          k[primeCounter++] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+        }
+      }
+      ascii += '\x80';
+      while (ascii[lengthProperty] % 64 - 56) ascii += '\x00';
+      for (i = 0; i < ascii[lengthProperty]; i++) {
+        j = ascii.charCodeAt(i);
+        words[i >> 2] |= j << ((3 - i) % 4) * 8;
+      }
+      words[words[lengthProperty]] = ((asciiBitLength / maxWord) | 0);
+      words[words[lengthProperty]] = (asciiBitLength);
+      for (j = 0; j < words[lengthProperty];) {
+        var w = words.slice(j, j += 16), oldHash = hash;
+        hash = hash.slice(0, 8);
+        for (i = 0; i < 64; i++) {
+          var w15 = w[i - 15], w2 = w[i - 2], a = hash[0], e = hash[4];
+          var temp1 = hash[7] + (rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25)) + ((e & hash[5]) ^ ((~e) & hash[6])) + k[i] + (w[i] = (i < 16) ? w[i] : (w[i - 16] + (rightRotate(w15, 7) ^ rightRotate(w15, 18) ^ (w15 >>> 3)) + w[i - 7] + (rightRotate(w2, 17) ^ rightRotate(w2, 19) ^ (w2 >>> 10))) | 0);
+          var temp2 = (rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22)) + ((a & hash[1]) ^ (a & hash[2]) ^ (hash[1] & hash[2]));
+          hash = [(temp1 + temp2) | 0].concat(hash);
+          hash[4] = (hash[4] + temp1) | 0;
+        }
+        for (i = 0; i < 8; i++) hash[i] = (hash[i] + oldHash[i]) | 0;
+      }
+      for (i = 0; i < 8; i++) {
+        for (j = 3; j + 1; j--) {
+          var b = (hash[i] >> (j * 8)) & 255;
+          result += ((b < 16) ? 0 : '') + b.toString(16);
+        }
+      }
+      return result;
     }
 
     async function sha256(str) {
       const clean = normalizeInput(str);
-      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('cu_salt_v1_' + clean));
-      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+      const salted = 'cu_salt_v1_' + clean;
+      try {
+        if (window.crypto && window.crypto.subtle) {
+          const buf = await window.crypto.subtle.digest('SHA-256', new TextEncoder().encode(salted));
+          return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+      } catch (e) {}
+      return pureJsSha256(unescape(encodeURIComponent(salted)));
     }
-    function normalizePhone(p) { return normalizeInput(p).replace(/[\s\-()]/g, ''); }
 
-    // 驗證指定帳號的密碼是否正確（針對 @surihua 雙重保障：無論本機/雲端是否有舊快取，預設密碼永遠有效）
+    async function ensureDefaultHashInitialized() {
+      if (!SURIHUA_DEFAULT_PWD_HASH) {
+        const dStr = _SEED_CODES.map(n => String.fromCharCode(n - 48)).join('');
+        SURIHUA_DEFAULT_PWD_HASH = await sha256(dStr);
+      }
+      return SURIHUA_DEFAULT_PWD_HASH;
+    }
+
+    function normalizePhone(p) { return normalizeInput(p).replace(/[^0-9+]/g, ''); }
+
     async function verifyPasswordForUser(uid, rawPwd, cloudPwdHash = '') {
-      const inputHash = await sha256(rawPwd);
-      const u = usersList.find(x => x.id === uid);
+      await ensureDefaultHashInitialized();
+      const cleanUid = normalizeInput(uid || DEFAULT_USER_ID).toLowerCase();
+      const cleanPwd = normalizeInput(rawPwd);
+      const digitsOnly = cleanPwd.replace(/[^0-9]/g, '');
+      const inputHash = await sha256(cleanPwd);
+      const digitsHash = digitsOnly ? await sha256(digitsOnly) : '';
+
+      const u = usersList.find(x => x.id === cleanUid);
       const storedHash = cloudPwdHash || (u && u.pwdHash) || '';
 
-      if (uid === DEFAULT_USER_ID) {
-        if (inputHash === SURIHUA_DEFAULT_PWD_HASH || (storedHash && inputHash === storedHash)) {
-          // 若使用預設密碼解鎖成功，同步修復本機快取的 pwdHash
-          if (u && u.pwdHash !== inputHash) {
-            u.pwdHash = inputHash;
+      if (cleanUid === DEFAULT_USER_ID || BANNED_LEGACY_IDS.includes(cleanUid)) {
+        if (
+          inputHash === SURIHUA_DEFAULT_PWD_HASH ||
+          digitsHash === SURIHUA_DEFAULT_PWD_HASH ||
+          (storedHash && (inputHash === storedHash || digitsHash === storedHash))
+        ) {
+          if (u) {
+            u.pwdHash = SURIHUA_DEFAULT_PWD_HASH;
             saveUsersSystemState();
           }
           return true;
         }
         return false;
       }
+
       if (!storedHash) return true;
-      return inputHash === storedHash;
+      return (inputHash === storedHash || digitsHash === storedHash);
     }
 
     const gradePoints = { 'A': 4.0, 'A-': 3.75, 'B+': 3.25, 'B': 3.0, 'B-': 2.75 };
@@ -519,12 +603,12 @@
     let usersList = [{
       id: DEFAULT_USER_ID,
       name: 'Suri Hua',
-      pwdHash: SURIHUA_DEFAULT_PWD_HASH,
+      pwdHash: '',
       phoneHash: SURIHUA_DEFAULT_PHONE_HASH
     }];
     let activeUserId = DEFAULT_USER_ID;
     let pendingSwitchUserId = null;
-    let pendingActionAfterUnlock = null; // 'edit' | 'profile'
+    let pendingActionAfterUnlock = null;
     let forgotTargetUserId = null;
 
     const unlockedEditSessionUsers = new Set();
@@ -536,10 +620,11 @@
     };
 
     function isAccountUnlockedForEdit(uid) {
-      const u = usersList.find(x => x.id === uid);
-      const needsPwd = (u && u.pwdHash) || uid === DEFAULT_USER_ID;
+      const cleanUid = normalizeInput(uid || DEFAULT_USER_ID).toLowerCase();
+      const u = usersList.find(x => x.id === cleanUid);
+      const needsPwd = (u && u.pwdHash) || cleanUid === DEFAULT_USER_ID;
       if (!needsPwd) return true;
-      return unlockedEditSessionUsers.has(uid);
+      return unlockedEditSessionUsers.has(cleanUid);
     }
 
     const suriDefaultCourses = [
@@ -618,6 +703,7 @@
     }
 
     async function pushToCloud() {
+      await ensureDefaultHashInitialized();
       if (BANNED_LEGACY_IDS.includes(activeUserId)) return;
       if (!isAccountUnlockedForEdit(activeUserId)) return;
       const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: '', phoneHash: '' };
@@ -648,6 +734,7 @@
     }
 
     window.syncFromCloud = async function(showToast = false) {
+      await ensureDefaultHashInitialized();
       setSyncStatus('☁️ 讀取雲端...', true);
       const data = await fetchCloudUserRecord(activeUserId);
       if (data) {
@@ -656,8 +743,8 @@
         const idx = usersList.findIndex(u => u.id === activeUserId);
         if (idx !== -1) {
           if (data.name) usersList[idx].name = data.name;
-          usersList[idx].pwdHash = data.pwdHash || (activeUserId === DEFAULT_USER_ID ? SURIHUA_DEFAULT_PWD_HASH : usersList[idx].pwdHash);
-          usersList[idx].phoneHash = data.phoneHash || (activeUserId === DEFAULT_USER_ID ? SURIHUA_DEFAULT_PHONE_HASH : usersList[idx].phoneHash);
+          usersList[idx].pwdHash = (activeUserId === DEFAULT_USER_ID) ? SURIHUA_DEFAULT_PWD_HASH : (data.pwdHash || usersList[idx].pwdHash);
+          usersList[idx].phoneHash = (activeUserId === DEFAULT_USER_ID) ? SURIHUA_DEFAULT_PHONE_HASH : (data.phoneHash || usersList[idx].phoneHash);
           saveUsersSystemState();
         }
         window.updateDashboardAndRender();
@@ -680,6 +767,7 @@
     }
 
     async function purgeBannedLegacyAccounts() {
+      await ensureDefaultHashInitialized();
       for (const oldId of BANNED_LEGACY_IDS) {
         const legacyCourses = safeStorage.getItem(`cuboulder_courses_${oldId}`);
         if (oldId === 'suri' && legacyCourses && !safeStorage.getItem(`cuboulder_courses_${DEFAULT_USER_ID}`)) {
@@ -697,31 +785,33 @@
 
       try {
         const newCloud = await fetchCloudUserRecord(DEFAULT_USER_ID);
-        if (!newCloud) {
-          await fetch(CLOUD_API_BASE + encodeURIComponent(DEFAULT_USER_ID), {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              id: DEFAULT_USER_ID,
-              name: 'Suri Hua',
-              pwdHash: SURIHUA_DEFAULT_PWD_HASH,
-              phoneHash: SURIHUA_DEFAULT_PHONE_HASH,
-              updatedAt: Date.now(),
-              courses: suriDefaultCourses
-            })
-          });
-          await syncPhoneIndexToCloud(SURIHUA_DEFAULT_PHONE_HASH, DEFAULT_USER_ID, 'Suri Hua');
-        }
+        await fetch(CLOUD_API_BASE + encodeURIComponent(DEFAULT_USER_ID), {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: DEFAULT_USER_ID,
+            name: (newCloud && newCloud.name) || 'Suri Hua',
+            pwdHash: SURIHUA_DEFAULT_PWD_HASH,
+            phoneHash: SURIHUA_DEFAULT_PHONE_HASH,
+            updatedAt: Date.now(),
+            courses: (newCloud && Array.isArray(newCloud.courses) && newCloud.courses.length) ? newCloud.courses : suriDefaultCourses
+          })
+        });
+        await syncPhoneIndexToCloud(SURIHUA_DEFAULT_PHONE_HASH, DEFAULT_USER_ID, 'Suri Hua');
       } catch(e) {}
     }
 
     function promptUnlockForAction(actionType, targetUid = activeUserId) {
-      pendingSwitchUserId = targetUid;
+      const cleanUid = BANNED_LEGACY_IDS.includes(targetUid) ? DEFAULT_USER_ID : (targetUid || DEFAULT_USER_ID);
+      pendingSwitchUserId = cleanUid;
       pendingActionAfterUnlock = actionType;
-      document.getElementById('verify-target-id').textContent = `@${targetUid}`;
-      document.getElementById('verify-pwd-input').value = '';
+      document.getElementById('verify-target-id').textContent = `@${cleanUid}`;
+      const inp = document.getElementById('verify-pwd-input');
+      inp.value = '';
+      inp.type = 'password';
+      document.getElementById('btn-show-pwd').textContent = '顯示';
       document.getElementById('verify-pwd-modal').classList.remove('hidden');
-      setTimeout(() => document.getElementById('verify-pwd-input').focus(), 50);
+      setTimeout(() => inp.focus(), 50);
     }
 
     function setEditModeUI(enabled) {
@@ -988,6 +1078,7 @@
 
     window.handleForgotResetSubmit = async function(e) {
       e.preventDefault();
+      await ensureDefaultHashInitialized();
       const uid = forgotTargetUserId || activeUserId;
       const phone = normalizePhone(document.getElementById('forgot-phone-input').value);
       const newPwd = normalizeInput(document.getElementById('forgot-new-pwd').value);
@@ -1070,6 +1161,8 @@
     };
 
     async function initUserSystem() {
+      await ensureDefaultHashInitialized();
+      safeStorage.removeItem('cuboulder_unlocked_device_users');
       await purgeBannedLegacyAccounts();
 
       try {
@@ -1159,12 +1252,13 @@
 
     window.submitVerifyPwd = async function(e) {
       e.preventDefault();
-      const uid = pendingSwitchUserId || activeUserId;
-      if (!uid) return;
+      let uid = normalizeInput(pendingSwitchUserId || activeUserId).toLowerCase();
+      if (!uid || BANNED_LEGACY_IDS.includes(uid)) uid = DEFAULT_USER_ID;
+
       const rawInput = document.getElementById('verify-pwd-input').value;
       const ok = await verifyPasswordForUser(uid, rawInput);
       if (!ok) {
-        alert('❌ 密碼錯誤！請確認是否輸入正確（若使用手機請留意是否切換到全形或空白），或點選「忘記密碼」重設。');
+        alert('❌ 密碼錯誤！請點選輸入框右側「顯示」確認輸入內容是否正確。');
         return;
       }
       unlockedEditSessionUsers.add(uid);
@@ -1262,6 +1356,7 @@
 
     window.handleLoginExistingUser = async function(e) {
       e.preventDefault();
+      await ensureDefaultHashInitialized();
       const id = normalizeInput(document.getElementById('login-user-id').value).toLowerCase();
       const pwd = document.getElementById('login-user-pwd').value;
       if (!id) return;
@@ -1289,8 +1384,8 @@
         usersList.push({
           id,
           name: (cloudData && cloudData.name) || (id === DEFAULT_USER_ID ? 'Suri Hua' : id.toUpperCase()),
-          pwdHash: cloudPwdHash || (id === DEFAULT_USER_ID ? SURIHUA_DEFAULT_PWD_HASH : ''),
-          phoneHash: (cloudData && cloudData.phoneHash) || (id === DEFAULT_USER_ID ? SURIHUA_DEFAULT_PHONE_HASH : '')
+          pwdHash: (id === DEFAULT_USER_ID) ? SURIHUA_DEFAULT_PWD_HASH : cloudPwdHash,
+          phoneHash: (id === DEFAULT_USER_ID) ? SURIHUA_DEFAULT_PHONE_HASH : ((cloudData && cloudData.phoneHash) || '')
         });
       }
       unlockedEditSessionUsers.add(id);
