@@ -30,6 +30,7 @@
     select option { background-color: #0f172a; color: #f1f5f9; }
     .th-sortable { cursor: pointer; user-select: none; transition: color 0.15s, background-color 0.15s; }
     .th-sortable:hover { color: #CFB87C; background-color: rgba(207, 184, 124, 0.08); }
+    .ro-disabled:disabled { opacity: 0.45 !important; cursor: not-allowed !important; filter: grayscale(40%); }
   </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen">
@@ -43,7 +44,7 @@
           <h1 class="font-bold text-xs sm:text-lg leading-tight text-slate-100 truncate">CU Boulder Master's</h1>
           <div class="flex items-center space-x-1 sm:space-x-1.5 mt-0.5">
             <span class="text-[10px] sm:text-xs text-[#CFB87C] font-medium whitespace-nowrap">Course Tracker</span>
-            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0">v4.9</span>
+            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0">v5.1</span>
             <span id="sync-status-badge" onclick="syncFromCloud(true)" class="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center whitespace-nowrap shrink-0" title="點擊立即與雲端雙向同步最新資料">☁️ 已同步</span>
           </div>
         </div>
@@ -59,7 +60,7 @@
       
       <!-- 右側工具按鈕 -->
       <div class="flex items-center space-x-1 sm:space-x-2 shrink-0">
-        <button type="button" id="mode-toggle-btn" onclick="toggleEditMode()" class="inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0" title="切換為編輯模式（需驗證密碼）">
+        <button type="button" id="mode-toggle-btn" onclick="toggleEditMode()" class="inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0" title="點擊切換為編輯模式（需驗證密碼）">
           <i data-lucide="lock" class="w-3.5 h-3.5 sm:mr-1 text-slate-400"></i><span id="mode-text" class="hidden sm:inline whitespace-nowrap">瀏覽模式 (唯讀)</span>
         </button>
 
@@ -202,9 +203,7 @@
             <option value="progress">排序: 進度%</option>
             <option value="status">排序: 狀態</option>
           </select>
-          <button type="button" id="sort-dir-btn" onclick="toggleSortDirection()" class="px-2.5 py-1.5 bg-slate-900 border border-slate-800 hover:border-[#CFB87C] rounded-xl text-xs font-bold text-[#CFB87C] whitespace-nowrap shrink-0">
-            ↑ 升冪
-          </button>
+          <button type="button" id="sort-dir-btn" onclick="toggleSortDirection()" class="px-2.5 py-1.5 bg-slate-900 border border-slate-800 hover:border-[#CFB87C] rounded-xl text-xs font-bold text-[#CFB87C] whitespace-nowrap shrink-0">↑ 升冪</button>
         </div>
       </div>
 
@@ -295,9 +294,8 @@
         </div>
       </div>
 
-      <!-- ③ 下方（緊貼表格表頭上方）：與下方表格欄位順序 100% 對齊的篩選列 (科系 → 類別 → 搜尋代號或課程名稱 → 狀態 → 成績 → 篩選備註文字) -->
+      <!-- ③ 下方：與下方表格欄位順序 100% 對齊的篩選列 (科系 → 類別 → 搜尋代號或課程名稱 → 狀態 → 成績 → 篩選備註文字) -->
       <div class="grid grid-cols-2 sm:grid-cols-12 gap-2 bg-slate-950/85 p-2.5 rounded-xl border border-[#CFB87C]/35 text-xs shadow-inner items-center">
-        <!-- 1. 科系 -->
         <div class="col-span-1 sm:col-span-2">
           <select id="batch-filter-subject" onchange="handleBatchFilterChange()" class="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
             <option value="all">科系: 全部</option>
@@ -309,7 +307,6 @@
           </select>
         </div>
 
-        <!-- 2. 類別 -->
         <div class="col-span-1 sm:col-span-2">
           <select id="batch-filter-type" onchange="handleBatchFilterChange()" class="w-full px-2 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
             <option value="all">類別: 全部</option>
@@ -318,12 +315,10 @@
           </select>
         </div>
 
-        <!-- 3. 搜尋代號或課程名稱 -->
         <div class="col-span-2 sm:col-span-3">
           <input type="text" id="batch-filter-search" oninput="handleBatchFilterChange()" placeholder="🔍 搜尋代號或課程名稱..." class="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-[#CFB87C]">
         </div>
 
-        <!-- 4. 狀態 -->
         <div class="col-span-1 sm:col-span-1">
           <select id="batch-filter-status" onchange="handleBatchFilterChange()" class="w-full px-1.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
             <option value="all">狀態: 全部</option>
@@ -333,7 +328,6 @@
           </select>
         </div>
 
-        <!-- 5. 成績 -->
         <div class="col-span-1 sm:col-span-1">
           <select id="batch-filter-grade" onchange="handleBatchFilterChange()" class="w-full px-1.5 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:border-[#CFB87C]">
             <option value="all">成績: 全部</option>
@@ -346,7 +340,6 @@
           </select>
         </div>
 
-        <!-- 6. 篩選個人備註文字 + 重置按鈕 -->
         <div class="col-span-2 sm:col-span-3 flex items-center gap-1.5">
           <input type="text" id="batch-filter-note" oninput="handleBatchFilterChange()" placeholder="📝 篩選個人備註文字 (如: 已註冊, hrs)..." class="flex-1 min-w-0 px-3 py-1.5 bg-slate-900 border border-[#CFB87C]/40 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-[#CFB87C]">
           <button type="button" onclick="resetBatchFilters()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 shrink-0 whitespace-nowrap">重置</button>
@@ -384,13 +377,14 @@
           <div class="flex flex-wrap items-center gap-2">
             <h2 class="text-sm sm:text-lg font-bold text-slate-100">🗺️ 預計畢業時程、學分與學費智能規劃師</h2>
             <span id="calendar-sync-badge" onclick="syncOfficialCalendarFromWeb(true)" class="cursor-pointer text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold hover:bg-emerald-500/25" title="點擊立即連線至 CU Boulder 官網檢查最新行事曆">🌐 已內建 CU 官方行事曆 (點擊檢查官網更新)</span>
-            <span id="planner-sim-mode-badge" class="hidden text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold">👀 暫時試算中（不會覆蓋帳號預設目標）</span>
+            <span id="planner-sim-mode-badge" class="hidden text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold">👀 暫時試算中（不會覆蓋預設目標）</span>
           </div>
           <p class="text-[11px] sm:text-xs text-slate-400 mt-1">
-            自動根據您設定的預計畢業年、月，對齊 <a href="https://www.colorado.edu/registrar/cu-boulder-coursera-calendar#ucb-accordion-id--4-content2" target="_blank" rel="noopener" class="text-[#CFB87C] underline hover:text-yellow-200">CU Boulder on Coursera 官方行事曆</a> 的 8 週學期（Session 1 & 2），支援<strong>背景自動連線官網抓取更新</strong>與<strong>避開寒暑假無課空檔</strong>！
+            自動根據您設定的預計畢業年、月，對齊 <a href="https://www.colorado.edu/registrar/cu-boulder-coursera-calendar#ucb-accordion-id--4-content2" target="_blank" rel="noopener" class="text-[#CFB87C] underline hover:text-yellow-200">CU Boulder on Coursera 官方行事曆</a> 的 8 週學期（Session 1 & 2），支援<strong>自由切換試算</strong>與<strong>避開寒暑假無課空檔</strong>！
           </p>
         </div>
 
+        <!-- 試算畢業年月（唯讀模式可自由切換選單試算，但「存為預設目標」按鈕反灰鎖死 disabled！） -->
         <div class="flex flex-wrap items-center gap-2 bg-slate-900/90 p-2.5 rounded-xl border border-[#CFB87C]/40 shrink-0">
           <span class="text-xs font-bold text-[#CFB87C]">🎓 試算畢業年月：</span>
           <select id="planner-sim-year" onchange="handlePlannerTargetChange()" class="px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs font-mono font-bold text-white focus:border-[#CFB87C] focus:outline-none">
@@ -419,8 +413,8 @@
             ↺ 還原預設 (<span id="planner-saved-target-label">2027/08</span>)
           </button>
 
-          <button type="button" id="btn-planner-save-target" onclick="savePlannerTargetToAccount()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700 hover:border-[#CFB87C] whitespace-nowrap" title="需先解鎖編輯模式才能覆蓋儲存預設畢業目標並同步雲端">
-            🔒 存為預設目標 (唯讀)
+          <button type="button" id="btn-planner-save-target" disabled onclick="savePlannerTargetToAccount()" class="ro-disabled px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700 whitespace-nowrap" title="唯讀模式下已鎖定，請先點右上角解鎖編輯模式才能覆蓋儲存預設目標">
+            🔒 存為預設目標 (唯讀鎖定)
           </button>
         </div>
       </div>
@@ -485,12 +479,8 @@
             <p class="text-[11px] text-slate-400 mt-0.5">來源：<a href="https://www.colorado.edu/registrar/cu-boulder-coursera-calendar#ucb-accordion-id--4-content2" target="_blank" class="text-[#CFB87C] hover:underline">colorado.edu/registrar</a>（解鎖編輯後可微調日期）</p>
           </div>
           <div class="flex items-center gap-1.5">
-            <button type="button" id="btn-sync-cu-web" onclick="syncOfficialCalendarFromWeb(true)" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950 whitespace-nowrap" title="立即連線至 CU Boulder 官網抓取最新行事曆">
-              🌐 檢查 CU 官網更新
-            </button>
-            <button type="button" id="btn-reset-cu-cal" onclick="resetOfficialCalendarToDefault()" class="hidden px-2 py-1.5 rounded-lg text-[11px] bg-slate-800 text-slate-300 hover:text-rose-300 border border-slate-700 whitespace-nowrap" title="還原為系統預設行事曆">
-              ↺ 預設
-            </button>
+            <button type="button" id="btn-sync-cu-web" onclick="syncOfficialCalendarFromWeb(true)" class="px-2.5 py-1.5 rounded-lg text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950 whitespace-nowrap">🌐 檢查 CU 官網更新</button>
+            <button type="button" id="btn-reset-cu-cal" onclick="resetOfficialCalendarToDefault()" class="hidden px-2 py-1.5 rounded-lg text-[11px] bg-slate-800 text-slate-300 hover:text-rose-300 border border-slate-700 whitespace-nowrap">↺ 預設</button>
           </div>
         </div>
         <div id="official-calendar-list" class="space-y-2.5 max-h-[780px] overflow-y-auto pr-1"></div>
@@ -498,8 +488,18 @@
     </div>
   </main>
 
-  <!-- 4. PROFILE & SECURITY PAGE -->
+  <!-- 4. PROFILE & SECURITY PAGE (唯讀模式可進入檢視，但所有輸入框、選單與儲存按鈕全部反灰鎖死 disabled！) -->
   <main id="page-profile" class="max-w-4xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-5 hidden">
+    <!-- 唯讀鎖定提示橫幅 -->
+    <div id="profile-readonly-banner" class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/35 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs">
+      <div class="text-amber-300 leading-relaxed">
+        🔒 <strong>目前為「瀏覽模式 (唯讀)」</strong>：您可以檢視下方帳號安全資訊與預計畢業目標，但<strong>所有選項與儲存按鈕均已反灰鎖死</strong>。若要修改或儲存設定，請先驗證密碼解鎖編輯模式。
+      </div>
+      <button type="button" onclick="promptUnlockForAction('profile', activeUserId)" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shrink-0 whitespace-nowrap shadow">
+        🔑 輸入密碼解鎖設定
+      </button>
+    </div>
+
     <div class="glass-card rounded-2xl p-4 sm:p-6 space-y-5">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-3">
         <div class="flex items-center space-x-3.5">
@@ -534,7 +534,7 @@
         <form onsubmit="handleSaveGradTargetInProfile(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
           <div>
             <label class="block text-[11px] text-slate-400 mb-1">預計畢業年份 (Year)</label>
-            <select id="profile-grad-year" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-slate-100 font-mono font-bold">
+            <select id="profile-grad-year" class="profile-ro-control ro-disabled w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-slate-100 font-mono font-bold">
               <option value="2026">2026 年</option>
               <option value="2027" selected>2027 年</option>
               <option value="2028">2028 年</option>
@@ -544,7 +544,7 @@
           </div>
           <div>
             <label class="block text-[11px] text-slate-400 mb-1">預計畢業月份 (Month)</label>
-            <select id="profile-grad-month" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-slate-100 font-mono font-bold">
+            <select id="profile-grad-month" class="profile-ro-control ro-disabled w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-slate-100 font-mono font-bold">
               <option value="1">1 月 (Fall S2 畢業結算)</option>
               <option value="2">2 月</option>
               <option value="3">3 月 (Spring S1 畢業結算)</option>
@@ -560,7 +560,7 @@
             </select>
           </div>
           <div class="flex items-end">
-            <button type="submit" id="btn-profile-save-grad" class="w-full py-2 px-4 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shadow">儲存預計畢業年、月並同步</button>
+            <button type="submit" id="btn-profile-save-grad" class="profile-ro-control ro-disabled w-full py-2 px-4 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shadow">儲存預計畢業年、月並同步</button>
           </div>
         </form>
       </div>
@@ -574,14 +574,14 @@
         <form onsubmit="handleSaveDeviceDefaultId(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
           <div>
             <label class="block text-[11px] text-slate-400 mb-1">選擇要設為此裝置預設的 ID</label>
-            <select id="profile-device-default-select" class="w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-slate-100 font-mono"></select>
+            <select id="profile-device-default-select" class="profile-ro-control ro-disabled w-full px-3 py-2 bg-slate-950 border border-slate-700 rounded-xl text-xs text-slate-100 font-mono"></select>
           </div>
           <div>
             <label class="block text-[11px] text-amber-400 font-semibold mb-1">🔒 輸入該 ID 的密碼以確認設定</label>
-            <input type="text" id="profile-device-default-pwd" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="請輸入該帳號密碼" class="w-full px-3 py-2 bg-slate-950 border border-amber-500/40 rounded-xl text-xs text-slate-100 font-mono">
+            <input type="text" id="profile-device-default-pwd" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="請輸入該帳號密碼" class="profile-ro-control ro-disabled w-full px-3 py-2 bg-slate-950 border border-amber-500/40 rounded-xl text-xs text-slate-100 font-mono">
           </div>
           <div class="flex items-end">
-            <button type="submit" class="w-full py-2 px-4 rounded-xl text-xs font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow">儲存為此裝置預設 ID</button>
+            <button type="submit" class="profile-ro-control ro-disabled w-full py-2 px-4 rounded-xl text-xs font-bold bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow">儲存為此裝置預設 ID</button>
           </div>
         </form>
       </div>
@@ -593,14 +593,14 @@
           <button type="button" onclick="openForgotIdModal()" class="text-[11px] text-[#CFB87C] hover:underline font-semibold">忘記 ID？手機找回</button>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-          <div><label class="block text-xs text-slate-400 mb-1">顯示姓名 (Display Name)</label><input type="text" id="profile-input-name" required class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100"></div>
-          <div><label class="block text-xs text-[#CFB87C] font-semibold mb-1">自訂新的同步代碼 (New User ID)</label><input type="text" id="profile-input-id" required class="w-full px-3 py-2 bg-slate-900 border border-[#CFB87C]/50 rounded-xl text-xs text-slate-100 font-mono"></div>
+          <div><label class="block text-xs text-slate-400 mb-1">顯示姓名 (Display Name)</label><input type="text" id="profile-input-name" required class="profile-ro-control ro-disabled w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100"></div>
+          <div><label class="block text-xs text-[#CFB87C] font-semibold mb-1">自訂新的同步代碼 (New User ID)</label><input type="text" id="profile-input-id" required class="profile-ro-control ro-disabled w-full px-3 py-2 bg-slate-900 border border-[#CFB87C]/50 rounded-xl text-xs text-slate-100 font-mono"></div>
         </div>
         <div id="id-change-pwd-wrapper" class="pt-1">
           <label class="block text-xs text-amber-400 font-semibold mb-1">🔒 若要修改姓名或 User ID，請輸入目前的密碼驗證身分：</label>
-          <input type="password" id="profile-id-verify-pwd" required placeholder="請輸入目前的密碼以確認修改" class="w-full px-3 py-2 bg-slate-900 border border-amber-500/40 rounded-xl text-xs text-slate-100">
+          <input type="password" id="profile-id-verify-pwd" required placeholder="請輸入目前的密碼以確認修改" class="profile-ro-control ro-disabled w-full px-3 py-2 bg-slate-900 border border-amber-500/40 rounded-xl text-xs text-slate-100">
         </div>
-        <div class="flex justify-end pt-1"><button type="submit" class="w-full sm:w-auto px-5 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f]">驗證並儲存名稱 / 新 ID</button></div>
+        <div class="flex justify-end pt-1"><button type="submit" class="profile-ro-control ro-disabled w-full sm:w-auto px-5 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f]">驗證並儲存名稱 / 新 ID</button></div>
       </form>
     </div>
 
@@ -617,20 +617,20 @@
       <form onsubmit="handleUpdatePassword(event)" class="space-y-3 pt-1">
         <div id="old-password-wrapper">
           <label class="block text-xs text-amber-400 font-semibold mb-1">🔒 請輸入舊密碼（更新密碼前必須驗證）</label>
-          <input type="password" id="sec-old-pwd" required placeholder="輸入目前的舊密碼" class="w-full px-3 py-2 bg-slate-900 border border-amber-500/40 rounded-xl text-xs text-slate-100">
+          <input type="password" id="sec-old-pwd" required placeholder="輸入目前的舊密碼" class="profile-ro-control ro-disabled w-full px-3 py-2 bg-slate-900 border border-amber-500/40 rounded-xl text-xs text-slate-100">
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-xs text-slate-400 mb-1">🔑 設定新密碼</label>
-            <input type="password" id="sec-new-pwd" required placeholder="請手動輸入新密碼" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100">
+            <input type="password" id="sec-new-pwd" required placeholder="請手動輸入新密碼" class="profile-ro-control ro-disabled w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100">
           </div>
           <div>
             <label class="block text-xs text-slate-400 mb-1">📱 綁定救援手機號碼</label>
-            <input type="tel" id="sec-phone" required placeholder="例如: 0912345678" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
+            <input type="tel" id="sec-phone" required placeholder="例如: 0912345678" class="profile-ro-control ro-disabled w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
           </div>
         </div>
         <div class="flex justify-end pt-1">
-          <button type="submit" class="w-full sm:w-auto px-5 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f]">儲存新密碼並同步雲端</button>
+          <button type="submit" class="profile-ro-control ro-disabled w-full sm:w-auto px-5 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f]">儲存新密碼並同步雲端</button>
         </div>
       </form>
     </div>
@@ -642,7 +642,7 @@
           <h3 class="text-xs sm:text-sm font-bold text-rose-400">3. 刪除當前帳號 (@<span id="delete-zone-id">surihua</span>)</h3>
           <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">刪除帳號需要輸入該帳號的密碼，驗證通過後將清空此帳號的本機與雲端資料。</p>
         </div>
-        <button type="button" onclick="openDeleteAccountModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500 hover:text-white shrink-0">永久刪除此帳號...</button>
+        <button type="button" onclick="openDeleteAccountModal()" class="profile-ro-control ro-disabled px-4 py-2 rounded-xl text-xs font-bold bg-rose-500/20 text-rose-300 border border-rose-500/40 hover:bg-rose-500 hover:text-white shrink-0">永久刪除此帳號...</button>
       </div>
     </div>
   </main>
@@ -657,26 +657,11 @@
       <form onsubmit="saveCalEditModal(event)" class="space-y-3 text-xs">
         <input type="hidden" id="cal-edit-id">
         <div class="grid grid-cols-2 gap-3">
-          <div>
-            <label class="block text-slate-400 mb-1">🔓 選課開放 (Enrollment Opens)</label>
-            <input type="date" id="cal-edit-enrollOpen" required class="w-full px-2.5 py-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-100 font-mono">
-          </div>
-          <div>
-            <label class="block text-slate-400 mb-1">🏫 開學日 (Classes Begin)</label>
-            <input type="date" id="cal-edit-classStart" required class="w-full px-2.5 py-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-100 font-mono">
-          </div>
-          <div>
-            <label class="block text-amber-300 mb-1">💳 選課截止 (Last Day to Enroll)</label>
-            <input type="date" id="cal-edit-enrollClose" required class="w-full px-2.5 py-2 bg-slate-900 border border-amber-500/40 rounded-xl text-slate-100 font-mono">
-          </div>
-          <div>
-            <label class="block text-rose-300 mb-1">🏁 結課/退選 (Classes End)</label>
-            <input type="date" id="cal-edit-classEnd" required class="w-full px-2.5 py-2 bg-slate-900 border border-rose-500/40 rounded-xl text-slate-100 font-mono">
-          </div>
-          <div class="col-span-2">
-            <label class="block text-emerald-400 mb-1">📊 成績登錄 (Grades Posted)</label>
-            <input type="date" id="cal-edit-gradesPost" required class="w-full px-2.5 py-2 bg-slate-900 border border-emerald-500/40 rounded-xl text-slate-100 font-mono">
-          </div>
+          <div><label class="block text-slate-400 mb-1">🔓 選課開放 (Enrollment Opens)</label><input type="date" id="cal-edit-enrollOpen" required class="w-full px-2.5 py-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-100 font-mono"></div>
+          <div><label class="block text-slate-400 mb-1">🏫 開學日 (Classes Begin)</label><input type="date" id="cal-edit-classStart" required class="w-full px-2.5 py-2 bg-slate-900 border border-slate-700 rounded-xl text-slate-100 font-mono"></div>
+          <div><label class="block text-amber-300 mb-1">💳 選課截止 (Last Day to Enroll)</label><input type="date" id="cal-edit-enrollClose" required class="w-full px-2.5 py-2 bg-slate-900 border border-amber-500/40 rounded-xl text-slate-100 font-mono"></div>
+          <div><label class="block text-rose-300 mb-1">🏁 結課/退選 (Classes End)</label><input type="date" id="cal-edit-classEnd" required class="w-full px-2.5 py-2 bg-slate-900 border border-rose-500/40 rounded-xl text-slate-100 font-mono"></div>
+          <div class="col-span-2"><label class="block text-emerald-400 mb-1">📊 成績登錄 (Grades Posted)</label><input type="date" id="cal-edit-gradesPost" required class="w-full px-2.5 py-2 bg-slate-900 border border-emerald-500/40 rounded-xl text-slate-100 font-mono"></div>
         </div>
         <div class="flex justify-end space-x-2 pt-2 border-t border-slate-800">
           <button type="button" onclick="closeCalEditModal()" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300">取消</button>
@@ -755,7 +740,7 @@
         <h3 class="font-bold text-sm text-slate-100">🔒 請輸入密碼以啟用編輯 / 儲存設定</h3>
         <button type="button" onclick="closeVerifyPwdModal()" class="text-slate-400 hover:text-white">✕</button>
       </div>
-      <p class="text-xs text-slate-300 leading-relaxed">帳號 <strong id="verify-target-id" class="text-[#CFB87C] font-mono"></strong> 目前為訪客唯讀模式。請輸入擁有者密碼以啟用編輯或儲存預設畢業目標：</p>
+      <p class="text-xs text-slate-300 leading-relaxed">帳號 <strong id="verify-target-id" class="text-[#CFB87C] font-mono"></strong> 目前為唯讀模式。請輸入擁有者密碼以解鎖編輯與儲存功能：</p>
       <form onsubmit="submitVerifyPwd(event)" class="space-y-3">
         <div class="relative">
           <input type="password" id="verify-pwd-input" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="請輸入密碼" class="w-full pl-3 pr-14 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-slate-100 font-mono">
@@ -830,10 +815,7 @@
               <option value="ECEA">ECEA - Electrical & Computer Engr</option>
             </select>
           </div>
-          <div class="sm:col-span-3">
-            <label class="block text-xs text-slate-400 mb-1">課程代號 (Code)</label>
-            <input type="text" id="input-code-num" required placeholder="例如: 5021" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
-          </div>
+          <div class="sm:col-span-3"><label class="block text-xs text-slate-400 mb-1">課程代號 (Code)</label><input type="text" id="input-code-num" required placeholder="例如: 5021" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono"></div>
           <div class="sm:col-span-4">
             <label class="block text-xs text-slate-400 mb-1">類別</label>
             <select id="input-type" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100">
@@ -884,9 +866,7 @@
   </div>
 
   <script>
-    function safeCreateIcons() {
-      try { if (window.lucide && typeof window.lucide.createIcons === 'function') window.lucide.createIcons(); } catch (e) {}
-    }
+    function safeCreateIcons() { try { if (window.lucide && typeof window.lucide.createIcons === 'function') window.lucide.createIcons(); } catch (e) {} }
 
     const DEFAULT_USER_ID = 'surihua';
     const BANNED_LEGACY_IDS = ['suri', 'suri1031'];
@@ -904,9 +884,7 @@
     ];
 
     const VALID_LETTER_GRADES = { 'A': 4.0, 'A-': 3.75, 'B+': 3.25, 'B': 3.0, 'B-': 2.75 };
-    function isValidLetterGradeForGPA(gradeStr) {
-      return Object.prototype.hasOwnProperty.call(VALID_LETTER_GRADES, String(gradeStr || '').trim().toUpperCase());
-    }
+    function isValidLetterGradeForGPA(gradeStr) { return Object.prototype.hasOwnProperty.call(VALID_LETTER_GRADES, String(gradeStr || '').trim().toUpperCase()); }
 
     const DEFAULT_CU_CALENDAR = [
       { id:'fall2026_s1', type:'session', termName:'Fall 2026 - Session 1', badge:'已結課', status:'past', enrollOpen:'2026-08-10', classStart:'2026-08-24', enrollClose:'2026-10-02', classEnd:'2026-10-16', gradesPost:'2026-10-27', degreeConfer:'2026-11-06', endYear:2026, endMonth:10, note:'秋季第一期（已於 10/16 結課）' },
@@ -929,8 +907,7 @@
     function applyCalendarOverridesToActive() {
       activeOfficialCalendar = JSON.parse(JSON.stringify(DEFAULT_CU_CALENDAR)).map(item => {
         if (calendarOverridesMap && calendarOverridesMap[item.id]) {
-          const ov = calendarOverridesMap[item.id];
-          const merged = { ...item, ...ov };
+          const merged = { ...item, ...calendarOverridesMap[item.id] };
           if (merged.classEnd) {
             const parts = merged.classEnd.split('-').map(Number);
             if (parts.length >= 2) { merged.endYear = parts[0]; merged.endMonth = parts[1]; }
@@ -940,7 +917,8 @@
         return item;
       });
       const resetBtn = document.getElementById('btn-reset-cu-cal');
-      if (resetBtn) resetBtn.classList.toggle('hidden', !calendarOverridesMap || Object.keys(calendarOverridesMap).length === 0);
+      const canEdit = isEditMode && isAccountUnlockedForEdit(activeUserId);
+      if (resetBtn) resetBtn.classList.toggle('hidden', !canEdit || !calendarOverridesMap || Object.keys(calendarOverridesMap).length === 0);
     }
 
     function getExtendedCalendarThroughYear(maxYear = 2030) {
@@ -970,16 +948,13 @@
         const res = await fetch(url, { signal: ctrl.signal, cache: 'no-store' });
         clearTimeout(timer);
         if (res.ok) return await res.text();
-      } catch (e) {
-        clearTimeout(timer);
-      }
+      } catch (e) { clearTimeout(timer); }
       return null;
     }
 
     function parseMonthDayToISO(monthName, dayNum, defaultYear) {
       const mMap = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, oct:10, nov:11, dec:12 };
-      const mKey = String(monthName || '').slice(0, 3).toLowerCase();
-      const m = mMap[mKey];
+      const m = mMap[String(monthName || '').slice(0, 3).toLowerCase()];
       const d = parseInt(dayNum, 10);
       if (!m || isNaN(d) || d < 1 || d > 31) return null;
       return `${defaultYear}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
@@ -988,46 +963,25 @@
     function extractSessionsFromOfficialText(rawText) {
       if (!rawText || rawText.length < 200) return { updatedCount: 0, verifiedTerms: 0 };
       const clean = rawText.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
-      let verifiedTerms = 0, updatedCount = 0;
-
-      if (/Coursera|Session\s*1|Session\s*2|Enrollment\s*Opens|Classes\s*Begin/i.test(clean)) {
-        verifiedTerms++;
-      }
-
+      let verifiedTerms = /Coursera|Session\s*1|Session\s*2|Enrollment\s*Opens/i.test(clean) ? 1 : 0, updatedCount = 0;
       const termConfigs = [
         { season: 'Fall', year: 2026, s1Id: 'fall2026_s1', s2Id: 'fall2026_s2' },
         { season: 'Spring', year: 2027, s1Id: 'spring2027_s1', s2Id: 'spring2027_s2' },
         { season: 'Summer', year: 2027, s1Id: 'summer2027_s1', s2Id: 'summer2027_s2' },
-        { season: 'Fall', year: 2027, s1Id: 'fall2027_s1', s2Id: 'fall2027_s2' },
-        { season: 'Spring', year: 2028, s1Id: 'spring2028_s1', s2Id: 'spring2028_s2' }
+        { season: 'Fall', year: 2027, s1Id: 'fall2027_s1', s2Id: 'fall2027_s2' }
       ];
-
       termConfigs.forEach(cfg => {
-        const headerRegex = new RegExp(`${cfg.season}\\s+${cfg.year}`, 'i');
-        const match = headerRegex.exec(clean);
+        const match = new RegExp(`${cfg.season}\\s+${cfg.year}`, 'i').exec(clean);
         if (match) {
           verifiedTerms++;
           const snippet = clean.slice(match.index, match.index + 1800);
-          const extractPairAfterLabel = (labelRegex) => {
-            const lm = labelRegex.exec(snippet);
+          const extractPair = (re) => {
+            const lm = re.exec(snippet);
             if (!lm) return null;
-            const after = snippet.slice(lm.index, lm.index + 240);
-            const dateMatches = [...after.matchAll(/(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+(\d{1,2})/gi)];
-            if (dateMatches.length >= 2) {
-              return [
-                parseMonthDayToISO(dateMatches[0][1], dateMatches[0][2], cfg.year),
-                parseMonthDayToISO(dateMatches[1][1], dateMatches[1][2], cfg.year)
-              ];
-            }
-            return null;
+            const dm = [...snippet.slice(lm.index, lm.index + 240).matchAll(/(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\.?\s+(\d{1,2})/gi)];
+            return dm.length >= 2 ? [parseMonthDayToISO(dm[0][1], dm[0][2], cfg.year), parseMonthDayToISO(dm[1][1], dm[1][2], cfg.year)] : null;
           };
-
-          const opens = extractPairAfterLabel(/Enrollment\s+Opens/i);
-          const begins = extractPairAfterLabel(/Classes\s+Begin/i);
-          const closes = extractPairAfterLabel(/Last\s+Day\s+to\s+Enroll/i);
-          const ends = extractPairAfterLabel(/Classes\s+End/i);
-          const grades = extractPairAfterLabel(/Grades\s+Posted/i);
-
+          const opens = extractPair(/Enrollment\s+Opens/i), begins = extractPair(/Classes\s+Begin/i), closes = extractPair(/Last\s+Day\s+to\s+Enroll/i), ends = extractPair(/Classes\s+End/i), grades = extractPair(/Grades\s+Posted/i);
           [cfg.s1Id, cfg.s2Id].forEach((sid, idx) => {
             const patch = {};
             if (opens && opens[idx]) patch.enrollOpen = opens[idx];
@@ -1037,8 +991,7 @@
             if (grades && grades[idx]) patch.gradesPost = grades[idx];
             if (Object.keys(patch).length >= 3) {
               const orig = DEFAULT_CU_CALENDAR.find(x => x.id === sid) || {};
-              const isDiff = Object.keys(patch).some(k => orig[k] && orig[k] !== patch[k]);
-              if (isDiff) {
+              if (Object.keys(patch).some(k => orig[k] && orig[k] !== patch[k])) {
                 calendarOverridesMap[sid] = { ...(calendarOverridesMap[sid] || {}), ...patch };
                 updatedCount++;
               }
@@ -1046,67 +999,51 @@
           });
         }
       });
-
       return { updatedCount, verifiedTerms };
     }
 
     window.syncOfficialCalendarFromWeb = async function(isManualClick = false) {
-      const badge = document.getElementById('calendar-sync-badge');
-      const btn = document.getElementById('btn-sync-cu-web');
+      const badge = document.getElementById('calendar-sync-badge'), btn = document.getElementById('btn-sync-cu-web');
       if (!isManualClick) {
         const lastCheck = Number(safeStorage.getItem('cuboulder_cal_last_check_ts') || 0);
         if (lastCheck && (Date.now() - lastCheck < 12 * 3600 * 1000)) {
-          const dStr = new Date(lastCheck).toLocaleDateString('zh-TW');
-          if (badge) badge.textContent = `✅ 已對齊 CU 官網 (${dStr} 核對)`;
+          if (badge) badge.textContent = `✅ 已對齊 CU 官網 (${new Date(lastCheck).toLocaleDateString('zh-TW')} 核對)`;
           return;
         }
       }
-
       if (badge) badge.textContent = '🌐 正在連線 CU 官網檢查更新...';
       if (btn) { btn.textContent = '⏳ 抓取中...'; btn.disabled = true; }
-
       let rawContent = await fetchTextWithTimeout('https://r.jina.ai/' + CU_CALENDAR_OFFICIAL_URL, 6000);
       if (!rawContent) {
         const proxyJson = await fetchTextWithTimeout('https://api.allorigins.win/get?url=' + encodeURIComponent(CU_CALENDAR_OFFICIAL_URL), 6000);
-        if (proxyJson) {
-          try { rawContent = JSON.parse(proxyJson).contents; } catch (e) {}
-        }
+        if (proxyJson) { try { rawContent = JSON.parse(proxyJson).contents; } catch (e) {} }
       }
-
       if (btn) { btn.textContent = '🌐 檢查 CU 官網更新'; btn.disabled = false; }
-
       if (rawContent) {
         const { updatedCount, verifiedTerms } = extractSessionsFromOfficialText(rawContent);
         const nowTs = Date.now();
         safeStorage.setItem('cuboulder_cal_last_check_ts', String(nowTs));
         const timeStr = new Date(nowTs).toLocaleTimeString('zh-TW', { hour: '2-digit', minute: '2-digit', hour12: false });
-
         if (updatedCount > 0) {
           safeStorage.setItem('cuboulder_cal_overrides', JSON.stringify(calendarOverridesMap));
           renderGraduationPlanner();
-          if (isAccountUnlockedForEdit(activeUserId)) await pushToCloud(false);
+          if (isEditMode && isAccountUnlockedForEdit(activeUserId)) await pushToCloud(false);
           if (badge) badge.textContent = `✅ 已自動更新 ${updatedCount} 期官網新日期 (${timeStr})`;
-          if (isManualClick) alert(`🎉 偵測到 CU Boulder 官網更新了 ${updatedCount} 個學期的日期，已自動更新路線圖並同步！`);
+          if (isManualClick) alert(`🎉 偵測到 CU Boulder 官網更新了 ${updatedCount} 個學期的日期，已自動更新路線圖！`);
         } else if (verifiedTerms > 0) {
           if (badge) badge.textContent = `✅ 已連線核對 CU 官網最新公告 (${timeStr})`;
-          if (isManualClick) alert(`✅ 已成功連線至 CU Boulder 官網（colorado.edu/registrar）核對完畢！\n目前內建的所有學期日期皆與官網最新公告完全一致。`);
+          if (isManualClick) alert(`✅ 已成功連線至 CU Boulder 官網核對完畢！目前所有學期日期皆與官網最新公告一致。`);
         } else {
           if (badge) badge.textContent = `🌐 已內建 CU 官方行事曆 (離線保護中)`;
-          if (isManualClick) alert(`ℹ️ 已連線至官網，目前使用內建經驗證之 2026–2030 官方行事曆。`);
         }
       } else {
         if (badge) badge.textContent = `🛡️ 已啟用內建官方行事曆 (離線秒開保護)`;
-        if (isManualClick) {
-          alert(`ℹ️ 外部跨網域代理伺服器目前忙碌中，系統已自動啟用「內建官方行事曆保護機制」，確保您的畢業規劃不受外部網路影響！\n（若學校有臨時微調日期，您也可以在解鎖編輯模式後點選學期右上角的「✏️ 微調日期」直接修改）`);
-        }
+        if (isManualClick) alert(`ℹ️ 外部跨網域代理忙碌中，已自動啟用「內建官方行事曆保護機制」，確保規劃不受影響！`);
       }
     };
 
     window.openCalEditModal = function(termId) {
-      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) {
-        promptUnlockForAction('edit', activeUserId);
-        return;
-      }
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit', activeUserId); return; }
       applyCalendarOverridesToActive();
       const item = activeOfficialCalendar.find(x => x.id === termId);
       if (!item || item.type !== 'session') return;
@@ -1119,11 +1056,11 @@
       document.getElementById('cal-edit-gradesPost').value = item.gradesPost || '';
       document.getElementById('cal-edit-modal').classList.remove('hidden');
     };
-
     window.closeCalEditModal = () => document.getElementById('cal-edit-modal').classList.add('hidden');
 
     window.saveCalEditModal = async function(e) {
       e.preventDefault();
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit', activeUserId); return; }
       const id = document.getElementById('cal-edit-id').value;
       if (!id) return;
       calendarOverridesMap[id] = {
@@ -1137,14 +1074,11 @@
       closeCalEditModal();
       renderGraduationPlanner();
       await pushToCloud(false);
-      alert('✅ 學期日期已更新，路線圖已重新計算並同步至雲端！');
+      alert('✅ 學期日期已更新並同步至雲端！');
     };
 
     window.resetOfficialCalendarToDefault = async function() {
-      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) {
-        promptUnlockForAction('edit', activeUserId);
-        return;
-      }
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit', activeUserId); return; }
       if (!confirm('確定要將所有學期日期還原為系統預設的 CU Boulder 官方行事曆嗎？')) return;
       calendarOverridesMap = {};
       safeStorage.removeItem('cuboulder_cal_overrides');
@@ -1199,7 +1133,6 @@
     let usersList = [{ id: DEFAULT_USER_ID, name: 'Suri Hua', pwdHash: '', phoneHash: SURIHUA_DEFAULT_PHONE_HASH, gradYear: 2027, gradMonth: 8 }];
     let activeUserId = DEFAULT_USER_ID, pendingSwitchUserId = null, pendingActionAfterUnlock = null, forgotTargetUserId = null;
     const unlockedEditSessionUsers = new Set();
-
     const CLOUD_API_BASE = 'https://kvdb.io/A6p8Xz9mK2vL5qR8wT3yN1/cu_tracker_user_';
 
     const safeStorage = {
@@ -1222,25 +1155,21 @@
       }
       return { subject: 'EMEA', num: str };
     }
-
     function combineCourseCode(subject, num) {
       const s = String(subject || 'EMEA').trim().toUpperCase(), n = String(num || '').trim();
       return n ? `${s} ${n}` : s;
     }
-
     function stripPercentForInput(val) {
       const s = String(val ?? '').trim();
       if (!s || s === '--') return '0';
       return s.endsWith('%') ? s.slice(0, -1).trim() : s;
     }
-
     function formatProgressWithPercent(rawVal) {
       const s = String(rawVal ?? '').trim();
       if (!s) return '0%';
       if (s === '--' || s.includes('/')) return s;
       return s.endsWith('%') ? s : `${s}%`;
     }
-
     function parseProgressNumeric(val) {
       const s = String(val || '').trim();
       if (!s || s === '--') return -1;
@@ -1254,7 +1183,6 @@
 
     function normalizeCodeForCompare(code) { return String(code || '').replace(/\s+/g, '').toLowerCase(); }
     function normalizeNameForCompare(name) { return String(name || '').replace(/\s+/g, ' ').trim().toLowerCase(); }
-
     function findDuplicateCourse(code, name, excludeId = null, listToSearch = courseList) {
       const normCode = normalizeCodeForCompare(code), normName = normalizeNameForCompare(name);
       return listToSearch.find(c => {
@@ -1268,7 +1196,6 @@
         ? 'row-type w-full px-2 py-1.5 bg-[#CFB87C]/15 border border-[#CFB87C]/40 rounded-lg text-xs text-[#CFB87C] font-bold focus:outline-none'
         : 'row-type w-full px-2 py-1.5 bg-sky-500/15 border border-sky-500/40 rounded-lg text-xs text-sky-400 font-bold focus:outline-none';
     }
-
     function getStatusSelectClass(statusVal) {
       if (statusVal === 'Complete') return 'row-status w-full px-2 py-1.5 bg-emerald-500/15 border border-emerald-500/35 rounded-lg text-xs text-emerald-400 font-semibold focus:outline-none';
       if (statusVal === 'Ongoing') return 'row-status w-full px-2 py-1.5 bg-amber-500/15 border border-amber-500/35 rounded-lg text-xs text-amber-400 font-semibold focus:outline-none';
@@ -1478,11 +1405,7 @@
       updateDashboardMetricsFromData(batchDraftList);
     };
 
-    window.handleSortChange = function() {
-      sortByField = document.getElementById('sort-by-select').value;
-      renderCourses();
-    };
-
+    window.handleSortChange = function() { sortByField = document.getElementById('sort-by-select').value; renderCourses(); };
     window.toggleSortDirection = function() {
       sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
       const b1 = document.getElementById('sort-dir-btn');
@@ -1523,7 +1446,6 @@
         calendarOverridesMap = data.calendarOverrides;
         safeStorage.setItem('cuboulder_cal_overrides', JSON.stringify(calendarOverridesMap));
       }
-
       const idx = usersList.findIndex(u => u.id === activeUserId);
       if (idx !== -1) {
         if (data.name) usersList[idx].name = data.name;
@@ -1555,7 +1477,7 @@
 
     async function pushToCloud(forceOverwrite = false) {
       await ensureDefaultHashInitialized();
-      if (BANNED_LEGACY_IDS.includes(activeUserId) || !isAccountUnlockedForEdit(activeUserId)) return false;
+      if (BANNED_LEGACY_IDS.includes(activeUserId) || !isEditMode || !isAccountUnlockedForEdit(activeUserId)) return false;
 
       const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: '', phoneHash: '', gradYear: 2027, gradMonth: 8 };
       if (u.id === DEFAULT_USER_ID) {
@@ -1580,7 +1502,6 @@
             `👉 點選「確定 (OK)」：先載入雲端最新進度，避免誤蓋其他裝置剛改好的內容（推薦）。\n` +
             `👉 點選「取消 (Cancel)」：強制以這台裝置目前的設定覆蓋雲端。`
           );
-
           if (wantPullFirst) {
             applyCloudRecordToLocalState(cloudRecord);
             setSyncStatus('☁️ 已同步');
@@ -1609,15 +1530,8 @@
       let writeSuccess = false;
       for (let attempt = 1; attempt <= 2; attempt++) {
         try {
-          const resPut = await fetch(targetUrl, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: bodyStr
-          });
-          if (resPut.ok) {
-            writeSuccess = true;
-            break;
-          }
+          const resPut = await fetch(targetUrl, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: bodyStr });
+          if (resPut.ok) { writeSuccess = true; break; }
         } catch (e) {}
         if (attempt === 1) await new Promise(r => setTimeout(r, 350));
       }
@@ -1641,14 +1555,13 @@
       const localModTs = getLocalModifiedTimestamp(activeUserId);
       const lastSyncTs = getLocalSyncTimestamp(activeUserId);
 
-      if (isAccountUnlockedForEdit(activeUserId) && localModTs > lastSyncTs && localModTs > cloudTs) {
+      if (isEditMode && isAccountUnlockedForEdit(activeUserId) && localModTs > lastSyncTs && localModTs > cloudTs) {
         const pushed = await pushToCloud(true);
         if (pushed) {
           if (showToast) alert(`✅ 已將本機最新設定（預計畢業：${getCurrentUserGradTarget().year}/${String(getCurrentUserGradTarget().month).padStart(2,'0')}）成功同步至雲端！`);
           return true;
         }
       }
-
       if (data && applyCloudRecordToLocalState(data)) {
         setSyncStatus('☁️ 已同步');
         if (showToast) {
@@ -1663,7 +1576,7 @@
     };
 
     async function persistData() {
-      if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return false; }
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return false; }
       safeStorage.setItem(`cuboulder_courses_${activeUserId}`, JSON.stringify(courseList));
       window.updateDashboardAndRender();
       return await pushToCloud(false);
@@ -1681,41 +1594,63 @@
       setTimeout(() => inp.focus(), 50);
     }
 
-    function updatePlannerSaveButtonProtectionUI() {
-      const saveBtn = document.getElementById('btn-planner-save-target');
-      if (!saveBtn) return;
-      const canSave = isEditMode && isAccountUnlockedForEdit(activeUserId);
-      if (canSave) {
-        saveBtn.textContent = '💾 存為預設目標';
-        saveBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shadow whitespace-nowrap';
-        saveBtn.title = '將目前選取的畢業年月儲存為此帳號的預設目標並直接同步雲端';
-      } else {
-        saveBtn.textContent = '🔒 存為預設目標 (唯讀)';
-        saveBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700 hover:border-[#CFB87C] hover:text-slate-200 whitespace-nowrap';
-        saveBtn.title = '目前為訪客唯讀模式（點擊並驗證擁有者密碼後才可儲存預設目標）';
+    // 🔒 控管「畢業規劃」頁的儲存按鈕與「帳號安全」頁的所有控制項反灰鎖死狀態
+    function updateReadOnlyControlsAcrossPages() {
+      const canEdit = isEditMode && isAccountUnlockedForEdit(activeUserId);
+
+      // 1. 畢業規劃頁：試算下拉選單保持開放，但「存為預設目標」按鈕在唯讀模式下直接 disabled 反灰鎖死！
+      const saveTargetBtn = document.getElementById('btn-planner-save-target');
+      if (saveTargetBtn) {
+        saveTargetBtn.disabled = !canEdit;
+        if (canEdit) {
+          saveTargetBtn.textContent = '💾 存為預設目標並同步';
+          saveTargetBtn.className = 'ro-disabled px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shadow whitespace-nowrap';
+          saveTargetBtn.title = '將目前選取的畢業年月儲存為此帳號的預設目標並同步雲端';
+        } else {
+          saveTargetBtn.textContent = '🔒 存為預設目標 (唯讀鎖定)';
+          saveTargetBtn.className = 'ro-disabled px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700 whitespace-nowrap';
+          saveTargetBtn.title = '唯讀模式下已鎖定，請先點右上角解鎖編輯模式才能覆蓋儲存預設目標';
+        }
       }
+
+      // 2. 帳號安全頁：唯讀模式下可檢視，但所有 .profile-ro-control 欄位與按鈕全部設為 disabled 反灰鎖死！
+      const roBanner = document.getElementById('profile-readonly-banner');
+      if (roBanner) roBanner.classList.toggle('hidden', canEdit);
+      document.querySelectorAll('.profile-ro-control').forEach(el => {
+        el.disabled = !canEdit;
+      });
     }
 
     function setEditModeUI(enabled) {
-      isEditMode = enabled;
+      isEditMode = Boolean(enabled && isAccountUnlockedForEdit(activeUserId));
       const btn = document.getElementById('mode-toggle-btn'), text = document.getElementById('mode-text');
       document.getElementById('btn-add-course').classList.toggle('hidden', !isEditMode);
       document.getElementById('btn-reset-data').classList.toggle('hidden', !isEditMode);
       if (btn) btn.className = isEditMode ? "inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 border border-[#CFB87C] shrink-0" : "inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0";
       if (text) text.textContent = isEditMode ? "編輯模式 (已解鎖)" : "瀏覽模式 (唯讀)";
-      updatePlannerSaveButtonProtectionUI();
+      updateReadOnlyControlsAcrossPages();
       if (currentPage === 'planner') renderGraduationPlanner();
+      if (currentPage === 'profile') updateProfilePageDisplay();
       window.renderCourses();
     }
 
     window.toggleEditMode = function() {
-      if (!isEditMode && !isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit', activeUserId); return; }
-      setEditModeUI(!isEditMode);
+      if (!isEditMode) {
+        if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit', activeUserId); return; }
+        setEditModeUI(true);
+      } else {
+        // 切回唯讀模式：立即撤銷解鎖憑證，並將帳號安全頁與畢業規劃儲存鈕反灰鎖死
+        unlockedEditSessionUsers.delete(activeUserId);
+        syncAllGradSelectorsAcrossPages();
+        setEditModeUI(false);
+        if (currentPage === 'table') switchPage('home');
+      }
     };
 
     window.switchPage = function(p) {
-      if ((p === 'profile' || p === 'table') && !isAccountUnlockedForEdit(activeUserId)) {
-        promptUnlockForAction(p, activeUserId);
+      // 只有「批量表格」需要強制先解鎖；「帳號安全」在唯讀模式下可直接進入檢視（所有控制項反灰鎖死）
+      if (p === 'table' && !isAccountUnlockedForEdit(activeUserId)) {
+        promptUnlockForAction('table', activeUserId);
         return;
       }
       currentPage = p;
@@ -1732,15 +1667,19 @@
         if (mBtn) mBtn.className = active ? "py-1.5 rounded-lg text-[11px] font-bold bg-[#CFB87C] text-slate-950 whitespace-nowrap text-center" : "py-1.5 rounded-lg text-[11px] font-medium text-slate-300 whitespace-nowrap text-center";
       });
 
-      if (p === 'profile') updateProfilePageDisplay();
-      if (p === 'table') { setEditModeUI(true); initBatchTableData(); }
-      else if (p === 'planner') {
-        syncAllGradSelectorsAcrossPages();
-        updatePlannerSaveButtonProtectionUI();
+      if (p === 'profile') {
+        updateProfilePageDisplay();
+        updateReadOnlyControlsAcrossPages();
+      } else if (p === 'table') {
+        setEditModeUI(true);
+        initBatchTableData();
+      } else if (p === 'planner') {
+        updateReadOnlyControlsAcrossPages();
         renderGraduationPlanner();
         setTimeout(() => window.syncOfficialCalendarFromWeb(false), 120);
+      } else if (p === 'home') {
+        updateDashboardMetricsFromData(courseList);
       }
-      else if (p === 'home') updateDashboardMetricsFromData(courseList);
       safeCreateIcons();
     };
 
@@ -1755,7 +1694,7 @@
 
     window.savePlannerTargetToAccount = async function() {
       if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) {
-        promptUnlockForAction('save_planner_target', activeUserId);
+        promptUnlockForAction('edit', activeUserId);
         return;
       }
       const y = Number(document.getElementById('planner-sim-year').value || 2027);
@@ -1778,7 +1717,7 @@
 
     window.handleSaveGradTargetInProfile = async function(e) {
       e.preventDefault();
-      if (!isAccountUnlockedForEdit(activeUserId)) {
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) {
         promptUnlockForAction('profile', activeUserId);
         return;
       }
@@ -1801,6 +1740,7 @@
     };
 
     function renderGraduationPlanner() {
+      updateReadOnlyControlsAcrossPages();
       const savedTarget = getCurrentUserGradTarget();
       const targetYear = Number(document.getElementById('planner-sim-year')?.value || savedTarget.year);
       const targetMonth = Number(document.getElementById('planner-sim-month')?.value || savedTarget.month);
@@ -1814,8 +1754,6 @@
       if (savedLabel) savedLabel.textContent = savedStr;
       if (simBadge) simBadge.classList.toggle('hidden', !isSimulatingDifferentTarget);
       if (resetBtn) resetBtn.classList.toggle('hidden', !isSimulatingDifferentTarget);
-
-      updatePlannerSaveButtonProtectionUI();
 
       const ongoingCourses = courseList.filter(c => c.status === 'Ongoing');
       const expectedReq = courseList.filter(c => c.status === 'Expected' && c.type === 'required');
@@ -1931,7 +1869,7 @@
         </div>`;
       }).join('');
 
-      const canEditCal = isEditMode && isAccountUnlockedForEdit(activeUserId);
+      const canEdit = isEditMode && isAccountUnlockedForEdit(activeUserId);
       document.getElementById('official-calendar-list').innerHTML = activeOfficialCalendar.map(item => {
         if (item.type === 'break') {
           return `<div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-xs space-y-1">
@@ -1940,7 +1878,7 @@
             <div class="text-[11px] text-slate-400">${item.note}</div>
           </div>`;
         }
-        const editBtnHtml = canEditCal
+        const editBtnHtml = canEdit
           ? `<button type="button" onclick="openCalEditModal('${item.id}')" class="px-2 py-0.5 rounded bg-slate-800 hover:bg-[#CFB87C] text-[10px] text-slate-300 hover:text-slate-950 font-bold border border-slate-700">✏️ 微調日期</button>`
           : '';
         return `<div class="p-3 rounded-xl bg-slate-900/80 border ${item.status === 'current' ? 'border-[#CFB87C]' : 'border-slate-800'} text-xs space-y-1.5">
@@ -2121,6 +2059,7 @@
     };
 
     window.saveAllBatchTableChanges = async function() {
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('table'); return; }
       syncDOMInputsToBatchDraft();
       const cleaned = [];
       for (let i = 0; i < batchDraftList.length; i++) {
@@ -2133,9 +2072,7 @@
       }
       courseList = cleaned;
       const synced = await persistData();
-      if (synced) {
-        alert(`✅ 已成功儲存全部 ${courseList.length} 門課程並直接同步至雲端！`);
-      }
+      if (synced) alert(`✅ 已成功儲存全部 ${courseList.length} 門課程並直接同步至雲端！`);
     };
 
     function updateProfilePageDisplay() {
@@ -2159,10 +2096,12 @@
       const badge = document.getElementById('profile-pwd-badge');
       badge.textContent = hasPwd ? '🔒 已加密保護' : '🔓 尚未設密碼';
       badge.className = hasPwd ? 'text-[10px] px-2 py-0.5 rounded-full font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' : 'text-[10px] px-2 py-0.5 rounded-full font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30';
+      updateReadOnlyControlsAcrossPages();
     }
 
     window.handleSaveDeviceDefaultId = async function(e) {
       e.preventDefault();
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('profile', activeUserId); return; }
       const targetId = document.getElementById('profile-device-default-select').value;
       const pwd = document.getElementById('profile-device-default-pwd').value;
       if (!(await verifyPasswordForUser(targetId, pwd))) { alert(`❌ 密碼驗證錯誤！`); return; }
@@ -2175,6 +2114,7 @@
 
     window.handleUpdateUserIdAndName = async function(e) {
       e.preventDefault();
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('profile', activeUserId); return; }
       const u = usersList.find(x => x.id === activeUserId);
       if (!u) return;
       const newName = document.getElementById('profile-input-name').value.trim();
@@ -2187,6 +2127,7 @@
 
     window.handleUpdatePassword = async function(e) {
       e.preventDefault();
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('profile', activeUserId); return; }
       const u = usersList.find(x => x.id === activeUserId);
       if (!u || !(await verifyPasswordForUser(activeUserId, document.getElementById('sec-old-pwd').value))) { alert('❌ 舊密碼輸入錯誤！'); return; }
       const newPwd = normalizeInput(document.getElementById('sec-new-pwd').value), phone = normalizePhone(document.getElementById('sec-phone').value);
@@ -2247,11 +2188,14 @@
       unlockedEditSessionUsers.add(uid);
       closeForgotModal();
       await loadUserData(uid);
+      unlockedEditSessionUsers.add(uid);
+      setEditModeUI(true);
       await pushToCloud(true);
       alert(`✅ 密碼重設成功！`);
     };
 
     window.openDeleteAccountModal = function() {
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('profile', activeUserId); return; }
       document.getElementById('del-modal-id').textContent = `@${activeUserId}`;
       document.getElementById('del-confirm-pwd').value = '';
       document.getElementById('delete-account-modal').classList.remove('hidden');
@@ -2292,7 +2236,8 @@
 
     window.requestSwitchUser = function(uid) {
       document.getElementById('user-dropdown').classList.add('hidden');
-      if ((currentPage === 'profile' || currentPage === 'table') && !isAccountUnlockedForEdit(uid)) switchPage('home');
+      unlockedEditSessionUsers.delete(activeUserId);
+      if (currentPage === 'table') switchPage('home');
       loadUserData(uid);
     };
 
@@ -2306,16 +2251,12 @@
         alert('❌ 密碼錯誤！請點選「顯示」確認輸入是否正確。');
         return;
       }
-      unlockedEditSessionUsers.add(uid);
       const action = pendingActionAfterUnlock;
       closeVerifyPwdModal();
       if (uid !== activeUserId) await loadUserData(uid);
-      if (action === 'edit') {
-        setEditModeUI(true);
-      } else if (action === 'save_planner_target') {
-        setEditModeUI(true);
-        await window.savePlannerTargetToAccount();
-      } else if (action === 'profile' || action === 'table' || action === 'planner') {
+      unlockedEditSessionUsers.add(uid);
+      setEditModeUI(true);
+      if (action === 'table' || action === 'profile' || action === 'planner') {
         switchPage(action);
       }
     };
@@ -2323,6 +2264,7 @@
     async function loadUserData(uid) {
       activeUserId = normalizeInput(uid || DEFAULT_USER_ID).toLowerCase();
       if (BANNED_LEGACY_IDS.includes(activeUserId)) activeUserId = DEFAULT_USER_ID;
+      unlockedEditSessionUsers.delete(activeUserId);
       setEditModeUI(false);
       saveUsersSystemState();
 
@@ -2371,6 +2313,7 @@
       usersList.push({ id, name, pwdHash, phoneHash, gradYear: 2027, gradMonth: 8 });
       safeStorage.setItem(`cuboulder_courses_${id}`, JSON.stringify(cleanCourses));
       unlockedEditSessionUsers.add(id); activeUserId = id; courseList = cleanCourses;
+      setEditModeUI(true);
       saveUsersSystemState(); window.updateDashboardAndRender(); closeNewUserModal(); await pushToCloud(true);
     };
 
@@ -2381,14 +2324,14 @@
       const cloudData = await fetchCloudUserRecord(id);
       const ok = await verifyPasswordForUser(id, pwd, (cloudData && cloudData.pwdHash) || '');
       if (!ok) { alert('❌ 密碼驗證錯誤！'); return; }
-      unlockedEditSessionUsers.add(id);
       closeNewUserModal();
       await loadUserData(id);
+      unlockedEditSessionUsers.add(id);
       setEditModeUI(true);
     };
 
     window.openAddModal = function() {
-      if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
       document.getElementById('modal-title').textContent = '新增課程內容';
       document.getElementById('edit-course-id').value = '';
       document.getElementById('input-subject').value = 'EMEA';
@@ -2404,7 +2347,7 @@
     };
 
     window.openEditModal = function(id) {
-      if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
       const c = courseList.find(x => x.id === id);
       if (!c) return;
       const { subject, num } = splitCourseCode(c.code);
@@ -2426,7 +2369,7 @@
 
     window.saveCourse = async function(e) {
       e.preventDefault();
-      if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
       const id = document.getElementById('edit-course-id').value;
       const fullCode = combineCourseCode(document.getElementById('input-subject').value, document.getElementById('input-code-num').value.trim());
       const name = document.getElementById('input-name').value.trim();
@@ -2440,6 +2383,7 @@
     };
 
     window.deleteCourse = async function() {
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
       const id = document.getElementById('edit-course-id').value;
       if (id && confirm("確定刪除此門課程？")) { courseList = courseList.filter(x => x.id !== id); closeModal(); await persistData(); }
     };
@@ -2610,7 +2554,7 @@
     window.toggleUserDropdown = () => document.getElementById('user-dropdown').classList.toggle('hidden');
 
     window.resetData = async function() {
-      if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
       if (confirm(`確定要將 [@${activeUserId}] 的資料重設為預設狀態嗎？`)) {
         courseList = getDefaultCoursesForUser(activeUserId);
         await persistData();
@@ -2620,9 +2564,7 @@
     async function initUserSystem() {
       try {
         const savedCalOv = safeStorage.getItem('cuboulder_cal_overrides');
-        if (savedCalOv) {
-          try { calendarOverridesMap = JSON.parse(savedCalOv) || {}; } catch (e) {}
-        }
+        if (savedCalOv) { try { calendarOverridesMap = JSON.parse(savedCalOv) || {}; } catch (e) {} }
         window.updateDashboardAndRender();
         await ensureDefaultHashInitialized();
         const s = safeStorage.getItem('cuboulder_users_list');
