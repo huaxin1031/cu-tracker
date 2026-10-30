@@ -7,24 +7,16 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>CU Boulder Master's Course & GPA Tracker</title>
-
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://huaxin1031.github.io/cu-tracker/">
   <meta property="og:title" content="CU Boulder Master's Course & Academic Progress Tracker">
   <meta property="og:description" content="Interactive academic dashboard, weighted GPA calculator, and course tracker for CU Boulder Master's program.">
   <meta property="og:image" content="https://placehold.co/1200x627/020617/CFB87C.png?text=CU+Boulder+Master%27s%0ACourse+%26+GPA+Tracker&font=montserrat">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="627">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://placehold.co/1200x627/020617/CFB87C.png?text=CU+Boulder+Master%27s%0ACourse+%26+GPA+Tracker&font=montserrat">
-
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="CU Tracker">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#020617">
-  <link id="apple-touch-icon-link" rel="apple-touch-icon" href="">
-  <link id="favicon-link" rel="icon" type="image/png" href="">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -51,13 +43,13 @@
           <h1 class="font-bold text-xs sm:text-lg leading-tight text-slate-100 truncate">CU Boulder Master's</h1>
           <div class="flex items-center space-x-1 sm:space-x-1.5 mt-0.5">
             <span class="text-[10px] sm:text-xs text-[#CFB87C] font-medium whitespace-nowrap">Course Tracker</span>
-            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0">v4.4</span>
-            <span id="sync-status-badge" onclick="syncFromCloud(true)" class="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center whitespace-nowrap shrink-0" title="點擊立即從雲端同步最新資料">☁️ 已同步</span>
+            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0">v4.7</span>
+            <span id="sync-status-badge" onclick="syncFromCloud(true)" class="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center whitespace-nowrap shrink-0" title="點擊立即與雲端雙向同步最新資料">☁️ 已同步</span>
           </div>
         </div>
       </div>
 
-      <!-- 桌面版導覽列 (4 大分頁) -->
+      <!-- 桌面版導覽列 -->
       <nav class="hidden sm:flex p-1 bg-slate-900/90 rounded-xl border border-slate-800 space-x-1 mx-2 shrink-0">
         <button type="button" id="nav-home" onclick="switchPage('home')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center whitespace-nowrap"><i data-lucide="layout-dashboard" class="w-3.5 h-3.5 mr-1.5"></i> 主頁</button>
         <button type="button" id="nav-table" onclick="switchPage('table')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap"><i data-lucide="table" class="w-3.5 h-3.5 mr-1.5"></i> 批量表格</button>
@@ -108,10 +100,11 @@
     </div>
   </header>
 
-  <!-- 🌟 共用置頂儀表板 (Shared Top Dashboard：在「主頁」與「📋 批量表格」皆顯示) -->
+  <!-- 🌟 共用置頂儀表板 -->
   <div id="shared-dashboard" class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-3 sm:space-y-4">
-    <div id="batch-live-preview-banner" class="hidden px-3 py-1.5 rounded-xl bg-[#CFB87C]/10 border border-[#CFB87C]/30 flex items-center justify-between text-[11px] text-[#CFB87C]">
-      <span>⚡ <strong>即時儀表板預覽模式</strong>：您在下方表格修改任何狀態、類別或成績時，上方儀表板會即時試算變化（確認無誤請點選「💾 儲存全部變更並同步雲端」）。</span>
+    <div id="batch-live-preview-banner" class="hidden px-3 py-1.5 rounded-xl bg-[#CFB87C]/10 border border-[#CFB87C]/30 flex flex-wrap items-center justify-between gap-2 text-[11px] text-[#CFB87C]">
+      <span>⚡ <strong>即時儀表板預覽 + 雙裝置防衝突保護</strong>：修改下方表格時，上方儀表板會即時試算變化；按下儲存時會自動檢查雲端是否有其他裝置的新紀錄，防止誤蓋！</span>
+      <button type="button" onclick="syncFromCloud(true)" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500 hover:text-slate-950 font-bold shrink-0">🔄 先從雲端拉取最新</button>
     </div>
 
     <section class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
@@ -149,7 +142,6 @@
       </div>
     </section>
 
-    <!-- 第二排：學分分佈結構 + 省空間中空圓環圖 (Donut Chart) -->
     <section class="grid grid-cols-1 md:grid-cols-3 gap-3 sm:gap-4">
       <div class="glass-card rounded-2xl p-3.5 sm:p-4 flex flex-col justify-between">
         <div>
@@ -171,7 +163,6 @@
         </div>
       </div>
 
-      <!-- 省空間版：成績等第分佈 (僅計已有 Grade 科目) -->
       <div class="glass-card rounded-2xl p-3.5 sm:p-4 md:col-span-2 flex flex-col justify-between">
         <div class="flex items-center justify-between mb-1">
           <h2 class="text-xs sm:text-sm font-semibold text-slate-200 flex items-center">🍩 <span class="ml-1.5">成績等第分佈 (僅計已有 Grade 科目)</span></h2>
@@ -182,7 +173,7 @@
     </section>
   </div>
 
-  <!-- 1. HOME PAGE (主頁課程卡片列表) -->
+  <!-- 1. HOME PAGE -->
   <main id="page-home" class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-3 sm:pt-4 space-y-3">
     <section class="space-y-2.5">
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-2">
@@ -221,13 +212,13 @@
     </section>
   </main>
 
-  <!-- 2. BATCH TABLE PAGE (📋 批量編輯表格分頁) -->
+  <!-- 2. BATCH TABLE PAGE -->
   <main id="page-table" class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-3 sm:pt-4 space-y-4 hidden">
-    <div class="glass-card rounded-2xl p-4 sm:p-5 space-y-3.5">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3.5">
+    <div class="glass-card rounded-2xl p-4 sm:p-5 space-y-3">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
         <div>
           <h2 class="text-sm sm:text-base font-bold text-slate-100">📋 課程批量編輯表格 (支援多欄位排序 & 備註篩選)</h2>
-          <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">點擊多個表頭欄位可依序疊加「多欄位升冪/降冪排序（顯示 ① ② ③ 順序）」；修改表格時上方儀表板會即時預覽最新進度與 GPA。</p>
+          <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">點擊多個表頭欄位可依序疊加「多欄位升冪/降冪排序（顯示 ① ② ③ 順序）」；篩選列已移至表頭正上方，方便就近對照且不易誤觸上方批量修改按鈕。</p>
         </div>
         <div class="flex flex-wrap items-center gap-2 shrink-0">
           <button type="button" onclick="addBlankRowToBatchTable()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-[#CFB87C] border border-[#CFB87C]/40 hover:bg-slate-700 whitespace-nowrap">+ 新增一列課程</button>
@@ -235,8 +226,77 @@
         </div>
       </div>
 
-      <!-- Excel 式多重篩選列 -->
-      <div class="grid grid-cols-2 sm:grid-cols-12 gap-2 bg-slate-950/70 p-2.5 rounded-xl border border-slate-800/90 text-xs">
+      <!-- ① 上方：批量套用動作工具列 -->
+      <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-900/90 p-2.5 rounded-xl border border-amber-500/25 text-xs">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="text-[11px] font-bold text-amber-400 px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">⚡ 批量修改區</span>
+          <label class="inline-flex items-center space-x-1.5 text-slate-200 cursor-pointer font-semibold">
+            <input type="checkbox" id="batch-select-all" onchange="toggleBatchSelectAll(this.checked)" class="rounded bg-slate-800 border-slate-700 text-[#CFB87C]">
+            <span>全選目前顯示 (<span id="batch-visible-count" class="text-[#CFB87C] font-bold">0</span> 筆)</span>
+          </label>
+          <span class="text-slate-600">|</span>
+          <select id="batch-action-type" class="px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-slate-200">
+            <option value="">批量改類別...</option>
+            <option value="required">改為 必修 (Core)</option>
+            <option value="electives">改為 選修 (Elective)</option>
+          </select>
+          <button type="button" onclick="applyBatchType()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">套用類別</button>
+
+          <select id="batch-action-status" class="px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-slate-200">
+            <option value="">批量改狀態...</option>
+            <option value="Complete">改為 Complete</option>
+            <option value="Ongoing">改為 Ongoing</option>
+            <option value="Expected">改為 Expected</option>
+          </select>
+          <button type="button" onclick="applyBatchStatus()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">套用狀態</button>
+
+          <select id="batch-action-grade" class="px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-slate-200">
+            <option value="">批量改成績...</option>
+            <option value="--">--</option>
+            <option value="A">A (4.0)</option>
+            <option value="A-">A- (3.75)</option>
+            <option value="B+">B+ (3.25)</option>
+            <option value="B">B (3.0)</option>
+            <option value="B-">B- (2.75)</option>
+          </select>
+          <button type="button" onclick="applyBatchGrade()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">套用成績</button>
+
+          <button type="button" onclick="deleteSelectedBatchRows()" class="px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:bg-rose-500 hover:text-white">🗑️ 刪除勾選</button>
+        </div>
+      </div>
+
+      <!-- ② 中間：多欄位複合排序狀態列 -->
+      <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-900/60 px-3 py-2 rounded-xl border border-slate-800/80 text-xs">
+        <div class="flex flex-wrap items-center gap-1.5">
+          <span class="text-slate-400 font-semibold">↕️ 多欄位排序優先順序：</span>
+          <div id="batch-multisort-chips" class="flex flex-wrap items-center gap-1.5"></div>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <select id="batch-add-sort-select" onchange="addSortRuleFromSelect(this)" class="px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-slate-300">
+            <option value="">+ 加入排序欄位...</option>
+            <option value="subject:asc">科系 (A → Z 升冪)</option>
+            <option value="subject:desc">科系 (Z → A 降冪)</option>
+            <option value="code:asc">代號 (小 → 大 升冪)</option>
+            <option value="code:desc">代號 (大 → 小 降冪)</option>
+            <option value="type:desc">類別 (必修優先)</option>
+            <option value="type:asc">類別 (選修優先)</option>
+            <option value="status:desc">狀態 (Complete優先)</option>
+            <option value="status:asc">狀態 (Expected優先)</option>
+            <option value="grade:desc">成績 (A → B- 降冪)</option>
+            <option value="grade:asc">成績 (B- → A 升冪)</option>
+            <option value="progress:desc">進度% (高 → 低)</option>
+            <option value="progress:asc">進度% (低 → 高)</option>
+            <option value="name:asc">課程名稱 (A → Z)</option>
+            <option value="name:desc">課程名稱 (Z → A)</option>
+            <option value="note:asc">個人備註 (A → Z)</option>
+            <option value="note:desc">個人備註 (Z → A)</option>
+          </select>
+          <button type="button" onclick="clearBatchMultiSort()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 whitespace-nowrap">清除排序</button>
+        </div>
+      </div>
+
+      <!-- ③ 下方（緊貼表格表頭上方）：Excel 式多重篩選列 -->
+      <div class="grid grid-cols-2 sm:grid-cols-12 gap-2 bg-slate-950/85 p-2.5 rounded-xl border border-[#CFB87C]/35 text-xs shadow-inner">
         <div class="col-span-2 sm:col-span-3">
           <input type="text" id="batch-filter-search" oninput="handleBatchFilterChange()" placeholder="🔍 篩選代號或課程名稱..." class="w-full px-3 py-1.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:border-[#CFB87C]">
         </div>
@@ -282,74 +342,6 @@
         </div>
       </div>
 
-      <!-- 多欄位複合排序狀態列 -->
-      <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-900/60 px-3 py-2 rounded-xl border border-slate-800/80 text-xs">
-        <div class="flex flex-wrap items-center gap-1.5">
-          <span class="text-slate-400 font-semibold">↕️ 多欄位排序優先順序：</span>
-          <div id="batch-multisort-chips" class="flex flex-wrap items-center gap-1.5"></div>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <select id="batch-add-sort-select" onchange="addSortRuleFromSelect(this)" class="px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-slate-300">
-            <option value="">+ 加入排序欄位...</option>
-            <option value="subject:asc">科系 (A → Z 升冪)</option>
-            <option value="subject:desc">科系 (Z → A 降冪)</option>
-            <option value="code:asc">代號 (小 → 大 升冪)</option>
-            <option value="code:desc">代號 (大 → 小 降冪)</option>
-            <option value="type:desc">類別 (必修優先)</option>
-            <option value="type:asc">類別 (選修優先)</option>
-            <option value="status:desc">狀態 (Complete優先)</option>
-            <option value="status:asc">狀態 (Expected優先)</option>
-            <option value="grade:desc">成績 (A → B- 降冪)</option>
-            <option value="grade:asc">成績 (B- → A 升冪)</option>
-            <option value="progress:desc">進度% (高 → 低)</option>
-            <option value="progress:asc">進度% (低 → 高)</option>
-            <option value="name:asc">課程名稱 (A → Z)</option>
-            <option value="name:desc">課程名稱 (Z → A)</option>
-            <option value="note:asc">個人備註 (A → Z)</option>
-            <option value="note:desc">個人備註 (Z → A)</option>
-          </select>
-          <button type="button" onclick="clearBatchMultiSort()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 whitespace-nowrap">清除排序</button>
-        </div>
-      </div>
-
-      <!-- 批量套用動作工具列 -->
-      <div class="flex flex-wrap items-center justify-between gap-2 bg-slate-900/80 p-2.5 rounded-xl border border-slate-800 text-xs">
-        <div class="flex flex-wrap items-center gap-2">
-          <label class="inline-flex items-center space-x-1.5 text-slate-300 cursor-pointer">
-            <input type="checkbox" id="batch-select-all" onchange="toggleBatchSelectAll(this.checked)" class="rounded bg-slate-800 border-slate-700 text-[#CFB87C]">
-            <span>全選目前顯示 (<span id="batch-visible-count" class="text-[#CFB87C] font-bold">0</span> 筆)</span>
-          </label>
-          <span class="text-slate-600">|</span>
-          <select id="batch-action-type" class="px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-slate-200">
-            <option value="">批量改類別...</option>
-            <option value="required">改為 必修 (Core)</option>
-            <option value="electives">改為 選修 (Elective)</option>
-          </select>
-          <button type="button" onclick="applyBatchType()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">套用類別</button>
-
-          <select id="batch-action-status" class="px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-slate-200">
-            <option value="">批量改狀態...</option>
-            <option value="Complete">改為 Complete</option>
-            <option value="Ongoing">改為 Ongoing</option>
-            <option value="Expected">改為 Expected</option>
-          </select>
-          <button type="button" onclick="applyBatchStatus()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">套用狀態</button>
-
-          <select id="batch-action-grade" class="px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-slate-200">
-            <option value="">批量改成績...</option>
-            <option value="--">--</option>
-            <option value="A">A (4.0)</option>
-            <option value="A-">A- (3.75)</option>
-            <option value="B+">B+ (3.25)</option>
-            <option value="B">B (3.0)</option>
-            <option value="B-">B- (2.75)</option>
-          </select>
-          <button type="button" onclick="applyBatchGrade()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700">套用成績</button>
-
-          <button type="button" onclick="deleteSelectedBatchRows()" class="px-2.5 py-1 rounded-lg bg-rose-500/20 text-rose-300 border border-rose-500/30 hover:bg-rose-500 hover:text-white">🗑️ 刪除勾選</button>
-        </div>
-      </div>
-
       <!-- 響應式可橫向捲動表格 -->
       <div class="overflow-x-auto rounded-xl border border-slate-800">
         <table class="w-full text-left border-collapse min-w-[940px]">
@@ -373,30 +365,31 @@
     </div>
   </main>
 
-  <!-- 3. GRADUATION & TUITION PLANNER PAGE (🗺️ 畢業規劃與 CU Boulder 官方行事曆頁面) -->
+  <!-- 3. GRADUATION & TUITION PLANNER PAGE -->
   <main id="page-planner" class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-4 sm:space-y-5 hidden">
     <div class="glass-card rounded-2xl p-4 sm:p-5 space-y-4">
       <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 border-b border-slate-800 pb-3.5">
         <div>
-          <div class="flex items-center space-x-2">
+          <div class="flex flex-wrap items-center gap-2">
             <h2 class="text-sm sm:text-lg font-bold text-slate-100">🗺️ 預計畢業時程、學分與學費智能規劃師</h2>
             <span class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 font-semibold">已內建 CU 官方行事曆</span>
+            <span id="planner-sim-mode-badge" class="hidden text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold">👀 暫時試算中（不會覆蓋帳號預設目標）</span>
           </div>
           <p class="text-[11px] sm:text-xs text-slate-400 mt-1">
-            自動根據您設定的預計畢業年、月，對齊 <a href="https://www.colorado.edu/registrar/cu-boulder-coursera-calendar#ucb-accordion-id--4-content2" target="_blank" rel="noopener" class="text-[#CFB87C] underline hover:text-yellow-200">CU Boulder on Coursera 官方行事曆</a> 的 8 週學期（Session 1 & 2），並<strong>自動標示與避開寒假／學期間無法修課的空檔</strong>！
+            自動根據您設定的預計畢業年、月，對齊 <a href="https://www.colorado.edu/registrar/cu-boulder-coursera-calendar#ucb-accordion-id--4-content2" target="_blank" rel="noopener" class="text-[#CFB87C] underline hover:text-yellow-200">CU Boulder on Coursera 官方行事曆</a> 的 8 週學期（Session 1 & 2），並<strong>自動標示與避開寒假／學期間無法修課的空檔</strong>！（訪客可自由切換下方年月試算，不會覆蓋擁有者預設目標）
           </p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2 bg-slate-900/90 p-2.5 rounded-xl border border-[#CFB87C]/40 shrink-0">
-          <span class="text-xs font-bold text-[#CFB87C]">🎓 目標畢業年月：</span>
-          <select id="planner-sim-year" onchange="handlePlannerTargetChange()" class="px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs font-mono font-bold text-white">
+          <span class="text-xs font-bold text-[#CFB87C]">🎓 試算畢業年月：</span>
+          <select id="planner-sim-year" onchange="handlePlannerTargetChange()" class="px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs font-mono font-bold text-white focus:border-[#CFB87C] focus:outline-none">
             <option value="2026">2026 年</option>
             <option value="2027" selected>2027 年</option>
             <option value="2028">2028 年</option>
             <option value="2029">2029 年</option>
             <option value="2030">2030 年</option>
           </select>
-          <select id="planner-sim-month" onchange="handlePlannerTargetChange()" class="px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs font-mono font-bold text-white">
+          <select id="planner-sim-month" onchange="handlePlannerTargetChange()" class="px-2.5 py-1.5 bg-slate-950 border border-slate-700 rounded-lg text-xs font-mono font-bold text-white focus:border-[#CFB87C] focus:outline-none">
             <option value="1">01 月 (Fall S2 結算)</option>
             <option value="2">02 月</option>
             <option value="3">03 月 (Spring S1 結算)</option>
@@ -410,7 +403,14 @@
             <option value="11">11 月</option>
             <option value="12">12 月 (Fall S2 結課)</option>
           </select>
-          <button type="button" onclick="savePlannerTargetToAccount()" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] whitespace-nowrap">💾 存為預設目標</button>
+
+          <button type="button" id="btn-planner-reset-default" onclick="resetPlannerToSavedTarget()" class="hidden px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-emerald-400 border border-emerald-500/30 hover:bg-slate-700 whitespace-nowrap" title="還原為此帳號儲存的預設畢業年月">
+            ↺ 還原預設 (<span id="planner-saved-target-label">2027/08</span>)
+          </button>
+
+          <button type="button" id="btn-planner-save-target" onclick="savePlannerTargetToAccount()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700 hover:border-[#CFB87C] whitespace-nowrap" title="需先解鎖編輯模式才能覆蓋儲存預設畢業目標並同步雲端">
+            🔒 存為預設目標 (唯讀)
+          </button>
         </div>
       </div>
 
@@ -477,7 +477,7 @@
     </div>
   </main>
 
-  <!-- 4. PROFILE & SECURITY PAGE (帳號安全設定 + 預計畢業年、月設定) -->
+  <!-- 4. PROFILE & SECURITY PAGE -->
   <main id="page-profile" class="max-w-4xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-5 hidden">
     <div class="glass-card rounded-2xl p-4 sm:p-6 space-y-5">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-3">
@@ -506,7 +506,7 @@
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <div>
             <h3 class="text-xs sm:text-sm font-bold text-[#CFB87C]">🎓 預計畢業年、月設定 (Graduation Target)</h3>
-            <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">設定您希望完成全部 30 門碩士課程的目標畢業年、月，系統會自動在「🗺️ 畢業規劃」頁面為您安排避開寒暑假的修課配速與每期學費預算：</p>
+            <p class="text-[11px] sm:text-xs text-slate-400 mt-0.5">設定您希望完成全部 30 門碩士課程的目標畢業年、月，儲存後會直接同步至雲端並與「🗺️ 畢業規劃」頁面雙向連動：</p>
           </div>
           <button type="button" onclick="switchPage('planner')" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-[#CFB87C] border border-[#CFB87C]/40 hover:bg-slate-700 shrink-0 whitespace-nowrap">🗺️ 前往查看畢業規劃建議 →</button>
         </div>
@@ -539,7 +539,7 @@
             </select>
           </div>
           <div class="flex items-end">
-            <button type="submit" class="w-full py-2 px-4 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shadow">儲存預計畢業年、月並同步</button>
+            <button type="submit" id="btn-profile-save-grad" class="w-full py-2 px-4 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shadow">儲存預計畢業年、月並同步</button>
           </div>
         </form>
       </div>
@@ -633,12 +633,10 @@
         <h3 class="font-bold text-sm sm:text-base text-slate-100">建立新 ID 或 臨時登入既有 ID</h3>
         <button type="button" onclick="closeNewUserModal()" class="text-slate-400 hover:text-white">✕</button>
       </div>
-
       <div class="flex p-1 bg-slate-900 rounded-xl border border-slate-800">
         <button type="button" id="tab-mode-register" onclick="switchUserModalTab('register')" class="flex-1 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950">✨ 建立全新 ID</button>
         <button type="button" id="tab-mode-login" onclick="switchUserModalTab('login')" class="flex-1 py-1.5 rounded-lg text-xs font-medium text-slate-300">🔑 登入既有 ID</button>
       </div>
-
       <form id="form-register-user" onsubmit="handleRegisterNewUser(event)" class="space-y-3">
         <p class="text-[11px] text-slate-400">新帳號將自動提供全空白進度（0%）的 30 門課表。</p>
         <div><label class="block text-xs text-slate-300 mb-1">1. 新使用者同步 ID (英數小寫)</label><input type="text" id="reg-user-id" required placeholder="例如: dolly" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono"></div>
@@ -650,21 +648,14 @@
           <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950">儲存並建立 ID</button>
         </div>
       </form>
-
       <form id="form-login-user" onsubmit="handleLoginExistingUser(event)" class="space-y-3 hidden">
         <p class="text-[11px] text-slate-400">請輸入同步 ID 與密碼以切換並解鎖編輯權限。</p>
         <div>
-          <div class="flex justify-between mb-1">
-            <label class="text-xs text-slate-300">既有使用者 ID</label>
-            <button type="button" onclick="openForgotIdModal()" class="text-[11px] text-emerald-400 hover:underline font-semibold">忘記 ID？手機找回</button>
-          </div>
+          <div class="flex justify-between mb-1"><label class="text-xs text-slate-300">既有使用者 ID</label><button type="button" onclick="openForgotIdModal()" class="text-[11px] text-emerald-400 hover:underline font-semibold">忘記 ID？手機找回</button></div>
           <input type="text" id="login-user-id" required placeholder="例如: surihua 或 dolly" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
         </div>
         <div>
-          <div class="flex justify-between mb-1">
-            <label class="text-xs text-slate-300">帳號密碼</label>
-            <button type="button" onclick="openForgotFromLogin()" class="text-[11px] text-[#CFB87C] hover:underline font-semibold">忘記密碼？手機重設</button>
-          </div>
+          <div class="flex justify-between mb-1"><label class="text-xs text-slate-300">帳號密碼</label><button type="button" onclick="openForgotFromLogin()" class="text-[11px] text-[#CFB87C] hover:underline font-semibold">忘記密碼？手機重設</button></div>
           <input type="text" id="login-user-pwd" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="請輸入該 ID 的密碼" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
         </div>
         <div class="flex justify-end space-x-2 pt-2 border-t border-slate-800">
@@ -684,10 +675,7 @@
       </div>
       <p class="text-xs text-slate-400">請輸入您綁定的手機號碼，系統將為您查詢對應的 User ID：</p>
       <form onsubmit="handleFindUserIdByPhone(event)" class="space-y-3">
-        <div>
-          <label class="block text-xs text-slate-300 mb-1">📱 綁定的手機號碼</label>
-          <input type="tel" id="find-id-phone-input" required placeholder="例如: 0912345678" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono">
-        </div>
+        <div><label class="block text-xs text-slate-300 mb-1">📱 綁定的手機號碼</label><input type="tel" id="find-id-phone-input" required placeholder="例如: 0912345678" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100 font-mono"></div>
         <div id="found-id-result-box" class="hidden p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs space-y-2">
           <div class="text-emerald-300 font-bold">✅ 成功找回您的帳號資訊：</div>
           <div id="found-id-list" class="space-y-1.5"></div>
@@ -704,10 +692,10 @@
   <div id="verify-pwd-modal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="glass-card w-full max-w-sm rounded-2xl p-5 sm:p-6 border border-[#CFB87C]/40 space-y-4 shadow-2xl">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <h3 class="font-bold text-sm text-slate-100">🔒 請輸入密碼以啟用編輯 / 設定</h3>
+        <h3 class="font-bold text-sm text-slate-100">🔒 請輸入密碼以啟用編輯 / 儲存設定</h3>
         <button type="button" onclick="closeVerifyPwdModal()" class="text-slate-400 hover:text-white">✕</button>
       </div>
-      <p class="text-xs text-slate-300 leading-relaxed">帳號 <strong id="verify-target-id" class="text-[#CFB87C] font-mono"></strong> 目前為訪客唯讀模式。請輸入擁有者密碼以啟用編輯或進入設定：</p>
+      <p class="text-xs text-slate-300 leading-relaxed">帳號 <strong id="verify-target-id" class="text-[#CFB87C] font-mono"></strong> 目前為訪客唯讀模式。請輸入擁有者密碼以啟用編輯或儲存預設畢業目標：</p>
       <form onsubmit="submitVerifyPwd(event)" class="space-y-3">
         <div class="relative">
           <input type="password" id="verify-pwd-input" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" required placeholder="請輸入密碼" class="w-full pl-3 pr-14 py-2.5 bg-slate-900 border border-slate-700 rounded-xl text-sm text-slate-100 font-mono">
@@ -753,10 +741,7 @@
       </div>
       <p class="text-xs text-slate-300 leading-relaxed">您即將刪除帳號 <strong id="del-modal-id" class="text-[#CFB87C] font-mono"></strong>。此操作將清除該帳號的所有課程進度與雲端備份！</p>
       <form onsubmit="handleConfirmDeleteAccount(event)" class="space-y-3">
-        <div>
-          <label class="block text-xs text-rose-300 font-semibold mb-1">🔒 請輸入此帳號的密碼以確認刪除：</label>
-          <input type="password" id="del-confirm-pwd" required placeholder="必須輸入正確密碼才能刪除" class="w-full px-3 py-2 bg-slate-900 border border-rose-500/40 rounded-xl text-xs text-slate-100">
-        </div>
+        <div><label class="block text-xs text-rose-300 font-semibold mb-1">🔒 請輸入此帳號的密碼以確認刪除：</label><input type="password" id="del-confirm-pwd" required placeholder="必須輸入正確密碼才能刪除" class="w-full px-3 py-2 bg-slate-900 border border-rose-500/40 rounded-xl text-xs text-slate-100"></div>
         <div class="flex justify-end space-x-2 pt-2 border-t border-slate-800">
           <button type="button" onclick="closeDeleteAccountModal()" class="px-4 py-2 rounded-xl text-xs bg-slate-800 text-slate-300">取消</button>
           <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-rose-500 text-white hover:bg-rose-600">驗證密碼並永久刪除</button>
@@ -797,10 +782,7 @@
             </select>
           </div>
         </div>
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">課程名稱 (Course Name)</label>
-          <input type="text" id="input-name" required placeholder="輸入完整課程名稱" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100">
-        </div>
+        <div><label class="block text-xs text-slate-400 mb-1">課程名稱 (Course Name)</label><input type="text" id="input-name" required placeholder="輸入完整課程名稱" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100"></div>
         <div class="grid grid-cols-3 gap-3">
           <div>
             <label class="block text-xs text-slate-400 mb-1">狀態</label>
@@ -829,10 +811,7 @@
             </div>
           </div>
         </div>
-        <div>
-          <label class="block text-xs text-slate-400 mb-1">個人備註</label>
-          <textarea id="input-note" rows="2" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100"></textarea>
-        </div>
+        <div><label class="block text-xs text-slate-400 mb-1">個人備註</label><textarea id="input-note" rows="2" class="w-full px-3 py-2 bg-slate-900 border border-slate-800 rounded-xl text-xs text-slate-100"></textarea></div>
         <div class="flex items-center justify-between pt-2 border-t border-slate-800">
           <button type="button" id="btn-delete" onclick="deleteCourse()" class="px-3 py-2 rounded-xl text-xs font-semibold bg-rose-500/10 text-rose-400 hidden">刪除課程</button>
           <div class="flex space-x-2 ml-auto">
@@ -864,13 +843,10 @@
     ];
 
     const VALID_LETTER_GRADES = { 'A': 4.0, 'A-': 3.75, 'B+': 3.25, 'B': 3.0, 'B-': 2.75 };
-
     function isValidLetterGradeForGPA(gradeStr) {
-      const g = String(gradeStr || '').trim().toUpperCase();
-      return Object.prototype.hasOwnProperty.call(VALID_LETTER_GRADES, g);
+      return Object.prototype.hasOwnProperty.call(VALID_LETTER_GRADES, String(gradeStr || '').trim().toUpperCase());
     }
 
-    // CU Boulder on Coursera 官方行事曆與無課休假空檔
     const CU_OFFICIAL_CALENDAR = [
       { id:'fall2026_s1', type:'session', termName:'Fall 2026 - Session 1', badge:'已結課', status:'past', enrollOpen:'2026-08-10', classStart:'2026-08-24', enrollClose:'2026-10-02', classEnd:'2026-10-16', gradesPost:'2026-10-27', degreeConfer:'2026-11-06', endYear:2026, endMonth:10, note:'秋季第一期（已於 10/16 結課）' },
       { id:'fall2026_s2', type:'session', termName:'Fall 2026 - Session 2 (目前學期)', badge:'進行中 Current', status:'current', enrollOpen:'2026-10-05', classStart:'2026-10-19', enrollClose:'2026-11-27', classEnd:'2026-12-11', gradesPost:'2026-12-22', degreeConfer:'2027-01-08', endYear:2026, endMonth:12, note:'秋季第二期（11/27 選課截止，12/11 結課，12/22 成績登錄）' },
@@ -953,13 +929,18 @@
     const unlockedEditSessionUsers = new Set();
 
     const CLOUD_API_BASE = 'https://kvdb.io/A6p8Xz9mK2vL5qR8wT3yN1/cu_tracker_user_';
-    const CLOUD_PHONE_INDEX_BASE = 'https://kvdb.io/A6p8Xz9mK2vL5qR8wT3yN1/cu_tracker_phone_';
 
     const safeStorage = {
       getItem: k => { try { return localStorage.getItem(k); } catch(e) { return null; } },
       setItem: (k,v) => { try { localStorage.setItem(k,v); } catch(e) {} },
       removeItem: k => { try { localStorage.removeItem(k); } catch(e) {} }
     };
+
+    // 紀錄「上次與雲端同步成功的時間戳記」以及「本機最後修改時間戳記」
+    function getLocalSyncTimestamp(uid) { return Number(safeStorage.getItem(`cuboulder_sync_ts_${uid}`) || 0); }
+    function setLocalSyncTimestamp(uid, ts) { if (ts && Number(ts) > 0) safeStorage.setItem(`cuboulder_sync_ts_${uid}`, String(ts)); }
+    function getLocalModifiedTimestamp(uid) { return Number(safeStorage.getItem(`cuboulder_mod_ts_${uid}`) || 0); }
+    function setLocalModifiedTimestamp(uid, ts) { if (ts && Number(ts) > 0) safeStorage.setItem(`cuboulder_mod_ts_${uid}`, String(ts)); }
 
     function splitCourseCode(fullCode) {
       const str = String(fullCode || '').trim();
@@ -1250,7 +1231,7 @@
     async function fetchCloudUserRecord(uid) {
       if (BANNED_LEGACY_IDS.includes(uid)) return null;
       try {
-        const res = await fetch(CLOUD_API_BASE + encodeURIComponent(uid) + '?t=' + Date.now());
+        const res = await fetch(CLOUD_API_BASE + encodeURIComponent(uid) + '?t=' + Date.now(), { cache: 'no-store' });
         if (res.ok) {
           const data = await res.json();
           if (data && !data.deleted && Array.isArray(data.courses) && data.courses.length > 0) return data;
@@ -1259,55 +1240,163 @@
       return null;
     }
 
-    async function pushToCloud() {
+    function applyCloudRecordToLocalState(data) {
+      if (!data || !Array.isArray(data.courses) || !data.courses.length) return false;
+      courseList = data.courses;
+      safeStorage.setItem(`cuboulder_courses_${activeUserId}`, JSON.stringify(courseList));
+      if (data.updatedAt) {
+        setLocalSyncTimestamp(activeUserId, Number(data.updatedAt));
+        setLocalModifiedTimestamp(activeUserId, Number(data.updatedAt));
+      }
+
+      const idx = usersList.findIndex(u => u.id === activeUserId);
+      if (idx !== -1) {
+        if (data.name) usersList[idx].name = data.name;
+        if (data.pwdHash) usersList[idx].pwdHash = data.pwdHash;
+        if (data.phoneHash) usersList[idx].phoneHash = data.phoneHash;
+        if (data.gradYear) usersList[idx].gradYear = Number(data.gradYear);
+        if (data.gradMonth) usersList[idx].gradMonth = Number(data.gradMonth);
+        saveUsersSystemState();
+      }
+      syncAllGradSelectorsAcrossPages();
+      window.updateDashboardAndRender();
+      if (currentPage === 'table') initBatchTableData();
+      if (currentPage === 'planner') renderGraduationPlanner();
+      if (currentPage === 'profile') updateProfilePageDisplay();
+      return true;
+    }
+
+    // 確保「畢業規劃頁」與「帳號安全頁」與「主頁底部」的年月選單永遠同步一致
+    function syncAllGradSelectorsAcrossPages() {
+      const { year, month } = getCurrentUserGradTarget();
+      const pSimY = document.getElementById('planner-sim-year'), pSimM = document.getElementById('planner-sim-month');
+      if (pSimY) pSimY.value = String(year);
+      if (pSimM) pSimM.value = String(month);
+      const profY = document.getElementById('profile-grad-year'), profM = document.getElementById('profile-grad-month');
+      if (profY) profY.value = String(year);
+      if (profM) profM.value = String(month);
+      const fGrad = document.getElementById('footer-grad-target');
+      if (fGrad) fGrad.textContent = `${year}/${String(month).padStart(2, '0')}`;
+    }
+
+    // 🛡️ 升級版 pushToCloud：採用 KVDB 標準 PUT 請求 + 自動重試 2 次 + 雙裝置時間戳記衝突檢查
+    async function pushToCloud(forceOverwrite = false) {
       await ensureDefaultHashInitialized();
-      if (BANNED_LEGACY_IDS.includes(activeUserId) || !isAccountUnlockedForEdit(activeUserId)) return;
+      if (BANNED_LEGACY_IDS.includes(activeUserId) || !isAccountUnlockedForEdit(activeUserId)) return false;
+
       const u = usersList.find(x => x.id === activeUserId) || { id: activeUserId, name: activeUserId, pwdHash: '', phoneHash: '', gradYear: 2027, gradMonth: 8 };
       if (u.id === DEFAULT_USER_ID) {
         if (!u.pwdHash) u.pwdHash = SURIHUA_DEFAULT_PWD_HASH;
         if (!u.phoneHash) u.phoneHash = SURIHUA_DEFAULT_PHONE_HASH;
       }
-      const payload = { id: activeUserId, name: u.name, pwdHash: u.pwdHash || '', phoneHash: u.phoneHash || '', gradYear: Number(u.gradYear || 2027), gradMonth: Number(u.gradMonth || 8), updatedAt: Date.now(), courses: courseList };
-      setSyncStatus('☁️ 同步中', true);
-      try {
-        const res = await fetch(CLOUD_API_BASE + encodeURIComponent(activeUserId), { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-        setSyncStatus(res.ok ? '☁️ 已同步' : '☁️ 本機');
-      } catch (e) { setSyncStatus('☁️ 本機'); }
+
+      const newTs = Date.now();
+      setLocalModifiedTimestamp(activeUserId, newTs);
+
+      // 1. 寫入前先檢查雲端是否有其他裝置剛更新的紀錄
+      if (!forceOverwrite) {
+        setSyncStatus('☁️ 檢查雲端...', true);
+        const cloudRecord = await fetchCloudUserRecord(activeUserId);
+        const cloudTs = Number((cloudRecord && cloudRecord.updatedAt) || 0);
+        const lastSyncTs = getLocalSyncTimestamp(activeUserId);
+
+        if (cloudRecord && cloudTs > 0 && lastSyncTs > 0 && cloudTs > lastSyncTs) {
+          const cloudTimeStr = new Date(cloudTs).toLocaleString('zh-TW', { hour12: false });
+          const wantPullFirst = confirm(
+            `⚠️ 【雙裝置同步衝突提醒】\n\n` +
+            `系統偵測到雲端有其他裝置在「${cloudTimeStr}」剛更新過的最新資料！\n\n` +
+            `👉 點選「確定 (OK)」：先載入雲端最新進度，避免誤蓋其他裝置剛改好的內容（推薦）。\n` +
+            `👉 點選「取消 (Cancel)」：強制以這台裝置目前的設定覆蓋雲端。`
+          );
+
+          if (wantPullFirst) {
+            applyCloudRecordToLocalState(cloudRecord);
+            setSyncStatus('☁️ 已同步');
+            alert(`✅ 已為您載入雲端最新資料（${cloudTimeStr} 版本）！`);
+            return false;
+          }
+        }
+      }
+
+      // 2. 準備標準 PUT 寫入雲端（含自動重試機制）
+      const payload = {
+        id: activeUserId,
+        name: u.name,
+        pwdHash: u.pwdHash || '',
+        phoneHash: u.phoneHash || '',
+        gradYear: Number(u.gradYear || 2027),
+        gradMonth: Number(u.gradMonth || 8),
+        updatedAt: newTs,
+        courses: courseList
+      };
+
+      setSyncStatus('☁️ 同步中...', true);
+      const bodyStr = JSON.stringify(payload);
+      const targetUrl = CLOUD_API_BASE + encodeURIComponent(activeUserId);
+
+      let writeSuccess = false;
+      for (let attempt = 1; attempt <= 2; attempt++) {
+        try {
+          const resPut = await fetch(targetUrl, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: bodyStr
+          });
+          if (resPut.ok) {
+            writeSuccess = true;
+            break;
+          }
+        } catch (e) {}
+        if (attempt === 1) await new Promise(r => setTimeout(r, 350));
+      }
+
+      if (writeSuccess) {
+        setLocalSyncTimestamp(activeUserId, newTs);
+        setLocalModifiedTimestamp(activeUserId, newTs);
+        setSyncStatus('☁️ 已同步');
+        return true;
+      } else {
+        setSyncStatus('☁️ 待同步 (點擊重試)', true);
+        return false;
+      }
     }
 
+    // 🔄 雙向智慧同步：若本機有剛修改但尚未推上雲端的新設定（localModTs > cloudTs），自動補推上雲端，絕不拿舊雲端蓋掉新本機！
     window.syncFromCloud = async function(showToast = false) {
       await ensureDefaultHashInitialized();
-      setSyncStatus('☁️ 同步中', true);
+      setSyncStatus('☁️ 同步中...', true);
       const data = await fetchCloudUserRecord(activeUserId);
-      if (data && Array.isArray(data.courses) && data.courses.length > 0) {
-        courseList = data.courses;
-        safeStorage.setItem(`cuboulder_courses_${activeUserId}`, JSON.stringify(courseList));
-        const idx = usersList.findIndex(u => u.id === activeUserId);
-        if (idx !== -1) {
-          if (data.name) usersList[idx].name = data.name;
-          if (data.pwdHash) usersList[idx].pwdHash = data.pwdHash;
-          if (data.phoneHash) usersList[idx].phoneHash = data.phoneHash;
-          if (data.gradYear) usersList[idx].gradYear = Number(data.gradYear);
-          if (data.gradMonth) usersList[idx].gradMonth = Number(data.gradMonth);
-          saveUsersSystemState();
+      const cloudTs = Number((data && data.updatedAt) || 0);
+      const localModTs = getLocalModifiedTimestamp(activeUserId);
+      const lastSyncTs = getLocalSyncTimestamp(activeUserId);
+
+      // 若這台裝置在已解鎖狀態下有尚未同步到雲端的較新修改，優先把本機最新設定推上雲端！
+      if (isAccountUnlockedForEdit(activeUserId) && localModTs > lastSyncTs && localModTs > cloudTs) {
+        const pushed = await pushToCloud(true);
+        if (pushed) {
+          if (showToast) alert(`✅ 已將本機最新設定（預計畢業：${getCurrentUserGradTarget().year}/${String(getCurrentUserGradTarget().month).padStart(2,'0')}）成功同步至雲端！`);
+          return true;
         }
-        window.updateDashboardAndRender();
-        if (currentPage === 'table') initBatchTableData();
-        if (currentPage === 'planner') renderGraduationPlanner();
+      }
+
+      if (data && applyCloudRecordToLocalState(data)) {
         setSyncStatus('☁️ 已同步');
-        if (showToast) alert(`✅ 已成功從雲端載入 [@${activeUserId}] 的最新資料！`);
+        if (showToast) {
+          const tStr = data.updatedAt ? new Date(Number(data.updatedAt)).toLocaleString('zh-TW', { hour12: false }) : '最新';
+          alert(`✅ 已成功與雲端同步 [@${activeUserId}] 的最新資料（預計畢業：${data.gradYear || 2027}/${String(data.gradMonth || 8).padStart(2,'0')}，更新時間：${tStr}）！`);
+        }
         return true;
       }
       setSyncStatus('☁️ 已同步');
-      if (showToast) alert(`ℹ️ 目前顯示為本機最新資料。`);
+      if (showToast) alert(`ℹ️ 目前顯示為最新資料。`);
       return false;
     };
 
-    function persistData() {
-      if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
+    async function persistData() {
+      if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return false; }
       safeStorage.setItem(`cuboulder_courses_${activeUserId}`, JSON.stringify(courseList));
       window.updateDashboardAndRender();
-      pushToCloud();
+      return await pushToCloud(false);
     }
 
     function promptUnlockForAction(actionType, targetUid = activeUserId) {
@@ -1322,6 +1411,21 @@
       setTimeout(() => inp.focus(), 50);
     }
 
+    function updatePlannerSaveButtonProtectionUI() {
+      const saveBtn = document.getElementById('btn-planner-save-target');
+      if (!saveBtn) return;
+      const canSave = isEditMode && isAccountUnlockedForEdit(activeUserId);
+      if (canSave) {
+        saveBtn.textContent = '💾 存為預設目標';
+        saveBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shadow whitespace-nowrap';
+        saveBtn.title = '將目前選取的畢業年月儲存為此帳號的預設目標並直接同步雲端';
+      } else {
+        saveBtn.textContent = '🔒 存為預設目標 (唯讀)';
+        saveBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-400 border border-slate-700 hover:border-[#CFB87C] hover:text-slate-200 whitespace-nowrap';
+        saveBtn.title = '目前為訪客唯讀模式（點擊並驗證擁有者密碼後才可儲存預設目標）';
+      }
+    }
+
     function setEditModeUI(enabled) {
       isEditMode = enabled;
       const btn = document.getElementById('mode-toggle-btn'), text = document.getElementById('mode-text');
@@ -1329,6 +1433,7 @@
       document.getElementById('btn-reset-data').classList.toggle('hidden', !isEditMode);
       if (btn) btn.className = isEditMode ? "inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 border border-[#CFB87C] shrink-0" : "inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0";
       if (text) text.textContent = isEditMode ? "編輯模式 (已解鎖)" : "瀏覽模式 (唯讀)";
+      updatePlannerSaveButtonProtectionUI();
       window.renderCourses();
     }
 
@@ -1358,40 +1463,89 @@
 
       if (p === 'profile') updateProfilePageDisplay();
       if (p === 'table') { setEditModeUI(true); initBatchTableData(); }
-      else if (p === 'planner') { syncPlannerSelectorsFromUser(); renderGraduationPlanner(); }
+      else if (p === 'planner') {
+        syncAllGradSelectorsAcrossPages();
+        updatePlannerSaveButtonProtectionUI();
+        renderGraduationPlanner();
+      }
       else if (p === 'home') updateDashboardMetricsFromData(courseList);
       safeCreateIcons();
     };
 
-    function syncPlannerSelectorsFromUser() {
-      const { year, month } = getCurrentUserGradTarget();
-      const ySel = document.getElementById('planner-sim-year'), mSel = document.getElementById('planner-sim-month');
-      if (ySel) ySel.value = String(year);
-      if (mSel) mSel.value = String(month);
-    }
+    window.handlePlannerTargetChange = function() {
+      renderGraduationPlanner();
+    };
 
-    window.handlePlannerTargetChange = function() { renderGraduationPlanner(); };
+    window.resetPlannerToSavedTarget = function() {
+      syncAllGradSelectorsAcrossPages();
+      renderGraduationPlanner();
+    };
 
+    // 🔒 畢業規劃頁按下「💾 存為預設目標」：雙頁連動並直接 PUT 同步至雲端
     window.savePlannerTargetToAccount = async function() {
-      if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('planner', activeUserId); return; }
+      if (!isEditMode || !isAccountUnlockedForEdit(activeUserId)) {
+        promptUnlockForAction('save_planner_target', activeUserId);
+        return;
+      }
       const y = Number(document.getElementById('planner-sim-year').value || 2027);
       const m = Number(document.getElementById('planner-sim-month').value || 8);
       const u = usersList.find(x => x.id === activeUserId);
-      if (u) { u.gradYear = y; u.gradMonth = m; saveUsersSystemState(); await pushToCloud(); alert(`✅ 已將預計畢業目標【${y} 年 ${String(m).padStart(2, '0')} 月】儲存至帳號設定！`); }
+      if (u) {
+        u.gradYear = y;
+        u.gradMonth = m;
+        saveUsersSystemState();
+        syncAllGradSelectorsAcrossPages();
+        renderGraduationPlanner();
+        const synced = await pushToCloud(false);
+        if (synced) {
+          alert(`✅ 已將預計畢業目標【${y} 年 ${String(m).padStart(2, '0')} 月】正式儲存並直接同步至雲端！`);
+        } else {
+          alert(`⚠️ 已儲存至本機（${y}/${String(m).padStart(2, '0')}），但雲端連線暫時忙碌，請點擊上方「☁️ 待同步」重試。`);
+        }
+      }
     };
 
+    // 🔒 帳號安全頁按下「儲存預計畢業年、月並同步」：雙頁連動並直接 PUT 同步至雲端
     window.handleSaveGradTargetInProfile = async function(e) {
       e.preventDefault();
+      if (!isAccountUnlockedForEdit(activeUserId)) {
+        promptUnlockForAction('profile', activeUserId);
+        return;
+      }
       const y = Number(document.getElementById('profile-grad-year').value || 2027);
       const m = Number(document.getElementById('profile-grad-month').value || 8);
       const u = usersList.find(x => x.id === activeUserId);
-      if (u) { u.gradYear = y; u.gradMonth = m; saveUsersSystemState(); syncPlannerSelectorsFromUser(); await pushToCloud(); alert(`🎓 已成功儲存預計畢業年月：${y} 年 ${String(m).padStart(2, '0')} 月！`); }
+      if (u) {
+        u.gradYear = y;
+        u.gradMonth = m;
+        saveUsersSystemState();
+        syncAllGradSelectorsAcrossPages();
+        renderGraduationPlanner();
+        const synced = await pushToCloud(false);
+        if (synced) {
+          alert(`🎓 已成功儲存預計畢業年月【${y} 年 ${String(m).padStart(2, '0')} 月】並直接同步至雲端！`);
+        } else {
+          alert(`⚠️ 已儲存至本機（${y}/${String(m).padStart(2, '0')}），但雲端連線暫時忙碌，請點選右上角「🔄 立即同步」重試。`);
+        }
+      }
     };
 
     function renderGraduationPlanner() {
-      const targetYear = Number(document.getElementById('planner-sim-year')?.value || getCurrentUserGradTarget().year);
-      const targetMonth = Number(document.getElementById('planner-sim-month')?.value || getCurrentUserGradTarget().month);
+      const savedTarget = getCurrentUserGradTarget();
+      const targetYear = Number(document.getElementById('planner-sim-year')?.value || savedTarget.year);
+      const targetMonth = Number(document.getElementById('planner-sim-month')?.value || savedTarget.month);
       const totalMonthsDiff = Math.max((targetYear - 2026) * 12 + (targetMonth - 10), 1);
+
+      const isSimulatingDifferentTarget = (targetYear !== savedTarget.year || targetMonth !== savedTarget.month);
+      const simBadge = document.getElementById('planner-sim-mode-badge');
+      const resetBtn = document.getElementById('btn-planner-reset-default');
+      const savedLabel = document.getElementById('planner-saved-target-label');
+      const savedStr = `${savedTarget.year}/${String(savedTarget.month).padStart(2, '0')}`;
+      if (savedLabel) savedLabel.textContent = savedStr;
+      if (simBadge) simBadge.classList.toggle('hidden', !isSimulatingDifferentTarget);
+      if (resetBtn) resetBtn.classList.toggle('hidden', !isSimulatingDifferentTarget);
+
+      updatePlannerSaveButtonProtectionUI();
 
       const ongoingCourses = courseList.filter(c => c.status === 'Ongoing');
       const expectedReq = courseList.filter(c => c.status === 'Expected' && c.type === 'required');
@@ -1425,10 +1579,19 @@
       document.getElementById('plan-hours-per-week').textContent = `折合每月約 ${avgPerMonth} 門 (每週約 ${Math.round(avgPerSession * 3)}~${Math.round(avgPerSession * 5)} hrs)`;
 
       const paceBadge = document.getElementById('plan-pace-badge');
-      if (remCount === 0) { paceBadge.textContent = '🎉 已全部修畢'; paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300'; }
-      else if (avgPerSession <= 2.5) { paceBadge.textContent = '🟢 輕鬆穩健'; paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'; }
-      else if (avgPerSession <= 4.0) { paceBadge.textContent = '🟡 適中緊湊'; paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30'; }
-      else { paceBadge.textContent = '🔴 密集衝刺'; paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30'; }
+      if (remCount === 0) {
+        paceBadge.textContent = '🎉 已全部修畢';
+        paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300';
+      } else if (avgPerSession <= 2.5) {
+        paceBadge.textContent = '🟢 輕鬆穩健';
+        paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+      } else if (avgPerSession <= 4.0) {
+        paceBadge.textContent = '🟡 適中緊湊';
+        paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30';
+      } else {
+        paceBadge.textContent = '🔴 密集衝刺';
+        paceBadge.className = 'text-[10px] px-1.5 py-0.5 rounded font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30';
+      }
 
       document.getElementById('plan-tuition-per-session').innerHTML = `$${usdPerSession.toLocaleString()} <span class="text-[10px] text-slate-400">USD / 期</span>`;
       document.getElementById('plan-tuition-per-month').textContent = `≈ NT$ ${ntdPerSession.toLocaleString()} / 期 (每月預存 NT$ ${ntdPerMonth.toLocaleString()})`;
@@ -1436,9 +1599,13 @@
       document.getElementById('plan-remaining-breakdown').textContent = `進行中 ${ongoingCourses.length} 門 + 預計 ${expectedReq.length + expectedEle.length} 門`;
 
       const adviceEl = document.getElementById('plan-strategy-advice');
+      const simNoteHtml = isSimulatingDifferentTarget
+        ? `<span class="ml-2 text-[11px] font-normal text-amber-300">（👀 目前為暫時試算畫面，帳號預設目標仍為 ${savedStr}）</span>`
+        : `<span class="ml-2 text-[11px] font-normal text-emerald-400">（✓ 目前顯示為帳號預設畢業目標）</span>`;
+
       adviceEl.innerHTML = remCount === 0
         ? `🎉 <strong>恭喜！您已完成所有 30 門碩士課程！</strong>`
-        : `<div class="font-bold text-[#CFB87C] mb-1">💡 針對【${targetYear} 年 ${String(targetMonth).padStart(2, '0')} 月】畢業的學分與學費規劃建議：</div>
+        : `<div class="font-bold text-[#CFB87C] mb-1">💡 針對【${targetYear} 年 ${String(targetMonth).padStart(2, '0')} 月】畢業的學分與學費規劃建議：${simNoteHtml}</div>
            <div>1. <strong>避開無課空檔策略</strong>：在 <strong class="text-white">${targetYear}/${String(targetMonth).padStart(2, '0')}</strong> 之前共有 <strong class="text-emerald-400">${activeSessions.length} 個正式 8 週 Session</strong>，中間包含 <strong class="text-amber-400">${breakPeriods.length} 段無法修課的休假空檔</strong>（特別是 12/12~1/10 長達 30 天的寒假）。建議在休假空檔先在 Coursera 以旁聽預習（Preview）方式觀看下一期影片與準備報告，等選課開放日（Enrollment Opens）再付費升級學分！</div>
            <div>2. <strong>學費現金流準備</strong>：剩餘 ${remCount} 門課總學費約 <strong class="text-white">$${totalRemUsd.toLocaleString()} USD（約 NT$ ${Math.round(totalRemUsd * usdToNtd).toLocaleString()}）</strong>。每個 Session 選課截止日前準備約 <strong class="text-purple-300">$${usdPerSession.toLocaleString()} USD（約 NT$ ${ntdPerSession.toLocaleString()}）</strong>，相當於每月存下 <strong class="text-emerald-300">NT$ ${ntdPerMonth.toLocaleString()}</strong>。</div>`;
 
@@ -1636,7 +1803,7 @@
       const tp = document.getElementById('batch-action-type').value;
       if (!tp) { alert('請先選擇要套用的類別！'); return; }
       const selected = batchDraftList.filter(c => c._checked);
-      if (!selected.length) { alert('請先勾選課程！'); return; }
+      if (!selected.length) { alert('請先勾選下方表格中的課程！'); return; }
       selected.forEach(c => c.type = tp);
       renderBatchTable();
       updateDashboardMetricsFromData(batchDraftList);
@@ -1647,7 +1814,7 @@
       const st = document.getElementById('batch-action-status').value;
       if (!st) { alert('請先選擇要套用的狀態！'); return; }
       const selected = batchDraftList.filter(c => c._checked);
-      if (!selected.length) { alert('請先勾選課程！'); return; }
+      if (!selected.length) { alert('請先勾選下方表格中的課程！'); return; }
       selected.forEach(c => { c.status = st; if (st === 'Complete' && (c.progress === '0%' || !c.progress)) c.progress = '100%'; });
       renderBatchTable();
       updateDashboardMetricsFromData(batchDraftList);
@@ -1658,7 +1825,7 @@
       const gr = document.getElementById('batch-action-grade').value;
       if (!gr) { alert('請先選擇要套用的成績！'); return; }
       const selected = batchDraftList.filter(c => c._checked);
-      if (!selected.length) { alert('請先勾選課程！'); return; }
+      if (!selected.length) { alert('請先勾選下方表格中的課程！'); return; }
       selected.forEach(c => c.grade = gr);
       renderBatchTable();
       updateDashboardMetricsFromData(batchDraftList);
@@ -1673,7 +1840,7 @@
       updateDashboardMetricsFromData(batchDraftList);
     };
 
-    window.saveAllBatchTableChanges = function() {
+    window.saveAllBatchTableChanges = async function() {
       syncDOMInputsToBatchDraft();
       const cleaned = [];
       for (let i = 0; i < batchDraftList.length; i++) {
@@ -1685,8 +1852,10 @@
         cleaned.push({ id: String(row.id), type: row.type, code: combineCourseCode(subject, num), name: row.name.trim(), status: row.status, grade: row.grade, progress: formatProgressWithPercent(row.progress), note: row.note.trim() });
       }
       courseList = cleaned;
-      persistData();
-      alert(`✅ 已成功儲存全部 ${courseList.length} 門課程並同步至雲端！`);
+      const synced = await persistData();
+      if (synced) {
+        alert(`✅ 已成功儲存全部 ${courseList.length} 門課程並直接同步至雲端！`);
+      }
     };
 
     function updateProfilePageDisplay() {
@@ -1732,8 +1901,8 @@
       const newId = normalizeInput(document.getElementById('profile-input-id').value).toLowerCase();
       if (!(await verifyPasswordForUser(activeUserId, document.getElementById('profile-id-verify-pwd').value))) { alert('❌ 密碼驗證錯誤！'); return; }
       u.name = newName; u.id = newId; activeUserId = newId;
-      saveUsersSystemState(); updateProfilePageDisplay(); await pushToCloud();
-      alert('✅ 帳號資訊已更新！');
+      saveUsersSystemState(); updateProfilePageDisplay(); await pushToCloud(false);
+      alert('✅ 帳號資訊已更新並同步雲端！');
     };
 
     window.handleUpdatePassword = async function(e) {
@@ -1742,8 +1911,8 @@
       if (!u || !(await verifyPasswordForUser(activeUserId, document.getElementById('sec-old-pwd').value))) { alert('❌ 舊密碼輸入錯誤！'); return; }
       const newPwd = normalizeInput(document.getElementById('sec-new-pwd').value), phone = normalizePhone(document.getElementById('sec-phone').value);
       u.pwdHash = await sha256(newPwd); u.phoneHash = await sha256(phone);
-      saveUsersSystemState(); updateProfilePageDisplay(); await pushToCloud();
-      alert('✅ 新密碼與救援手機號碼已儲存！');
+      saveUsersSystemState(); updateProfilePageDisplay(); await pushToCloud(false);
+      alert('✅ 新密碼與救援手機號碼已儲存並同步雲端！');
     };
 
     window.openForgotIdModal = function() {
@@ -1798,7 +1967,7 @@
       unlockedEditSessionUsers.add(uid);
       closeForgotModal();
       await loadUserData(uid);
-      await pushToCloud();
+      await pushToCloud(true);
       alert(`✅ 密碼重設成功！`);
     };
 
@@ -1861,8 +2030,14 @@
       const action = pendingActionAfterUnlock;
       closeVerifyPwdModal();
       if (uid !== activeUserId) await loadUserData(uid);
-      if (action === 'edit') setEditModeUI(true);
-      else if (action === 'profile' || action === 'table' || action === 'planner') switchPage(action);
+      if (action === 'edit') {
+        setEditModeUI(true);
+      } else if (action === 'save_planner_target') {
+        setEditModeUI(true);
+        await window.savePlannerTargetToAccount();
+      } else if (action === 'profile' || action === 'table' || action === 'planner') {
+        switchPage(action);
+      }
     };
 
     async function loadUserData(uid) {
@@ -1884,6 +2059,7 @@
         safeStorage.setItem(`cuboulder_courses_${activeUserId}`, JSON.stringify(loaded));
       }
       courseList = loaded;
+      syncAllGradSelectorsAcrossPages();
       window.updateDashboardAndRender();
       await window.syncFromCloud(false);
     }
@@ -1915,7 +2091,7 @@
       usersList.push({ id, name, pwdHash, phoneHash, gradYear: 2027, gradMonth: 8 });
       safeStorage.setItem(`cuboulder_courses_${id}`, JSON.stringify(cleanCourses));
       unlockedEditSessionUsers.add(id); activeUserId = id; courseList = cleanCourses;
-      saveUsersSystemState(); window.updateDashboardAndRender(); closeNewUserModal(); await pushToCloud();
+      saveUsersSystemState(); window.updateDashboardAndRender(); closeNewUserModal(); await pushToCloud(true);
     };
 
     window.handleLoginExistingUser = async function(e) {
@@ -1968,7 +2144,7 @@
 
     window.closeModal = () => document.getElementById('course-modal').classList.add('hidden');
 
-    window.saveCourse = function(e) {
+    window.saveCourse = async function(e) {
       e.preventDefault();
       if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
       const id = document.getElementById('edit-course-id').value;
@@ -1979,12 +2155,13 @@
       const item = { id: id || Date.now().toString(), code: fullCode, name, type: document.getElementById('input-type').value, status: document.getElementById('input-status').value, grade: document.getElementById('input-grade').value, progress: formatProgressWithPercent(document.getElementById('input-progress').value), note: document.getElementById('input-note').value.trim() };
       if (id) { const idx = courseList.findIndex(x => x.id === id); if (idx !== -1) courseList[idx] = item; }
       else courseList.unshift(item);
-      closeModal(); persistData();
+      closeModal();
+      await persistData();
     };
 
-    window.deleteCourse = function() {
+    window.deleteCourse = async function() {
       const id = document.getElementById('edit-course-id').value;
-      if (id && confirm("確定刪除此門課程？")) { courseList = courseList.filter(x => x.id !== id); closeModal(); persistData(); }
+      if (id && confirm("確定刪除此門課程？")) { courseList = courseList.filter(x => x.id !== id); closeModal(); await persistData(); }
     };
 
     function updateDashboardMetricsFromData(dataList) {
@@ -2152,11 +2329,11 @@
     window.handleStatusFilter = () => { statusFilter = document.getElementById('status-filter').value; renderCourses(); };
     window.toggleUserDropdown = () => document.getElementById('user-dropdown').classList.toggle('hidden');
 
-    window.resetData = function() {
+    window.resetData = async function() {
       if (!isAccountUnlockedForEdit(activeUserId)) { promptUnlockForAction('edit'); return; }
       if (confirm(`確定要將 [@${activeUserId}] 的資料重設為預設狀態嗎？`)) {
         courseList = getDefaultCoursesForUser(activeUserId);
-        persistData();
+        await persistData();
       }
     };
 
