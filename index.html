@@ -973,11 +973,13 @@
       window.location.replace(url);
     };
 
-    const DEFAULT_USER_ID = 'surihua';
+    // 🌟 v5.5：預設公開展示帳號改為 test (密碼: test / 手機: test)
+    // 徹底保護 @surihua 雲端真實資料不被程式碼預設值覆蓋！
+    const DEFAULT_USER_ID = 'test';
     const BANNED_LEGACY_IDS = ['suri', 'suri1031'];
-    const _SEED_CODES = [99, 105, 98, 103, 98, 103];
-    let SURIHUA_DEFAULT_PWD_HASH = '';
-    const SURIHUA_DEFAULT_PHONE_HASH = '49bd88743934a546950351a71f638a1b2fb55059296cc22f0a5c8861d8ca0ab6';
+    let TEST_DEFAULT_PWD_HASH = '';
+    let TEST_DEFAULT_PHONE_HASH = '';
+    const SURIHUA_FALLBACK_PHONE_HASH = '49bd88743934a546950351a71f638a1b2fb55059296cc22f0a5c8861d8ca0ab6';
     const CU_CALENDAR_OFFICIAL_URL = 'https://www.colorado.edu/registrar/cu-boulder-coursera-calendar';
 
     const SUBJECT_OPTIONS = [
@@ -1426,7 +1428,8 @@
     ];
 
     function getDefaultCoursesForUser(uid) {
-      if (uid === DEFAULT_USER_ID) return JSON.parse(JSON.stringify(suriDefaultCourses));
+      // 只有預設展示帳號 @test 使用內建範例資料，其他帳號（若雲端尚無資料）皆初始化為全空白進度
+      if (uid === 'test') return JSON.parse(JSON.stringify(suriDefaultCourses));
       return suriDefaultCourses.map(c => ({ id: c.id, type: c.type, code: c.code, name: c.name, status: 'Expected', grade: '--', progress: '0%', note: '' }));
     }
 
@@ -1436,10 +1439,14 @@
     let batchMultiSortRules = [], batchDraftList = [];
     let batchFilterQuery = '', batchFilterNote = '', batchFilterSubject = 'all', batchFilterType = 'all', batchFilterStatus = 'all', batchFilterGrade = 'all';
 
-    let usersList = [{ id: DEFAULT_USER_ID, name: 'Suri Hua', pwdHash: '', phoneHash: SURIHUA_DEFAULT_PHONE_HASH, gradYear: 2027, gradMonth: 8 }];
+    let usersList = [
+      { id: 'test', name: 'Test Demo', pwdHash: '', phoneHash: '', gradYear: 2027, gradMonth: 8 },
+      { id: 'surihua', name: 'Suri Hua', pwdHash: '', phoneHash: SURIHUA_FALLBACK_PHONE_HASH, gradYear: 2027, gradMonth: 8 }
+    ];
     let activeUserId = DEFAULT_USER_ID, pendingSwitchUserId = null, pendingActionAfterUnlock = null, forgotTargetUserId = null;
     const unlockedEditSessionUsers = new Set();
     const CLOUD_API_BASE = 'https://kvdb.io/A6p8Xz9mK2vL5qR8wT3yN1/cu_tracker_user_';
+
 
     const safeStorage = {
       getItem: k => { try { return localStorage.getItem(k); } catch(e) { return null; } },
@@ -1566,14 +1573,14 @@
     }
 
     async function ensureDefaultHashInitialized() {
-      if (!SURIHUA_DEFAULT_PWD_HASH) {
-        const dStr = _SEED_CODES.map(n => String.fromCharCode(n - 48)).join('');
-        SURIHUA_DEFAULT_PWD_HASH = await sha256(dStr);
+      if (!TEST_DEFAULT_PWD_HASH) {
+        TEST_DEFAULT_PWD_HASH = await sha256('test');
+        TEST_DEFAULT_PHONE_HASH = await sha256('test');
       }
-      return SURIHUA_DEFAULT_PWD_HASH;
+      return TEST_DEFAULT_PWD_HASH;
     }
 
-    function normalizePhone(p) { return normalizeInput(p).replace(/[^0-9+]/g, ''); }
+    function normalizePhone(p) { return normalizeInput(p).replace(/[^0-9+a-zA-Z]/g, ''); }
 
     async function verifyPasswordForUser(uid, rawPwd, cloudPwdHash = '') {
       await ensureDefaultHashInitialized();
@@ -1585,15 +1592,27 @@
       const u = usersList.find(x => x.id === cleanUid);
       const storedHash = cloudPwdHash || (u && u.pwdHash) || '';
 
-      if (cleanUid === DEFAULT_USER_ID || BANNED_LEGACY_IDS.includes(cleanUid)) {
-        if ((storedHash && (inputHash === storedHash || digitsHash === storedHash)) || inputHash === SURIHUA_DEFAULT_PWD_HASH || digitsHash === SURIHUA_DEFAULT_PWD_HASH) {
-          if (u && !u.pwdHash) { u.pwdHash = storedHash || SURIHUA_DEFAULT_PWD_HASH; saveUsersSystemState(); }
+      // 1. 預設帳號 @test：密碼永遠支援 "test" (或雲端改過的新密碼)
+      if (cleanUid === 'test') {
+        if (cleanPwd.toLowerCase() === 'test' || inputHash === TEST_DEFAULT_PWD_HASH || (storedHash && inputHash === storedHash)) {
+          if (u && !u.pwdHash) { u.pwdHash = TEST_DEFAULT_PWD_HASH; u.phoneHash = TEST_DEFAULT_PHONE_HASH; saveUsersSystemState(); }
           return true;
         }
         return false;
       }
+
+      // 2. 您的個人帳號 @surihua 或其他自訂帳號：優先比對雲端真實密碼雜湊
+      if (storedHash && (inputHash === storedHash || (digitsHash && digitsHash === storedHash))) {
+        if (u && !u.pwdHash) { u.pwdHash = storedHash; saveUsersSystemState(); }
+        return true;
+      }
+      // 相容備援：若雲端尚未帶回 pwdHash，允許您原本的預設密碼通過驗證
+      const legacySeedHash = await sha256([99, 105, 98, 103, 98, 103].map(n => String.fromCharCode(n - 48)).join(''));
+      if (cleanUid === 'surihua' && (inputHash === legacySeedHash || digitsHash === legacySeedHash)) {
+        return true;
+      }
       if (!storedHash) return true;
-      return (inputHash === storedHash || digitsHash === storedHash);
+      return false;
     }
 
     function isAccountUnlockedForEdit(uid) {
@@ -2611,6 +2630,16 @@
       setEditModeUI(false);
       saveUsersSystemState();
 
+      // 🛡️ 優先向雲端拉取該帳號（如 @surihua）的最新真實資料，避免被本機舊快取或預設值蓋掉
+      setSyncStatus('☁️ 讀取雲端...', true);
+      const cloudRecord = await fetchCloudUserRecord(activeUserId);
+      if (cloudRecord && Array.isArray(cloudRecord.courses) && cloudRecord.courses.length > 0) {
+        applyCloudRecordToLocalState(cloudRecord);
+        setSyncStatus('☁️ 已同步');
+        return;
+      }
+
+      // 若離線或雲端尚無此帳號資料，才讀取本機快取
       let loaded = null;
       const saved = safeStorage.getItem(`cuboulder_courses_${activeUserId}`);
       if (saved) {
@@ -2626,8 +2655,9 @@
       courseList = loaded;
       syncAllGradSelectorsAcrossPages();
       window.updateDashboardAndRender();
-      await window.syncFromCloud(false);
+      setSyncStatus('☁️ 已同步');
     }
+
 
     window.openNewUserModal = (defaultTab = 'register') => {
       document.getElementById('user-dropdown').classList.add('hidden');
@@ -2957,22 +2987,25 @@
       try {
         const savedCalOv = safeStorage.getItem('cuboulder_cal_overrides');
         if (savedCalOv) { try { calendarOverridesMap = JSON.parse(savedCalOv) || {}; } catch (e) {} }
-        window.updateDashboardAndRender();
         await ensureDefaultHashInitialized();
         const s = safeStorage.getItem('cuboulder_users_list');
         if (s) {
           const parsed = JSON.parse(s);
           if (Array.isArray(parsed) && parsed.length > 0) usersList = parsed.filter(u => u && u.id && !BANNED_LEGACY_IDS.includes(u.id));
         }
-        if (!usersList.some(u => u.id === DEFAULT_USER_ID)) {
-          usersList.unshift({ id: DEFAULT_USER_ID, name: 'Suri Hua', pwdHash: SURIHUA_DEFAULT_PWD_HASH, phoneHash: SURIHUA_DEFAULT_PHONE_HASH, gradYear: 2027, gradMonth: 8 });
+        // 確保 @test 與 @surihua 都在選單內，方便一鍵切換
+        if (!usersList.some(u => u.id === 'test')) {
+          usersList.unshift({ id: 'test', name: 'Test Demo', pwdHash: TEST_DEFAULT_PWD_HASH, phoneHash: TEST_DEFAULT_PHONE_HASH, gradYear: 2027, gradMonth: 8 });
+        }
+        if (!usersList.some(u => u.id === 'surihua')) {
+          usersList.push({ id: 'surihua', name: 'Suri Hua', pwdHash: '', phoneHash: SURIHUA_FALLBACK_PHONE_HASH, gradYear: 2027, gradMonth: 8 });
         }
         let devDef = safeStorage.getItem('cuboulder_device_default_user');
         if (!devDef || BANNED_LEGACY_IDS.includes(devDef)) {
-          devDef = DEFAULT_USER_ID;
-          safeStorage.setItem('cuboulder_device_default_user', DEFAULT_USER_ID);
+          devDef = 'test'; // 出廠預設顯示 @test，不干擾 @surihua
+          safeStorage.setItem('cuboulder_device_default_user', 'test');
         }
-        activeUserId = usersList.some(u => u.id === devDef) ? devDef : DEFAULT_USER_ID;
+        activeUserId = usersList.some(u => u.id === devDef) ? devDef : 'test';
         await loadUserData(activeUserId);
       } catch (err) {
         courseList = JSON.parse(JSON.stringify(suriDefaultCourses));
