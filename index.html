@@ -44,7 +44,7 @@
           <h1 class="font-bold text-xs sm:text-lg leading-tight text-slate-100 truncate">CU Boulder Master's</h1>
           <div class="flex items-center space-x-1 sm:space-x-1.5 mt-0.5">
             <span class="text-[10px] sm:text-xs text-[#CFB87C] font-medium whitespace-nowrap">Course Tracker</span>
-            <span class="text-[9px] font-mono px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 whitespace-nowrap shrink-0">v5.3</span>
+            <button type="button" onclick="forceReloadWebApp()" class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 whitespace-nowrap shrink-0" title="點擊強制重新整理網頁 (適合 iPhone 主畫面 Web App 更新版本)">v5.4 🔄</button>
             <span id="sync-status-badge" onclick="syncFromCloud(true)" class="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center whitespace-nowrap shrink-0" title="點擊立即與雲端雙向同步最新資料">☁️ 已同步</span>
           </div>
         </div>
@@ -662,6 +662,90 @@
     </div>
   </main>
 
+  <!-- 🎯 期末考目標分數反推計算機 Modal (v5.4 新增) -->
+  <div id="final-calc-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-3.5 sm:p-4 hidden">
+    <div class="glass-card w-full max-w-lg rounded-2xl p-4 sm:p-6 border border-[#CFB87C]/45 space-y-4 max-h-[92vh] overflow-y-auto">
+      <div class="flex items-start justify-between border-b border-slate-800 pb-3 gap-2">
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="text-base">🎯</span>
+            <h3 class="font-bold text-sm sm:text-base text-[#CFB87C]">期末考目標成績反推計算機</h3>
+          </div>
+          <p id="fcalc-course-title" class="text-xs text-slate-300 font-semibold mt-1"></p>
+        </div>
+        <button type="button" onclick="closeFinalCalcModal()" class="text-slate-400 hover:text-white text-sm px-1">✕</button>
+      </div>
+
+      <form onsubmit="saveFinalCalcFromModal(event)" class="space-y-3.5 text-xs">
+        <input type="hidden" id="fcalc-course-id">
+
+        <!-- 輸入模式切換 -->
+        <div class="space-y-1.5">
+          <label class="block text-[11px] font-semibold text-slate-300">1. 選擇「期末以外得分」的計算方式：</label>
+          <div class="grid grid-cols-2 gap-1.5 p-1 bg-slate-900 rounded-xl border border-slate-800">
+            <button type="button" id="fcalc-mode-earned" onclick="setFinalCalcInputMode('earned')" class="py-1.5 px-2 rounded-lg text-[11px] font-bold bg-[#CFB87C] text-slate-950 text-center">
+              模式 A：已獲總分累加 (%)
+            </button>
+            <button type="button" id="fcalc-mode-avg" onclick="setFinalCalcInputMode('avg')" class="py-1.5 px-2 rounded-lg text-[11px] font-medium text-slate-300 text-center">
+              模式 B：平時作業平均 (%)
+            </button>
+          </div>
+          <p id="fcalc-mode-hint" class="text-[11px] text-slate-400 leading-relaxed">
+            💡 <strong>模式 A 說明</strong>：直接填寫目前在 Coursera Grades 頁面上「期末考以外已經拿到的總分 %」（例如非期末共佔 80%，您目前已拿 76% 總分，則輸入 76）。
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs text-[#CFB87C] font-bold mb-1">📊 期末考佔總成績比例 (%)</label>
+            <div class="relative flex items-center">
+              <input type="number" step="0.01" min="0.1" max="100" id="fcalc-weight" oninput="updateFinalCalcLivePreview()" required placeholder="例如: 20" class="w-full pl-3 pr-8 py-2 bg-slate-900 border border-[#CFB87C]/50 rounded-xl text-sm text-white font-mono font-bold focus:outline-none focus:border-[#CFB87C]">
+              <span class="absolute right-3 text-xs font-bold text-[#CFB87C]">%</span>
+            </div>
+            <span class="text-[10px] text-slate-400 mt-1 block">非期末項目共佔：<strong id="fcalc-nonfinal-max" class="text-slate-200 font-mono">80%</strong></span>
+          </div>
+
+          <div>
+            <label id="fcalc-score-label" class="block text-xs text-emerald-400 font-bold mb-1">✅ 目前期末以外已獲得總分 (%)</label>
+            <div class="relative flex items-center">
+              <input type="number" step="0.01" min="0" max="100" id="fcalc-score" oninput="updateFinalCalcLivePreview()" required placeholder="例如: 75" class="w-full pl-3 pr-8 py-2 bg-slate-900 border border-emerald-500/50 rounded-xl text-sm text-white font-mono font-bold focus:outline-none focus:border-emerald-400">
+              <span class="absolute right-3 text-xs font-bold text-emerald-400">%</span>
+            </div>
+            <span id="fcalc-earned-summary" class="text-[10px] text-emerald-300 mt-1 block">目前已實拿總分：--%</span>
+          </div>
+        </div>
+
+        <!-- 即時試算結果 4 宮格 -->
+        <div class="p-3 rounded-xl bg-slate-900/95 border border-slate-800 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-slate-200">⚡ 即時換算：若要拿到各等第，期末考必須考幾分？</span>
+            <span class="text-[10px] text-slate-400 font-mono">滿分 100%</span>
+          </div>
+          <div id="fcalc-preview-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1"></div>
+        </div>
+
+        <!-- 可微調各等第總分門檻 -->
+        <details class="bg-slate-900/60 rounded-xl border border-slate-800/80 p-2.5">
+          <summary class="text-[11px] text-slate-400 cursor-pointer hover:text-slate-200 font-semibold">⚙️ 進階：自訂此科目的等第總分門檻 (預設 A=93, A-=90, B+=87, B=83)</summary>
+          <div class="grid grid-cols-4 gap-2 pt-2.5">
+            <div><label class="block text-[10px] text-emerald-400 mb-0.5 font-bold">A 門檻 (%)</label><input type="number" step="0.1" id="fcalc-cut-a" oninput="updateFinalCalcLivePreview()" value="93" class="w-full px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs font-mono text-white"></div>
+            <div><label class="block text-[10px] text-teal-400 mb-0.5 font-bold">A- 門檻 (%)</label><input type="number" step="0.1" id="fcalc-cut-am" oninput="updateFinalCalcLivePreview()" value="90" class="w-full px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs font-mono text-white"></div>
+            <div><label class="block text-[10px] text-sky-400 mb-0.5 font-bold">B+ 門檻 (%)</label><input type="number" step="0.1" id="fcalc-cut-bp" oninput="updateFinalCalcLivePreview()" value="87" class="w-full px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs font-mono text-white"></div>
+            <div><label class="block text-[10px] text-amber-400 mb-0.5 font-bold">B 門檻 (%)</label><input type="number" step="0.1" id="fcalc-cut-b" oninput="updateFinalCalcLivePreview()" value="83" class="w-full px-2 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs font-mono text-white"></div>
+          </div>
+        </details>
+
+        <div class="flex items-center justify-between pt-2 border-t border-slate-800 gap-2">
+          <button type="button" id="btn-fcalc-clear" onclick="clearFinalCalcForCourse()" class="px-3 py-2 rounded-xl text-xs font-semibold bg-rose-500/15 text-rose-300 border border-rose-500/30 hover:bg-rose-500 hover:text-white">清除設定</button>
+          <div class="flex space-x-2 ml-auto">
+            <button type="button" onclick="closeFinalCalcModal()" class="px-3.5 py-2 rounded-xl text-xs bg-slate-800 text-slate-300">關閉</button>
+            <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shadow">💾 儲存並顯示於主頁卡片</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- 手動微調學期行事曆日期 Modal -->
   <div id="cal-edit-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="glass-card w-full max-w-md rounded-2xl p-5 sm:p-6 border border-[#CFB87C]/40 space-y-4">
@@ -883,6 +967,12 @@
   <script>
     function safeCreateIcons() { try { if (window.lucide && typeof window.lucide.createIcons === 'function') window.lucide.createIcons(); } catch (e) {} }
 
+    // 🔄 iPhone 主畫面 Web App 一鍵強制重整
+    window.forceReloadWebApp = function() {
+      const url = window.location.pathname + '?v=5.4&t=' + Date.now();
+      window.location.replace(url);
+    };
+
     const DEFAULT_USER_ID = 'surihua';
     const BANNED_LEGACY_IDS = ['suri', 'suri1031'];
     const _SEED_CODES = [99, 105, 98, 103, 98, 103];
@@ -902,7 +992,6 @@
     const VALID_LETTER_GRADES = { 'A': 4.0, 'A-': 3.75, 'B+': 3.25, 'B': 3.0, 'B-': 2.75 };
     function isValidLetterGradeForGPA(gradeStr) { return Object.prototype.hasOwnProperty.call(VALID_LETTER_GRADES, String(gradeStr || '').trim().toUpperCase()); }
 
-    // 🔗 專屬 Coursera 網址對映表（處理曾改名或特殊網址的課程，如 EMEA 5018 連至 speaking-to-a-technical-group）
     const COURSERA_CUSTOM_SLUG_MAP = {
       'EMEA5018': 'speaking-to-a-technical-group',
       'speaking-to-lead-oral-communication-for-technical-managers': 'speaking-to-a-technical-group'
@@ -914,7 +1003,6 @@
       if (COURSERA_CUSTOM_SLUG_MAP[normCode]) {
         return `https://www.coursera.org/learn/${COURSERA_CUSTOM_SLUG_MAP[normCode]}/home/assignments`;
       }
-      // 過濾星號評分 (如 4.9★) 與中文字元，轉為標準英文小寫連字號 slug
       let clean = String(course.name || '')
         .replace(/\d+(\.\d+)?\s*[★☆]/g, ' ')
         .replace(/[^\x00-\x7F]+/g, ' ')
@@ -926,6 +1014,183 @@
       if (!clean) return null;
       return `https://www.coursera.org/learn/${clean}/home/assignments`;
     }
+
+    // 🎯 期末考目標分數反推計算邏輯 (v5.4)
+    const DEFAULT_GRADE_CUTOFFS = { 'A': 93, 'A-': 90, 'B+': 87, 'B': 83 };
+    let currentFinalCalcMode = 'earned';
+
+    function computeFinalNeededForCourse(fc) {
+      if (!fc || !(Number(fc.finalWeight) > 0)) return null;
+      const w = Number(fc.finalWeight);
+      const nonFinalMax = Math.max(100 - w, 0);
+      const rawScore = Number(fc.nonFinalScore || 0);
+      const mode = fc.mode === 'avg' ? 'avg' : 'earned';
+      const earnedPoints = mode === 'avg' ? (rawScore * nonFinalMax) / 100 : rawScore;
+      const cutoffs = { ...DEFAULT_GRADE_CUTOFFS, ...(fc.cutoffs || {}) };
+
+      const results = ['A', 'A-', 'B+', 'B'].map(g => {
+        const targetTotal = Number(cutoffs[g]);
+        const neededOnFinal = ((targetTotal - earnedPoints) / w) * 100;
+        const rounded = Math.ceil(neededOnFinal * 10) / 10;
+        let status = 'ok';
+        if (rounded <= 0) status = 'secured';
+        else if (rounded > 100) status = 'impossible';
+        else if (rounded >= 80) status = 'hard';
+        return {
+          grade: g,
+          targetTotal,
+          needed: rounded <= 0 ? 0 : Number(rounded.toFixed(1)),
+          rawNeeded: Number(neededOnFinal.toFixed(1)),
+          status
+        };
+      });
+
+      return { finalWeight: w, nonFinalMax, mode, rawScore, earnedPoints: Number(earnedPoints.toFixed(2)), cutoffs, results };
+    }
+
+    window.openFinalCalcModal = function(courseId) {
+      const c = courseList.find(x => String(x.id) === String(courseId));
+      if (!c) return;
+      document.getElementById('fcalc-course-id').value = c.id;
+      document.getElementById('fcalc-course-title').textContent = `${c.code} — ${c.name}`;
+
+      // 預設對 EMEA 5018 自動帶入備註提到的 13% 期末考佔比與 40% 目前總分作為初始值
+      let defaultW = 20, defaultScore = 72, defaultMode = 'earned';
+      if (String(c.code).replace(/\s+/g, '').toUpperCase() === 'EMEA5018' && !c.finalCalc) {
+        defaultW = 13; defaultScore = 40;
+      }
+
+      const fc = c.finalCalc || { finalWeight: defaultW, nonFinalScore: defaultScore, mode: defaultMode, cutoffs: DEFAULT_GRADE_CUTOFFS };
+      document.getElementById('fcalc-weight').value = fc.finalWeight ?? defaultW;
+      document.getElementById('fcalc-score').value = fc.nonFinalScore ?? defaultScore;
+      const cuts = { ...DEFAULT_GRADE_CUTOFFS, ...(fc.cutoffs || {}) };
+      document.getElementById('fcalc-cut-a').value = cuts['A'];
+      document.getElementById('fcalc-cut-am').value = cuts['A-'];
+      document.getElementById('fcalc-cut-bp').value = cuts['B+'];
+      document.getElementById('fcalc-cut-b').value = cuts['B'];
+      document.getElementById('btn-fcalc-clear').classList.toggle('hidden', !c.finalCalc);
+
+      setFinalCalcInputMode(fc.mode || 'earned');
+      document.getElementById('final-calc-modal').classList.remove('hidden');
+    };
+
+    window.closeFinalCalcModal = function() {
+      document.getElementById('final-calc-modal').classList.add('hidden');
+    };
+
+    window.setFinalCalcInputMode = function(mode) {
+      currentFinalCalcMode = mode === 'avg' ? 'avg' : 'earned';
+      const btnEarned = document.getElementById('fcalc-mode-earned');
+      const btnAvg = document.getElementById('fcalc-mode-avg');
+      const hintEl = document.getElementById('fcalc-mode-hint');
+      const labelEl = document.getElementById('fcalc-score-label');
+      if (currentFinalCalcMode === 'earned') {
+        btnEarned.className = "py-1.5 px-2 rounded-lg text-[11px] font-bold bg-[#CFB87C] text-slate-950 text-center";
+        btnAvg.className = "py-1.5 px-2 rounded-lg text-[11px] font-medium text-slate-300 text-center";
+        hintEl.innerHTML = `💡 <strong>模式 A 說明</strong>：直接填寫目前在 Coursera Grades 頁面上「期末考以外已經拿到的總分 %」（例如非期末共佔 80%，您目前已拿 76% 總分，則輸入 76）。`;
+        labelEl.textContent = `✅ 目前期末以外已獲得總分 (%)`;
+      } else {
+        btnAvg.className = "py-1.5 px-2 rounded-lg text-[11px] font-bold bg-[#CFB87C] text-slate-950 text-center";
+        btnEarned.className = "py-1.5 px-2 rounded-lg text-[11px] font-medium text-slate-300 text-center";
+        hintEl.innerHTML = `💡 <strong>模式 B 說明</strong>：填寫目前已完成作業的「平均得分率 %」（例如平時作業平均拿 95%，期末佔 20%，系統會自動換算已實拿 95% × 80% = 76% 總分）。`;
+        labelEl.textContent = `📈 目前非期末項目的平均得分率 (%)`;
+      }
+      updateFinalCalcLivePreview();
+    };
+
+    window.updateFinalCalcLivePreview = function() {
+      const w = parseFloat(document.getElementById('fcalc-weight').value) || 0;
+      const s = parseFloat(document.getElementById('fcalc-score').value) || 0;
+      const nonFinalMax = Math.max(100 - w, 0);
+      document.getElementById('fcalc-nonfinal-max').textContent = `${Number(nonFinalMax.toFixed(1))}%`;
+
+      const tempFc = {
+        finalWeight: w,
+        nonFinalScore: s,
+        mode: currentFinalCalcMode,
+        cutoffs: {
+          'A': parseFloat(document.getElementById('fcalc-cut-a').value) || 93,
+          'A-': parseFloat(document.getElementById('fcalc-cut-am').value) || 90,
+          'B+': parseFloat(document.getElementById('fcalc-cut-bp').value) || 87,
+          'B': parseFloat(document.getElementById('fcalc-cut-b').value) || 83
+        }
+      };
+
+      const calc = computeFinalNeededForCourse(tempFc);
+      const summaryEl = document.getElementById('fcalc-earned-summary');
+      const gridEl = document.getElementById('fcalc-preview-grid');
+      if (!calc) {
+        summaryEl.textContent = '請輸入大於 0 的期末考佔比';
+        gridEl.innerHTML = `<div class="col-span-4 text-center text-slate-400 py-2">請輸入有效的期末考佔比 (%)</div>`;
+        return;
+      }
+
+      summaryEl.textContent = `目前已實拿總分：${calc.earnedPoints}% / 滿分可拿最高：${Number((calc.earnedPoints + w).toFixed(1))}%`;
+
+      gridEl.innerHTML = calc.results.map(r => {
+        let boxCls = 'bg-sky-500/15 border-sky-500/35 text-sky-300';
+        let valText = `需 ≥ ${r.needed}%`;
+        let subText = `總分門檻 ${r.targetTotal}%`;
+        if (r.status === 'secured') {
+          boxCls = 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300';
+          valText = `🎉 0% (已穩拿)`;
+        } else if (r.status === 'impossible') {
+          boxCls = 'bg-rose-500/15 border-rose-500/35 text-rose-300';
+          valText = `需 ${r.rawNeeded}% (無法達成)`;
+        } else if (r.status === 'hard') {
+          boxCls = 'bg-amber-500/15 border-amber-500/35 text-amber-300';
+          valText = `需 ≥ ${r.needed}%`;
+        }
+        return `<div class="p-2.5 rounded-xl border ${boxCls} flex flex-col justify-between">
+          <div class="flex items-center justify-between"><span class="font-extrabold text-xs">目標 ${r.grade}</span><span class="text-[10px] opacity-80 font-mono">≥${r.targetTotal}%</span></div>
+          <div class="font-mono font-extrabold text-sm mt-1">${valText}</div>
+          <div class="text-[9px] opacity-75 mt-0.5">${subText}</div>
+        </div>`;
+      }).join('');
+    };
+
+    window.saveFinalCalcFromModal = async function(e) {
+      e.preventDefault();
+      const cid = document.getElementById('fcalc-course-id').value;
+      const c = courseList.find(x => String(x.id) === String(cid));
+      if (!c) return;
+      const w = parseFloat(document.getElementById('fcalc-weight').value);
+      const s = parseFloat(document.getElementById('fcalc-score').value);
+      if (!(w > 0 && w <= 100) || isNaN(s) || s < 0) {
+        alert('請輸入有效的期末考佔比 (1~100%) 與目前得分！');
+        return;
+      }
+      c.finalCalc = {
+        finalWeight: Number(w.toFixed(2)),
+        nonFinalScore: Number(s.toFixed(2)),
+        mode: currentFinalCalcMode,
+        cutoffs: {
+          'A': parseFloat(document.getElementById('fcalc-cut-a').value) || 93,
+          'A-': parseFloat(document.getElementById('fcalc-cut-am').value) || 90,
+          'B+': parseFloat(document.getElementById('fcalc-cut-bp').value) || 87,
+          'B': parseFloat(document.getElementById('fcalc-cut-b').value) || 83
+        }
+      };
+      safeStorage.setItem(`cuboulder_courses_${activeUserId}`, JSON.stringify(courseList));
+      closeFinalCalcModal();
+      window.renderCourses();
+      if (isEditMode && isAccountUnlockedForEdit(activeUserId)) {
+        await pushToCloud(false);
+      }
+    };
+
+    window.clearFinalCalcForCourse = async function() {
+      const cid = document.getElementById('fcalc-course-id').value;
+      const c = courseList.find(x => String(x.id) === String(cid));
+      if (!c) return;
+      delete c.finalCalc;
+      safeStorage.setItem(`cuboulder_courses_${activeUserId}`, JSON.stringify(courseList));
+      closeFinalCalcModal();
+      window.renderCourses();
+      if (isEditMode && isAccountUnlockedForEdit(activeUserId)) {
+        await pushToCloud(false);
+      }
+    };
 
     const DEFAULT_CU_CALENDAR = [
       { id:'fall2026_s1', type:'session', termName:'Fall 2026 - Session 1', badge:'已結課', status:'past', enrollOpen:'2026-08-10', classStart:'2026-08-24', enrollClose:'2026-10-02', classEnd:'2026-10-16', gradesPost:'2026-10-27', degreeConfer:'2026-11-06', endYear:2026, endMonth:10, note:'秋季第一期（已於 10/16 結課）' },
@@ -1139,7 +1404,7 @@
       { id:'9', type:"required", code:"EMEA 5053", name:"Technical Communication Methods", status:"Complete", grade:"A", progress:"100%", note:"" },
       { id:'10', type:"required", code:"EMEA 5016", name:"Executive Leadership in Technology", status:"Complete", grade:"A", progress:"100%", note:"" },
       { id:'11', type:"required", code:"EMEA 5017", name:"Strategic Writing for Technical Leaders", status:"Complete", grade:"A", progress:"100.00%", note:"已註冊，還剩下一個 review 才能取得成績" },
-      { id:'12', type:"required", code:"EMEA 5018", name:"Speaking to Lead: Oral Communication for Technical Managers", status:"Ongoing", grade:"--", progress:"92.20%", note:"有一個影片要錄製，只有佔 13% 但目前 40%" },
+      { id:'12', type:"required", code:"EMEA 5018", name:"Speaking to Lead: Oral Communication for Technical Managers", status:"Ongoing", grade:"--", progress:"92.20%", note:"有一個影片要錄製，只有佔 13% 但目前 40%", finalCalc: { finalWeight: 13, nonFinalScore: 40, mode: 'earned', cutoffs: { 'A': 93, 'A-': 90, 'B+': 87, 'B': 83 } } },
       { id:'13', type:"electives", code:"EMEA 5066", name:"Value Creation and Building Enduring Relationships", status:"Ongoing", grade:"--", progress:"98.67%", note:"" },
       { id:'14', type:"electives", code:"EMEA 5061", name:"A Technical Leader's Qualities and Effectiveness 4.9★", status:"Complete", grade:"A", progress:"100%", note:"" },
       { id:'15', type:"electives", code:"EMEA 5063", name:"Challenges of Leading Technical Teams 4.7★", status:"Ongoing", grade:"--", progress:"0/1", note:"8 hrs; 有效會議，只有一份報告" },
@@ -1344,7 +1609,6 @@
       return { year: Number((u && u.gradYear) || 2027), month: Number((u && u.gradMonth) || 8) };
     }
 
-    // 🔢 課程代碼比較器（遵循 EMEA -> DTSA -> APPA -> CSCA -> ECEA 科系順序，再依數字升冪）
     function compareCourseCodeOrder(a, b) {
       const sa = splitCourseCode(a.code), sb = splitCourseCode(b.code);
       const ra = SUBJECT_RANK_MAP[sa.subject] || 99, rb = SUBJECT_RANK_MAP[sb.subject] || 99;
@@ -1352,7 +1616,6 @@
       return (sa.num || '').localeCompare(sb.num || '', undefined, { numeric: true });
     }
 
-    // ↕️ 單欄位排序比較器（狀態以 Ongoing 為最優先，同順位自動以課程代碼為次要排序）
     function compareBySingleRule(a, b, field, dirStr) {
       const dir = dirStr === 'asc' ? 1 : -1;
       const statusRankOngoingFirst = { 'Ongoing': 3, 'Expected': 2, 'Complete': 1 };
@@ -1382,7 +1645,6 @@
       return compareCourseCodeOrder(a, b);
     }
 
-    // 🌟 預設排序：自動將 Ongoing (進行中) 排在最上方，次要依課程代碼升冪排序
     function compareDefaultOngoingFirstThenCode(a, b) {
       const statusPriority = { 'Ongoing': 1, 'Expected': 2, 'Complete': 3 };
       const pa = statusPriority[a.status] || 9, pb = statusPriority[b.status] || 9;
@@ -2147,7 +2409,9 @@
         if (!num || !row.name.trim()) { alert(`❌ 第 ${i + 1} 列尚未填寫完整代號或課程名稱！`); return; }
         const dup = findDuplicateCourse(row.code, row.name, null, cleaned);
         if (dup) { alert(`❌ 第 ${i + 1} 列「${row.code}」與「${dup.code}」重複！`); return; }
-        cleaned.push({ id: String(row.id), type: row.type, code: combineCourseCode(subject, num), name: row.name.trim(), status: row.status, grade: row.grade, progress: formatProgressWithPercent(row.progress), note: row.note.trim() });
+        const cleanedItem = { id: String(row.id), type: row.type, code: combineCourseCode(subject, num), name: row.name.trim(), status: row.status, grade: row.grade, progress: formatProgressWithPercent(row.progress), note: row.note.trim() };
+        if (row.finalCalc) cleanedItem.finalCalc = row.finalCalc;
+        cleaned.push(cleanedItem);
       }
       courseList = cleaned;
       const synced = await persistData();
@@ -2454,7 +2718,9 @@
       const name = document.getElementById('input-name').value.trim();
       const duplicate = findDuplicateCourse(fullCode, name, id || null, courseList);
       if (duplicate) { alert(`⚠️ 發現重複課程：${duplicate.code} - ${duplicate.name}`); return; }
+      const existing = id ? courseList.find(x => x.id === id) : null;
       const item = { id: id || Date.now().toString(), code: fullCode, name, type: document.getElementById('input-type').value, status: document.getElementById('input-status').value, grade: document.getElementById('input-grade').value, progress: formatProgressWithPercent(document.getElementById('input-progress').value), note: document.getElementById('input-note').value.trim() };
+      if (existing && existing.finalCalc) item.finalCalc = existing.finalCalc;
       if (id) { const idx = courseList.findIndex(x => x.id === id); if (idx !== -1) courseList[idx] = item; }
       else courseList.unshift(item);
       closeModal();
@@ -2596,10 +2862,48 @@
         const noteHtml = c.note ? `<div class="mt-2 pt-2 border-t border-slate-800/60 text-xs text-slate-400 leading-relaxed">📝 ${c.note}</div>` : '';
         const editBtn = isEditMode ? `<button type="button" onclick="openEditModal('${c.id}')" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-[#CFB87C] text-xs text-slate-200 hover:text-slate-950 font-bold shrink-0">✏️ 編輯</button>` : '';
 
+        const hasLetterGrade = isValidLetterGradeForGPA(c.grade);
         const courseraUrl = getCourseraAssignmentsUrl(c);
         const titleHtml = courseraUrl
           ? `<h3 class="text-sm font-semibold leading-snug pt-0.5"><a href="${courseraUrl}" target="_blank" rel="noopener noreferrer" class="text-slate-100 hover:text-[#CFB87C] underline decoration-slate-600 hover:decoration-[#CFB87C] transition-colors inline-flex items-center flex-wrap gap-1.5" title="點擊直達 Coursera 成績與作業頁 (${courseraUrl})"><span>${c.name}</span><span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#CFB87C]/15 text-[#CFB87C] border border-[#CFB87C]/30 whitespace-nowrap">↗ Assignments</span></a></h3>`
           : `<h3 class="text-sm font-semibold text-slate-100 leading-snug pt-0.5">${c.name}</h3>`;
+
+        // 🎯 尚未取得 Grade 的科目：顯示「🎯 期末試算」按鈕與卡片外部 A / A- / B+ / B 所需期末考分數面板
+        let finalCalcBtnHtml = '';
+        let finalCalcBarHtml = '';
+        if (!hasLetterGrade) {
+          const calcData = computeFinalNeededForCourse(c.finalCalc);
+          finalCalcBtnHtml = `<button type="button" onclick="openFinalCalcModal('${c.id}')" class="px-2.5 py-1 rounded-lg ${calcData ? 'bg-[#CFB87C]/20 text-[#CFB87C] border border-[#CFB87C]/40' : 'bg-slate-800/90 text-amber-300 border border-amber-500/30'} hover:bg-[#CFB87C] hover:text-slate-950 text-xs font-bold shrink-0 whitespace-nowrap" title="點擊設定期末考佔比與目前得分，自動換算 A / A- / B+ / B 期末考需考幾分">🎯 ${calcData ? '期末目標' : '+ 期末試算'}</button>`;
+
+          if (calcData) {
+            const badgesHtml = calcData.results.map(r => {
+              let pillCls = 'bg-sky-500/15 border-sky-500/35 text-sky-300';
+              let scoreStr = `期末 ≥ ${r.needed}%`;
+              if (r.status === 'secured') {
+                pillCls = 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300';
+                scoreStr = `0% (已穩拿🎉)`;
+              } else if (r.status === 'impossible') {
+                pillCls = 'bg-rose-500/15 border-rose-500/30 text-rose-300/90';
+                scoreStr = `${r.rawNeeded}% (超過滿分)`;
+              } else if (r.status === 'hard') {
+                pillCls = 'bg-amber-500/15 border-amber-500/35 text-amber-300';
+                scoreStr = `期末 ≥ ${r.needed}%`;
+              }
+              return `<div onclick="openFinalCalcModal('${c.id}')" class="cursor-pointer px-2.5 py-1.5 rounded-lg border ${pillCls} flex items-center justify-between gap-1.5 hover:brightness-110 transition">
+                <span class="text-[11px] font-extrabold whitespace-nowrap">拿 ${r.grade} <span class="text-[9px] font-normal opacity-75">(${r.targetTotal}%)</span></span>
+                <span class="font-mono font-bold text-[11px] whitespace-nowrap">${scoreStr}</span>
+              </div>`;
+            }).join('');
+
+            finalCalcBarHtml = `<div class="mt-2.5 pt-2.5 border-t border-slate-800/80 space-y-1.5">
+              <div class="flex flex-wrap items-center justify-between gap-1 text-[11px]">
+                <span class="text-slate-300 font-semibold">🎯 期末考目標分數換算 <span class="text-slate-400 font-normal">（期末佔 <strong class="text-[#CFB87C] font-mono">${calcData.finalWeight}%</strong>｜目前已拿總分 <strong class="text-emerald-400 font-mono">${calcData.earnedPoints}%</strong>）</span></span>
+                <button type="button" onclick="openFinalCalcModal('${c.id}')" class="text-[10px] text-[#CFB87C] hover:underline font-semibold">⚙️ 修改佔比/分數</button>
+              </div>
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">${badgesHtml}</div>
+            </div>`;
+          }
+        }
 
         return `<div class="glass-card rounded-xl p-3.5 sm:p-4">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
@@ -2610,14 +2914,18 @@
               </div>
               ${titleHtml}
             </div>
-            <div class="flex items-center justify-between sm:justify-end gap-3 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800/60 shrink-0">
+            <div class="flex items-center justify-between sm:justify-end gap-2 sm:gap-2.5 border-t sm:border-t-0 pt-2 sm:pt-0 border-slate-800/60 shrink-0">
               <div class="flex items-center sm:flex-col sm:items-end gap-3 sm:gap-0.5 text-xs text-slate-400">
                 <div>成績: <span class="font-bold text-white text-sm">${c.grade || '--'}</span></div>
                 <div>進度: <span class="font-medium text-emerald-400">${formatProgressWithPercent(c.progress)}</span></div>
               </div>
-              ${editBtn}
+              <div class="flex items-center gap-1.5">
+                ${finalCalcBtnHtml}
+                ${editBtn}
+              </div>
             </div>
           </div>
+          ${finalCalcBarHtml}
           ${noteHtml}
         </div>`;
       }).join('');
