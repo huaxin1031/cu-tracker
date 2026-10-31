@@ -44,7 +44,7 @@
           <h1 class="font-bold text-xs sm:text-lg leading-tight text-slate-100 truncate">CU Boulder Master's</h1>
           <div class="flex items-center space-x-1 sm:space-x-1.5 mt-0.5">
             <span class="text-[10px] sm:text-xs text-[#CFB87C] font-medium whitespace-nowrap">Course Tracker</span>
-            <button type="button" onclick="forceReloadWebApp()" class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 whitespace-nowrap shrink-0" title="點擊強制重新整理網頁 (適合 iPhone 主畫面 Web App 更新版本)">v5.4 🔄</button>
+            <button type="button" onclick="forceReloadWebApp()" class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 whitespace-nowrap shrink-0" title="點擊強制重新整理網頁 (適合 iPhone 主畫面 Web App 更新版本)">v5.5 🔄</button>
             <span id="sync-status-badge" onclick="syncFromCloud(true)" class="cursor-pointer text-[9px] sm:text-[10px] px-1.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 inline-flex items-center whitespace-nowrap shrink-0" title="點擊立即與雲端雙向同步最新資料">☁️ 已同步</span>
           </div>
         </div>
@@ -969,7 +969,7 @@
 
     // 🔄 iPhone 主畫面 Web App 一鍵強制重整
     window.forceReloadWebApp = function() {
-      const url = window.location.pathname + '?v=5.4&t=' + Date.now();
+      const url = window.location.pathname + '?v=5.5&t=' + Date.now();
       window.location.replace(url);
     };
 
