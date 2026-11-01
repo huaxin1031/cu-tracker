@@ -1427,9 +1427,15 @@
       { id:'30', type:"electives", code:"DTSA 5304", name:"Fundamentals of Data Visualization 資料可視化基礎", status:"Complete", grade:"A", progress:"100%", note:"" }
     ];
 
+    // 🌟 預設課程資料版本號：只要改了 suriDefaultCourses，把這個數字 +1，@test 就會自動強制更新為最新程式碼資料！
+    const CODE_DEFAULT_DATA_VERSION = '20261101_v2';
+
     function getDefaultCoursesForUser(uid) {
-      // 只有預設展示帳號 @test 使用內建範例資料，其他帳號（若雲端尚無資料）皆初始化為全空白進度
-      if (uid === 'test') return JSON.parse(JSON.stringify(suriDefaultCourses));
+      // 讓 @test 與 @surihua 都預設載入您最新的 suriDefaultCourses 資料
+      if (uid === 'test' || uid === 'surihua') {
+        return JSON.parse(JSON.stringify(suriDefaultCourses));
+      }
+      // 其他新建的路人帳號才給全空白 Expected
       return suriDefaultCourses.map(c => ({ id: c.id, type: c.type, code: c.code, name: c.name, status: 'Expected', grade: '--', progress: '0%', note: '' }));
     }
 
@@ -2630,16 +2636,16 @@
       setEditModeUI(false);
       saveUsersSystemState();
 
-      // 🛡️ 優先向雲端拉取該帳號（如 @surihua）的最新真實資料，避免被本機舊快取或預設值蓋掉
-      setSyncStatus('☁️ 讀取雲端...', true);
-      const cloudRecord = await fetchCloudUserRecord(activeUserId);
-      if (cloudRecord && Array.isArray(cloudRecord.courses) && cloudRecord.courses.length > 0) {
-        applyCloudRecordToLocalState(cloudRecord);
-        setSyncStatus('☁️ 已同步');
-        return;
+      // 🌟 關鍵：如果目前程式碼的 suriDefaultCourses 有更新版本，自動幫 @test 刷新為最新進度（同時若 @surihua 本機還沒快取也直接載入最新）
+      const lastVer = safeStorage.getItem('cuboulder_code_data_ver');
+      if (lastVer !== CODE_DEFAULT_DATA_VERSION) {
+        safeStorage.setItem('cuboulder_courses_test', JSON.stringify(suriDefaultCourses));
+        if (!safeStorage.getItem('cuboulder_courses_surihua')) {
+          safeStorage.setItem('cuboulder_courses_surihua', JSON.stringify(suriDefaultCourses));
+        }
+        safeStorage.setItem('cuboulder_code_data_ver', CODE_DEFAULT_DATA_VERSION);
       }
 
-      // 若離線或雲端尚無此帳號資料，才讀取本機快取
       let loaded = null;
       const saved = safeStorage.getItem(`cuboulder_courses_${activeUserId}`);
       if (saved) {
@@ -2655,8 +2661,9 @@
       courseList = loaded;
       syncAllGradSelectorsAcrossPages();
       window.updateDashboardAndRender();
-      setSyncStatus('☁️ 已同步');
+      setSyncStatus('☁️ 本機已同步');
     }
+
 
 
     window.openNewUserModal = (defaultTab = 'register') => {
