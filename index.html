@@ -3037,6 +3037,261 @@
     }
 
     initUserSystem();
+        // =========================================================================
+    // 🌟 Google 登入 (GIS) + Google Drive (Apps Script) 雲端同步引擎 (對齊版)
+    // =========================================================================
+    const GOOGLE_CLIENT_ID = '221633388740-90qq8uabufith29n0aiusvorvhnevote.apps.googleusercontent.com';
+    const GOOGLE_DRIVE_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwzujJpnEvgdi3R6Zoj08A1UmfpdBXso6SM_cqkOl6Cv7ORsEsl5APz36ilmUFcGYLP/exec';
+    const OWNER_GMAIL = 'h5u9a95@gmail.com';
+
+    let googleIdToken = safeStorage.getItem('cuboulder_google_id_token') || '';
+    let googleUserEmail = safeStorage.getItem('cuboulder_google_email') || '';
+    let googleUserName = safeStorage.getItem('cuboulder_google_name') || '';
+
+    // 自動取得目前畫面上的帳號 ID (相容 activeUserId 或 currentUser)
+    function getCurrentUid() {
+      if (typeof activeUserId !== 'undefined' && activeUserId) return activeUserId;
+      if (typeof currentUser !== 'undefined' && currentUser) return currentUser;
+      const mobileEl = document.getElementById('current-user-display-mobile');
+      if (mobileEl && mobileEl.textContent) return mobileEl.textContent.replace('@', '').trim().toLowerCase();
+      return 'surihua';
+    }
+
+    function parseJwtPayload(token) {
+      try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(
+          atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
+        );
+        return JSON.parse(jsonPayload);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function updateGoogleAuthUI() {
+      const btnContainer = document.getElementById('googleSignInBtnContainer');
+      const userBadge = document.getElementById('googleUserBadge');
+      const userText = document.getElementById('googleUserText');
+
+      if (googleIdToken && googleUserEmail) {
+        if (btnContainer) btnContainer.classList.add('hidden');
+        if (userBadge) userBadge.classList.remove('hidden');
+        if (userText) {
+          const shortEmail = googleUserEmail.split('@')[0];
+          userText.textContent = `🟢 ${shortEmail}`;
+        }
+      } else {
+        if (btnContainer) btnContainer.classList.remove('hidden');
+        if (userBadge) userBadge.classList.add('hidden');
+      }
+    }
+
+    // 自動切換為「已解鎖編輯模式」
+    function unlockEditModeByGoogle(targetUid) {
+      if (typeof unlockedUsersSession !== 'undefined') unlockedUsersSession[targetUid] = true;
+      if (typeof isEditMode !== 'undefined') isEditMode = true;
+      if (typeof updateEditLockUI === 'function') updateEditLockUI();
+      if (typeof updateModeUI === 'function') updateModeUI();
+
+      // 直接更新按鈕外觀以防函式名稱不同
+      const modeText = document.getElementById('mode-text');
+      const addBtn = document.getElementById('btn-add-course');
+      const resetBtn = document.getElementById('btn-reset-data');
+      if (modeText) modeText.textContent = '編輯模式 (已解鎖)';
+      if (addBtn) addBtn.classList.remove('hidden');
+      if (resetBtn) resetBtn.classList.remove('hidden');
+    }
+
+    // 當使用者點擊「使用 Google 登入」成功後的回呼
+    window.handleGoogleCredentialResponse = async function(response) {
+      if (!response || !response.credential) return;
+      const payload = parseJwtPayload(response.credential);
+      if (!payload || !payload.email) return;
+
+      googleIdToken = response.credential;
+      googleUserEmail = payload.email.toLowerCase();
+      googleUserName = payload.name || googleUserEmail.split('@')[0];
+
+      safeStorage.setItem('cuboulder_google_id_token', googleIdToken);
+      safeStorage.setItem('cuboulder_google_email', googleUserEmail);
+      safeStorage.setItem('cuboulder_google_name', googleUserName);
+
+      updateGoogleAuthUI();
+
+      const isOwner = (googleUserEmail === OWNER_GMAIL.toLowerCase());
+      const emailPrefix = googleUserEmail.split('@')[0].replace(/[^a-z0-9_]/g, '');
+      const targetUid = isOwner ? 'surihua' : emailPrefix;
+
+      // 若系統有 switchUser 或 loadUserData 則切換過去
+      if (typeof usersList !== 'undefined' && Array.isArray(usersList) && !usersList.includes(targetUid)) {
+        usersList.push(targetUid);
+        safeStorage.setItem('cuboulder_users_list', JSON.stringify(usersList));
+      }
+      if (typeof activeUserId !== 'undefined') activeUserId = targetUid;
+      if (typeof currentUser !== 'undefined') currentUser = targetUid;
+
+      const deskDisp = document.getElementById('current-user-display');
+      const mobDisp = document.getElementById('current-user-display-mobile');
+      if (deskDisp) deskDisp.textContent = isOwner ? 'Suri Hua (@surihua)' : `${googleUserName} (@${targetUid})`;
+      if (mobDisp) mobDisp.textContent = `@${targetUid}`;
+
+      unlockEditModeByGoogle(targetUid);
+      if (typeof renderCourses === 'function') renderCourses();
+      if (typeof window.updateDashboardAndRender === 'function') window.updateDashboardAndRender();
+
+      if (typeof showToast === 'function') {
+        showToast(`🎉 歡迎 ${googleUserName}！已解鎖 @${targetUid} 並連接 Google Drive`);
+      }
+
+      // 先嘗試從 Google Drive 讀取；若雲端尚無資料，自動把目前課表推上 Google Drive 建立初始備份！
+      const loaded = await loadUserFromGoogleDrive(targetUid);
+      if (!loaded) {
+        await saveUserToGoogleDrive(targetUid, courseList);
+      }
+    };
+
+    window.handleGoogleSignOut = function() {
+      if (!confirm(`確定要登出 Google 帳號 (${googleUserEmail}) 嗎？`)) return;
+      googleIdToken = '';
+      googleUserEmail = '';
+      googleUserName = '';
+      safeStorage.removeItem('cuboulder_google_id_token');
+      safeStorage.removeItem('cuboulder_google_email');
+      safeStorage.removeItem('cuboulder_google_name');
+      if (typeof unlockedUsersSession !== 'undefined') unlockedUsersSession = {};
+      if (typeof isEditMode !== 'undefined') isEditMode = false;
+      updateGoogleAuthUI();
+      if (typeof updateEditLockUI === 'function') updateEditLockUI();
+      if (typeof updateModeUI === 'function') updateModeUI();
+      if (typeof showToast === 'function') showToast('🔒 已登出 Google 帳號');
+    };
+
+    // 手動點擊下拉選單「立即備份至 Google Drive」
+    window.manualForceGoogleSync = async function() {
+      const dd = document.getElementById('user-dropdown');
+      if (dd) dd.classList.add('hidden');
+      if (!googleIdToken) {
+        alert('請先點擊上方「G (Google)」按鈕登入您的 Google 帳號，即可啟用 Google Drive 雲端備份！');
+        return;
+      }
+      const ok = await saveUserToGoogleDrive(getCurrentUid(), courseList);
+      if (ok && typeof showToast === 'function') {
+        showToast('✅ 已成功備份至 Google Drive (cu_tracker_multiuser_db.json)！');
+      }
+    };
+
+    async function loadUserFromGoogleDrive(uid = getCurrentUid()) {
+      try {
+        if (typeof setSyncStatus === 'function') setSyncStatus('☁️ 讀取 Google Drive...', true);
+        const res = await fetch(`${GOOGLE_DRIVE_WEBAPP_URL}?uid=${encodeURIComponent(uid)}&t=${Date.now()}`, {
+          method: 'GET',
+          cache: 'no-store'
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        if (data && data.ok && data.record && Array.isArray(data.record.courses) && data.record.courses.length > 0) {
+          courseList = data.record.courses;
+          safeStorage.setItem(`cuboulder_courses_${uid}`, JSON.stringify(courseList));
+          if (typeof window.updateDashboardAndRender === 'function') window.updateDashboardAndRender();
+          else if (typeof renderCourses === 'function') renderCourses();
+          if (typeof setSyncStatus === 'function') setSyncStatus('☁️ Google Drive 已同步');
+          return true;
+        }
+        return false;
+      } catch (err) {
+        console.warn('Google Drive 讀取失敗:', err);
+        return false;
+      }
+    }
+
+    async function saveUserToGoogleDrive(uid = getCurrentUid(), coursesToSave = courseList) {
+      if (!googleIdToken) return false;
+      try {
+        if (typeof setSyncStatus === 'function') setSyncStatus('☁️ 備份至 Google Drive...', true);
+        const res = await fetch(GOOGLE_DRIVE_WEBAPP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            uid: uid,
+            idToken: googleIdToken,
+            courses: coursesToSave
+          })
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        if (!data || !data.ok) throw new Error(data?.error || '寫入失敗');
+
+        if (data.uid === 'surihua') {
+          safeStorage.setItem('cuboulder_courses_surihua', JSON.stringify(coursesToSave));
+          safeStorage.setItem('cuboulder_courses_test', JSON.stringify(coursesToSave));
+        }
+        if (typeof setSyncStatus === 'function') setSyncStatus('☁️ Google Drive 已備份');
+        return true;
+      } catch (err) {
+        console.error('Google Drive 寫入失敗:', err);
+        if (typeof showToast === 'function') showToast(`⚠️ 雲端備份提示：${err.message}`);
+        return false;
+      }
+    }
+
+    // 自動掛鉤原有的儲存函式，每次修改儲存時自動同步到 Google Drive
+    const _origSave = window.saveToStorage || window.saveCourses;
+    if (typeof _origSave === 'function') {
+      window.saveToStorage = function(...args) {
+        const r = _origSave.apply(this, args);
+        if (googleIdToken) saveUserToGoogleDrive(getCurrentUid(), courseList);
+        return r;
+      };
+    }
+
+    function initGoogleSignInButton() {
+      const timer = setInterval(() => {
+        if (window.google && window.google.accounts && window.google.accounts.id) {
+          clearInterval(timer);
+          window.google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: window.handleGoogleCredentialResponse
+          });
+          const btnContainer = document.getElementById('googleSignInBtnContainer');
+          if (btnContainer) {
+            const isMobile = window.innerWidth < 640;
+            window.google.accounts.id.renderButton(btnContainer, {
+              type: isMobile ? 'icon' : 'standard',
+              theme: 'filled_black',
+              size: 'small',
+              shape: 'pill',
+              text: 'signin',
+              locale: 'zh_TW'
+            });
+          }
+          // 若本機已有未過期的登入狀態，自動恢復
+          if (googleIdToken) {
+            const payload = parseJwtPayload(googleIdToken);
+            if (payload && payload.exp && payload.exp * 1000 > Date.now()) {
+              updateGoogleAuthUI();
+              const isOwner = (googleUserEmail === OWNER_GMAIL.toLowerCase());
+              const targetUid = isOwner ? 'surihua' : googleUserEmail.split('@')[0].replace(/[^a-z0-9_]/g, '');
+              unlockEditModeByGoogle(targetUid);
+            } else {
+              googleIdToken = '';
+              safeStorage.removeItem('cuboulder_google_id_token');
+              updateGoogleAuthUI();
+            }
+          }
+        }
+      }, 300);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initGoogleSignInButton();
+      setTimeout(() => {
+        loadUserFromGoogleDrive(getCurrentUid());
+      }, 500);
+    });
+
   </script>
 </body>
 </html>
