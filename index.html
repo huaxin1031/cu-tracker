@@ -61,9 +61,17 @@
         <button type="button" id="nav-profile" onclick="switchPage('profile')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap"><i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1.5"></i> 帳號安全</button>
       </nav>
       
-      <!-- 右側工具按鈕 -->
+      <!-- 右側工具按鈕 (含 Google 登入與 Google Drive 同步狀態) -->
       <div class="flex items-center space-x-1 sm:space-x-2 shrink-0">
-        <button type="button" id="mode-toggle-btn" onclick="toggleEditMode()" class="inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0" title="點擊切換為編輯模式（需驗證密碼）">
+        <!-- 🌟 新增：Google 登入按鈕與已登入徽章 -->
+        <div id="googleAuthArea" class="flex items-center shrink-0">
+          <div id="googleSignInBtnContainer" class="flex items-center overflow-hidden rounded-full max-w-[36px] sm:max-w-none" title="使用 Google 帳號登入並同步雲端"></div>
+          <button type="button" id="googleUserBadge" onclick="handleGoogleSignOut()" class="hidden inline-flex items-center px-2 py-1.5 rounded-xl text-[11px] font-bold border border-emerald-500/40 bg-emerald-950/70 text-emerald-300 hover:bg-emerald-900/80 transition shrink-0" title="已連線 Google Drive，點擊可登出">
+            <span id="googleUserText" class="truncate max-w-[85px] sm:max-w-[140px]">🟢 Google</span>
+          </button>
+        </div>
+
+        <button type="button" id="mode-toggle-btn" onclick="toggleEditMode()" class="inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0" title="點擊切換為編輯模式（需驗證密碼或 Google 登入）">
           <i data-lucide="lock" class="w-3.5 h-3.5 sm:mr-1 text-slate-400"></i><span id="mode-text" class="hidden sm:inline whitespace-nowrap">瀏覽模式 (唯讀)</span>
         </button>
 
@@ -84,6 +92,9 @@
               <button type="button" onclick="openNewUserModal()" class="w-full text-left px-3 py-2 text-xs text-[#CFB87C] hover:bg-slate-800 font-semibold flex items-center">
                 <i data-lucide="user-plus" class="w-3.5 h-3.5 mr-2"></i> + 建立新 ID / 登入既有 ID
               </button>
+              <button type="button" onclick="manualForceGoogleSync()" class="w-full text-left px-3 py-2 text-xs text-emerald-400 hover:bg-slate-800 font-semibold flex items-center border-t border-slate-800/60">
+                <i data-lucide="cloud" class="w-3.5 h-3.5 mr-2"></i> ☁️ 立即備份至 Google Drive
+              </button>
             </div>
           </div>
         </div>
@@ -92,6 +103,7 @@
         <button type="button" id="btn-reset-data" onclick="resetData()" title="重設資料" class="hidden p-1.5 sm:p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-rose-400 shrink-0"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
       </div>
     </div>
+
 
     <!-- 手機版 4 分頁切換器 -->
     <div class="flex sm:hidden justify-center mt-2 pt-2 border-t border-slate-800/70">
