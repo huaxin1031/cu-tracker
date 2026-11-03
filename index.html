@@ -38,7 +38,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen">
 
-   <!-- Header -->
+  <!-- Header -->
   <header class="sticky top-0 z-40 glass-card border-b border-slate-800/80 px-3 py-2.5 sm:px-8 sm:py-3 shadow-md">
     <div class="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
       
@@ -128,6 +128,16 @@
       </div>
 
     </div>
+
+    <!-- 🌟 導覽分頁列（移除 sm:hidden，讓手機版與電腦網頁版都清楚顯示「主頁 / 📋 表格 / 🗺️ 規劃 / 🔒 帳號」！） -->
+    <div class="max-w-7xl mx-auto mt-2.5 pt-2 border-t border-slate-800/80 flex items-center gap-1.5">
+      <button type="button" id="mob-nav-main" onclick="switchMainView('main')" class="flex-1 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-[#CFB87C] text-slate-950 text-center transition">主頁</button>
+      <button type="button" id="mob-nav-batch" onclick="switchMainView('batch')" class="flex-1 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-400 hover:text-slate-200 text-center transition">📋 表格</button>
+      <button type="button" id="mob-nav-planner" onclick="switchMainView('planner')" class="flex-1 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-400 hover:text-slate-200 text-center transition">🗺️ 規劃</button>
+      <button type="button" id="mob-nav-security" onclick="switchMainView('security')" class="flex-1 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-400 hover:text-slate-200 text-center transition">🔒 帳號</button>
+    </div>
+  </header>
+
 
 
 
