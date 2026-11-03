@@ -61,76 +61,79 @@
         <button type="button" id="nav-profile" onclick="switchPage('profile')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap"><i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1.5"></i> 帳號安全</button>
       </nav>
       
-      <!-- 右側工具按鈕 (手機防遮擋 + 預設顯示 @test 隱藏 surihua) -->
-      <div class="flex items-center space-x-1 sm:space-x-2 shrink-0 ml-auto">
-        <!-- 🌟 Google 帳號綁定按鈕 (手機版僅顯示小巧 G / 🟢 圖示，不擠壓標題) -->
+      <!-- 右側工具按鈕 (手機版自動換到第二行，完整顯示 Google 帳號) -->
+      <div class="flex items-center justify-between sm:justify-end gap-1.5 sm:gap-2 w-full sm:w-auto pt-1.5 sm:pt-0 border-t border-slate-800/70 sm:border-t-0 shrink-0 ml-auto">
+        <!-- 🌟 Google 帳號綁定按鈕（手機與電腦皆清楚顯示 Google 帳號） -->
         <div id="googleAuthArea" class="flex items-center shrink-0">
-          <button type="button" id="googleConnectBtn" onclick="connectPersonalGoogleDrive()" class="inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-900 hover:bg-slate-100 border border-slate-300 shadow-sm transition shrink-0" title="綁定 Google 帳號並存入個人 Google Drive">
-            <svg class="w-3.5 h-3.5 sm:mr-1.5 shrink-0" viewBox="0 0 24 24">
+          <button type="button" id="googleConnectBtn" onclick="connectPersonalGoogleDrive()" class="inline-flex items-center justify-center px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-900 hover:bg-slate-100 border border-slate-300 shadow-sm transition shrink-0" title="綁定 Google 帳號並存入個人 Google Drive">
+            <svg class="w-3.5 h-3.5 mr-1.5 shrink-0" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
               <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/>
               <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/>
               <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/>
             </svg>
-            <span class="hidden sm:inline whitespace-nowrap font-bold">Google 雲端</span>
+            <span class="whitespace-nowrap font-bold">Google 雲端</span>
           </button>
 
-          <button type="button" id="googleUserBadge" onclick="toggleUserDropdown()" class="hidden inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-[11px] font-bold border border-emerald-500/40 bg-emerald-950/80 text-emerald-300 hover:bg-emerald-900/80 transition shrink-0" title="已綁定個人 Google Drive，點擊查看雲端檔案位置">
-            <span class="inline sm:hidden text-xs leading-none">🟢</span>
-            <span id="googleUserText" class="hidden sm:inline truncate max-w-[130px]">🟢 已連雲端</span>
+          <button type="button" id="googleUserBadge" onclick="toggleUserDropdown()" class="hidden inline-flex items-center justify-center px-2.5 py-1.5 rounded-xl text-[11px] font-bold border border-emerald-500/40 bg-emerald-950/90 text-emerald-300 hover:bg-emerald-900/80 transition shrink-0" title="已綁定個人 Google Drive，點擊查看雲端檔案位置">
+            <span id="googleUserText" class="truncate max-w-[140px]">🟢 已連雲端</span>
           </button>
         </div>
 
-        <button type="button" id="mode-toggle-btn" onclick="toggleEditMode()" class="inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0" title="點擊切換為編輯模式">
-          <i data-lucide="lock" class="w-3.5 h-3.5 sm:mr-1 text-slate-400"></i><span id="mode-text" class="hidden sm:inline whitespace-nowrap">瀏覽模式 (唯讀)</span>
-        </button>
-
-        <div class="relative shrink-0">
-          <button type="button" onclick="toggleUserDropdown()" class="inline-flex items-center px-2 py-1.5 sm:px-2.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-200 border border-slate-700 hover:border-[#CFB87C] whitespace-nowrap">
-            <i data-lucide="user" class="w-3.5 h-3.5 mr-1 text-[#CFB87C] shrink-0"></i>
-            <span id="current-user-display" class="hidden sm:inline">範例展示 (@test)</span>
-            <span id="current-user-display-mobile" class="inline sm:hidden font-mono text-[11px]">@test</span>
-            <i data-lucide="chevron-down" class="w-3 h-3 ml-0.5 sm:ml-1 text-slate-400 shrink-0"></i>
+        <!-- 右側鎖頭與帳號選單 -->
+        <div class="flex items-center space-x-1.5 shrink-0 ml-auto">
+          <button type="button" id="mode-toggle-btn" onclick="toggleEditMode()" class="inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0" title="點擊切換為編輯模式">
+            <i data-lucide="lock" class="w-3.5 h-3.5 sm:mr-1 text-slate-400"></i><span id="mode-text" class="hidden sm:inline whitespace-nowrap">瀏覽模式 (唯讀)</span>
           </button>
 
-          <!-- 下拉選單：內含雲端狀態確認面板 -->
-          <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-72 glass-card rounded-xl shadow-xl border border-slate-700 py-1.5 z-50">
-            <div class="px-3 py-2 bg-slate-900/90 border-b border-slate-800 text-[11px]">
-              <div class="flex items-center justify-between font-bold text-slate-300 mb-1">
-                <span>☁️ 個人 Google Drive 狀態</span>
-                <span id="drive-sync-badge" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">未連結</span>
-              </div>
-              <div id="drive-sync-detail" class="text-[10px] text-slate-400 leading-relaxed">
-                登入 Google 後，課表將直接存入您個人的 Google Drive（<code class="text-[#CFB87C]">CU_Boulder_Tracker_Backup.json</code>）。
-              </div>
-              <div id="drive-action-links" class="hidden mt-2 pt-1.5 border-t border-slate-800/80 flex items-center justify-between gap-2">
-                <a id="drive-file-link" href="https://drive.google.com/drive/my-drive" target="_blank" rel="noopener" class="text-[11px] text-emerald-400 hover:underline font-semibold flex items-center">
-                  📂 在 Google Drive 查看檔案 ↗
-                </a>
-                <button type="button" onclick="handleGoogleSignOut()" class="text-[10px] text-rose-400 hover:underline">登出</button>
-              </div>
-            </div>
+          <div class="relative shrink-0">
+            <button type="button" onclick="toggleUserDropdown()" class="inline-flex items-center px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-200 border border-slate-700 hover:border-[#CFB87C] whitespace-nowrap">
+              <i data-lucide="user" class="w-3.5 h-3.5 mr-1 text-[#CFB87C] shrink-0"></i>
+              <span id="current-user-display" class="hidden sm:inline">範例展示 (@test)</span>
+              <span id="current-user-display-mobile" class="inline sm:hidden font-mono text-[11px]">@test</span>
+              <i data-lucide="chevron-down" class="w-3 h-3 ml-1 text-slate-400 shrink-0"></i>
+            </button>
 
-            <div class="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase border-b border-slate-800 flex justify-between">
-              <span>切換或綁定 ID</span>
-              <button type="button" onclick="openForgotIdModal()" class="text-[#CFB87C] hover:underline">忘記 ID？</button>
-            </div>
-            <div id="user-list-options" class="max-h-48 overflow-y-auto py-1"></div>
-            <div class="border-t border-slate-800 pt-1">
-              <button type="button" onclick="openNewUserModal()" class="w-full text-left px-3 py-2 text-xs text-[#CFB87C] hover:bg-slate-800 font-semibold flex items-center">
-                <i data-lucide="user-plus" class="w-3.5 h-3.5 mr-2"></i> + 建立新 ID / 登入既有 ID
-              </button>
-              <button type="button" onclick="manualForceGoogleSync()" class="w-full text-left px-3 py-2 text-xs text-emerald-400 hover:bg-slate-800 font-semibold flex items-center border-t border-slate-800/60">
-                <i data-lucide="cloud" class="w-3.5 h-3.5 mr-2"></i> 🔄 立即備份至我的 Google Drive
-              </button>
+            <!-- 下拉選單：內含雲端狀態確認面板 -->
+            <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-72 glass-card rounded-xl shadow-xl border border-slate-700 py-1.5 z-50">
+              <div class="px-3 py-2 bg-slate-900/90 border-b border-slate-800 text-[11px]">
+                <div class="flex items-center justify-between font-bold text-slate-300 mb-1">
+                  <span>☁️ 個人 Google Drive 狀態</span>
+                  <span id="drive-sync-badge" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">未連結</span>
+                </div>
+                <div id="drive-sync-detail" class="text-[10px] text-slate-400 leading-relaxed">
+                  登入 Google 後，課表將直接存入您個人的 Google Drive（<code class="text-[#CFB87C]">CU_Boulder_Tracker_Backup.json</code>）。
+                </div>
+                <div id="drive-action-links" class="hidden mt-2 pt-1.5 border-t border-slate-800/80 flex items-center justify-between gap-2">
+                  <a id="drive-file-link" href="https://drive.google.com/drive/my-drive" target="_blank" rel="noopener" class="text-[11px] text-emerald-400 hover:underline font-semibold flex items-center">
+                    📂 在 Google Drive 查看檔案 ↗
+                  </a>
+                  <button type="button" onclick="handleGoogleSignOut()" class="text-[10px] text-rose-400 hover:underline">登出</button>
+                </div>
+              </div>
+
+              <div class="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase border-b border-slate-800 flex justify-between">
+                <span>切換或綁定 ID</span>
+                <button type="button" onclick="openForgotIdModal()" class="text-[#CFB87C] hover:underline">忘記 ID？</button>
+              </div>
+              <div id="user-list-options" class="max-h-48 overflow-y-auto py-1"></div>
+              <div class="border-t border-slate-800 pt-1">
+                <button type="button" onclick="openNewUserModal()" class="w-full text-left px-3 py-2 text-xs text-[#CFB87C] hover:bg-slate-800 font-semibold flex items-center">
+                  <i data-lucide="user-plus" class="w-3.5 h-3.5 mr-2"></i> + 建立新 ID / 登入既有 ID
+                </button>
+                <button type="button" onclick="manualForceGoogleSync()" class="w-full text-left px-3 py-2 text-xs text-emerald-400 hover:bg-slate-800 font-semibold flex items-center border-t border-slate-800/60">
+                  <i data-lucide="cloud" class="w-3.5 h-3.5 mr-2"></i> 🔄 立即備份至我的 Google Drive
+                </button>
+              </div>
             </div>
           </div>
-        </div>
 
-        <button type="button" id="btn-add-course" onclick="openAddModal()" class="hidden inline-flex items-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shrink-0"><i data-lucide="plus" class="w-3.5 h-3.5 sm:mr-1"></i><span class="hidden sm:inline whitespace-nowrap">新增課程</span></button>
-        <button type="button" id="btn-reset-data" onclick="resetData()" title="重設資料" class="hidden p-1.5 sm:p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-rose-400 shrink-0"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
+          <button type="button" id="btn-add-course" onclick="openAddModal()" class="hidden inline-flex items-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-[#CFB87C] text-slate-950 hover:bg-[#dfcd9f] shrink-0"><i data-lucide="plus" class="w-3.5 h-3.5 sm:mr-1"></i><span class="hidden sm:inline whitespace-nowrap">新增課程</span></button>
+          <button type="button" id="btn-reset-data" onclick="resetData()" title="重設資料" class="hidden p-1.5 sm:p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-rose-400 shrink-0"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
+        </div>
       </div>
     </div>
+
 
 
 
