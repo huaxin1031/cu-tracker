@@ -61,17 +61,31 @@
         <button type="button" id="nav-profile" onclick="switchPage('profile')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap"><i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1.5"></i> 帳號安全</button>
       </nav>
       
-      <!-- 右側工具按鈕 (含 Google 登入與 Google Drive 同步狀態) -->
+      <!-- 右側工具按鈕 (含 Google 個人雲端綁定、雲端檔案直達連結、常駐批量表格檢視) -->
       <div class="flex items-center space-x-1 sm:space-x-2 shrink-0">
-        <!-- 🌟 新增：Google 登入按鈕與已登入徽章 -->
+        <!-- 🌟 Google 帳號綁定與個人 Google Drive 狀態 -->
         <div id="googleAuthArea" class="flex items-center shrink-0">
-          <div id="googleSignInBtnContainer" class="flex items-center overflow-hidden rounded-full max-w-[36px] sm:max-w-none" title="使用 Google 帳號登入並同步雲端"></div>
-          <button type="button" id="googleUserBadge" onclick="handleGoogleSignOut()" class="hidden inline-flex items-center px-2 py-1.5 rounded-xl text-[11px] font-bold border border-emerald-500/40 bg-emerald-950/70 text-emerald-300 hover:bg-emerald-900/80 transition shrink-0" title="已連線 Google Drive，點擊可登出">
-            <span id="googleUserText" class="truncate max-w-[85px] sm:max-w-[140px]">🟢 Google</span>
+          <button type="button" id="googleConnectBtn" onclick="connectPersonalGoogleDrive()" class="inline-flex items-center px-2 py-1.5 sm:px-2.5 rounded-xl text-xs font-semibold bg-white text-slate-900 hover:bg-slate-100 border border-slate-300 shadow-sm transition shrink-0" title="綁定 Google 帳號並將資料存入您個人的 Google Drive">
+            <svg class="w-3.5 h-3.5 sm:mr-1.5 shrink-0" viewBox="0 0 24 24">
+              <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
+              <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/>
+              <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/>
+              <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/>
+            </svg>
+            <span class="hidden sm:inline whitespace-nowrap font-bold">Google 登入/雲端</span>
+          </button>
+
+          <button type="button" id="googleUserBadge" onclick="toggleUserDropdown()" class="hidden inline-flex items-center px-2 py-1.5 rounded-xl text-[11px] font-bold border border-emerald-500/40 bg-emerald-950/70 text-emerald-300 hover:bg-emerald-900/80 transition shrink-0" title="已綁定個人 Google Drive，點擊查看雲端檔案位置">
+            <span id="googleUserText" class="truncate max-w-[90px] sm:max-w-[150px]">🟢 已連雲端</span>
           </button>
         </div>
 
-        <button type="button" id="mode-toggle-btn" onclick="toggleEditMode()" class="inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0" title="點擊切換為編輯模式（需驗證密碼或 Google 登入）">
+        <!-- 📋 常駐顯示：批量表格按鈕（唯讀可檢視、解鎖可編輯） -->
+        <button type="button" id="btn-batch-view" onclick="openBatchTableReadable()" class="inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-[#CFB87C] border border-slate-700 hover:border-[#CFB87C] shrink-0" title="批量表格檢視 / 編輯">
+          <i data-lucide="table" class="w-3.5 h-3.5 sm:mr-1"></i><span class="hidden sm:inline whitespace-nowrap">批量表格</span>
+        </button>
+
+        <button type="button" id="mode-toggle-btn" onclick="toggleEditMode()" class="inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0" title="點擊切換為編輯模式">
           <i data-lucide="lock" class="w-3.5 h-3.5 sm:mr-1 text-slate-400"></i><span id="mode-text" class="hidden sm:inline whitespace-nowrap">瀏覽模式 (唯讀)</span>
         </button>
 
@@ -82,9 +96,28 @@
             <span id="current-user-display-mobile" class="inline sm:hidden font-mono text-[11px]">@surihua</span>
             <i data-lucide="chevron-down" class="w-3 h-3 ml-0.5 sm:ml-1 text-slate-400 shrink-0"></i>
           </button>
-          <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-64 glass-card rounded-xl shadow-xl border border-slate-700 py-1 z-50">
+
+          <!-- 下拉選單：內含雲端狀態確認面板 -->
+          <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-72 glass-card rounded-xl shadow-xl border border-slate-700 py-1.5 z-50">
+            <!-- 🌟 雲端備份位置與狀態驗證面板 -->
+            <div class="px-3 py-2 bg-slate-900/90 border-b border-slate-800 text-[11px]">
+              <div class="flex items-center justify-between font-bold text-slate-300 mb-1">
+                <span>☁️ 個人 Google Drive 狀態</span>
+                <span id="drive-sync-badge" class="text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400">未連結</span>
+              </div>
+              <div id="drive-sync-detail" class="text-[10px] text-slate-400 leading-relaxed">
+                登入 Google 後，課表將直接存入您個人的 Google Drive（<code class="text-[#CFB87C]">CU_Boulder_Tracker_Backup.json</code>）。
+              </div>
+              <div id="drive-action-links" class="hidden mt-2 pt-1.5 border-t border-slate-800/80 flex items-center justify-between gap-2">
+                <a id="drive-file-link" href="https://drive.google.com/drive/my-drive" target="_blank" rel="noopener" class="text-[11px] text-emerald-400 hover:underline font-semibold flex items-center">
+                  📂 在 Google Drive 查看檔案 ↗
+                </a>
+                <button type="button" onclick="handleGoogleSignOut()" class="text-[10px] text-rose-400 hover:underline">登出</button>
+              </div>
+            </div>
+
             <div class="px-3 py-1.5 text-[10px] font-bold text-slate-400 uppercase border-b border-slate-800 flex justify-between">
-              <span>臨時切換或登入 ID</span>
+              <span>切換或綁定 ID</span>
               <button type="button" onclick="openForgotIdModal()" class="text-[#CFB87C] hover:underline">忘記 ID？</button>
             </div>
             <div id="user-list-options" class="max-h-48 overflow-y-auto py-1"></div>
@@ -93,7 +126,7 @@
                 <i data-lucide="user-plus" class="w-3.5 h-3.5 mr-2"></i> + 建立新 ID / 登入既有 ID
               </button>
               <button type="button" onclick="manualForceGoogleSync()" class="w-full text-left px-3 py-2 text-xs text-emerald-400 hover:bg-slate-800 font-semibold flex items-center border-t border-slate-800/60">
-                <i data-lucide="cloud" class="w-3.5 h-3.5 mr-2"></i> ☁️ 立即備份至 Google Drive
+                <i data-lucide="cloud" class="w-3.5 h-3.5 mr-2"></i> 🔄 立即備份至我的 Google Drive
               </button>
             </div>
           </div>
@@ -103,6 +136,7 @@
         <button type="button" id="btn-reset-data" onclick="resetData()" title="重設資料" class="hidden p-1.5 sm:p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-rose-400 shrink-0"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
       </div>
     </div>
+
 
 
     <!-- 手機版 4 分頁切換器 -->
@@ -3037,18 +3071,21 @@
     }
 
     initUserSystem();
-        // =========================================================================
-    // 🌟 Google 登入 (GIS) + Google Drive (Apps Script) 雲端同步引擎 (對齊版)
     // =========================================================================
+    // 功能：1. 每人存自己的 Google Drive  2. 顯示雲端檔案直達連結  3. 唯讀可看批量表格
+    // =========================================================================
+  
     const GOOGLE_CLIENT_ID = '221633388740-90qq8uabufith29n0aiusvorvhnevote.apps.googleusercontent.com';
-    const GOOGLE_DRIVE_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwzujJpnEvgdi3R6Zoj08A1UmfpdBXso6SM_cqkOl6Cv7ORsEsl5APz36ilmUFcGYLP/exec';
     const OWNER_GMAIL = 'h5u9a95@gmail.com';
+    const PERSONAL_BACKUP_FILENAME = 'CU_Boulder_Tracker_Backup.json';
 
-    let googleIdToken = safeStorage.getItem('cuboulder_google_id_token') || '';
-    let googleUserEmail = safeStorage.getItem('cuboulder_google_email') || '';
-    let googleUserName = safeStorage.getItem('cuboulder_google_name') || '';
+    let googleAccessToken = localStorage.getItem('cuboulder_g_access_token') || '';
+    let googleTokenExpiry = Number(localStorage.getItem('cuboulder_g_token_expiry') || 0);
+    let googleUserEmail = localStorage.getItem('cuboulder_google_email') || '';
+    let googleUserName = localStorage.getItem('cuboulder_google_name') || '';
+    let personalDriveFileId = localStorage.getItem('cuboulder_drive_file_id') || '';
+    let googleTokenClient = null;
 
-    // 自動取得目前畫面上的帳號 ID (相容 activeUserId 或 currentUser)
     function getCurrentUid() {
       if (typeof activeUserId !== 'undefined' && activeUserId) return activeUserId;
       if (typeof currentUser !== 'undefined' && currentUser) return currentUser;
@@ -3057,240 +3094,256 @@
       return 'surihua';
     }
 
-    function parseJwtPayload(token) {
-      try {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(
-          atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')
-        );
-        return JSON.parse(jsonPayload);
-      } catch (e) {
-        return null;
-      }
-    }
-
-    function updateGoogleAuthUI() {
-      const btnContainer = document.getElementById('googleSignInBtnContainer');
+    function updateDriveStatusUI(state, message, fileId = personalDriveFileId) {
+      const connectBtn = document.getElementById('googleConnectBtn');
       const userBadge = document.getElementById('googleUserBadge');
       const userText = document.getElementById('googleUserText');
+      const syncBadge = document.getElementById('drive-sync-badge');
+      const syncDetail = document.getElementById('drive-sync-detail');
+      const actionLinks = document.getElementById('drive-action-links');
+      const fileLink = document.getElementById('drive-file-link');
 
-      if (googleIdToken && googleUserEmail) {
-        if (btnContainer) btnContainer.classList.add('hidden');
+      const isTokenValid = googleAccessToken && Date.now() < googleTokenExpiry && googleUserEmail;
+
+      if (isTokenValid) {
+        if (connectBtn) connectBtn.classList.add('hidden');
         if (userBadge) userBadge.classList.remove('hidden');
-        if (userText) {
-          const shortEmail = googleUserEmail.split('@')[0];
-          userText.textContent = `🟢 ${shortEmail}`;
-        }
+        if (userText) userText.textContent = `🟢 ${googleUserEmail.split('@')[0]}`;
+        if (actionLinks) actionLinks.classList.remove('hidden');
       } else {
-        if (btnContainer) btnContainer.classList.remove('hidden');
+        if (connectBtn) connectBtn.classList.remove('hidden');
         if (userBadge) userBadge.classList.add('hidden');
+        if (actionLinks) actionLinks.classList.add('hidden');
       }
+
+      if (syncBadge) {
+        if (state === 'synced') {
+          syncBadge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40';
+          syncBadge.textContent = '✅ 已存雲端';
+        } else if (state === 'syncing') {
+          syncBadge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-500/40';
+          syncBadge.textContent = '⏳ 同步中...';
+        } else if (state === 'error') {
+          syncBadge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-500/40';
+          syncBadge.textContent = '❌ 同步失敗';
+        } else {
+          syncBadge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-slate-800 text-slate-400';
+          syncBadge.textContent = '未連結';
+        }
+      }
+      if (syncDetail && message) syncDetail.innerHTML = message;
+      if (fileLink && fileId) fileLink.href = `https://drive.google.com/file/d/${fileId}/view`;
     }
 
-    // 自動切換為「已解鎖編輯模式」
-    function unlockEditModeByGoogle(targetUid) {
-      if (typeof unlockedUsersSession !== 'undefined') unlockedUsersSession[targetUid] = true;
-      if (typeof isEditMode !== 'undefined') isEditMode = true;
-      if (typeof updateEditLockUI === 'function') updateEditLockUI();
-      if (typeof updateModeUI === 'function') updateModeUI();
-
-      // 直接更新按鈕外觀以防函式名稱不同
-      const modeText = document.getElementById('mode-text');
-      const addBtn = document.getElementById('btn-add-course');
-      const resetBtn = document.getElementById('btn-reset-data');
-      if (modeText) modeText.textContent = '編輯模式 (已解鎖)';
-      if (addBtn) addBtn.classList.remove('hidden');
-      if (resetBtn) resetBtn.classList.remove('hidden');
-    }
-
-    // 當使用者點擊「使用 Google 登入」成功後的回呼
-    window.handleGoogleCredentialResponse = async function(response) {
-      if (!response || !response.credential) return;
-      const payload = parseJwtPayload(response.credential);
-      if (!payload || !payload.email) return;
-
-      googleIdToken = response.credential;
-      googleUserEmail = payload.email.toLowerCase();
-      googleUserName = payload.name || googleUserEmail.split('@')[0];
-
-      safeStorage.setItem('cuboulder_google_id_token', googleIdToken);
-      safeStorage.setItem('cuboulder_google_email', googleUserEmail);
-      safeStorage.setItem('cuboulder_google_name', googleUserName);
-
-      updateGoogleAuthUI();
-
-      const isOwner = (googleUserEmail === OWNER_GMAIL.toLowerCase());
-      const emailPrefix = googleUserEmail.split('@')[0].replace(/[^a-z0-9_]/g, '');
-      const targetUid = isOwner ? 'surihua' : emailPrefix;
-
-      // 若系統有 switchUser 或 loadUserData 則切換過去
-      if (typeof usersList !== 'undefined' && Array.isArray(usersList) && !usersList.includes(targetUid)) {
-        usersList.push(targetUid);
-        safeStorage.setItem('cuboulder_users_list', JSON.stringify(usersList));
-      }
-      if (typeof activeUserId !== 'undefined') activeUserId = targetUid;
-      if (typeof currentUser !== 'undefined') currentUser = targetUid;
-
-      const deskDisp = document.getElementById('current-user-display');
-      const mobDisp = document.getElementById('current-user-display-mobile');
-      if (deskDisp) deskDisp.textContent = isOwner ? 'Suri Hua (@surihua)' : `${googleUserName} (@${targetUid})`;
-      if (mobDisp) mobDisp.textContent = `@${targetUid}`;
-
-      unlockEditModeByGoogle(targetUid);
-      if (typeof renderCourses === 'function') renderCourses();
-      if (typeof window.updateDashboardAndRender === 'function') window.updateDashboardAndRender();
-
-      if (typeof showToast === 'function') {
-        showToast(`🎉 歡迎 ${googleUserName}！已解鎖 @${targetUid} 並連接 Google Drive`);
-      }
-
-      // 先嘗試從 Google Drive 讀取；若雲端尚無資料，自動把目前課表推上 Google Drive 建立初始備份！
-      const loaded = await loadUserFromGoogleDrive(targetUid);
-      if (!loaded) {
-        await saveUserToGoogleDrive(targetUid, courseList);
-      }
-    };
-
-    window.handleGoogleSignOut = function() {
-      if (!confirm(`確定要登出 Google 帳號 (${googleUserEmail}) 嗎？`)) return;
-      googleIdToken = '';
-      googleUserEmail = '';
-      googleUserName = '';
-      safeStorage.removeItem('cuboulder_google_id_token');
-      safeStorage.removeItem('cuboulder_google_email');
-      safeStorage.removeItem('cuboulder_google_name');
-      if (typeof unlockedUsersSession !== 'undefined') unlockedUsersSession = {};
-      if (typeof isEditMode !== 'undefined') isEditMode = false;
-      updateGoogleAuthUI();
-      if (typeof updateEditLockUI === 'function') updateEditLockUI();
-      if (typeof updateModeUI === 'function') updateModeUI();
-      if (typeof showToast === 'function') showToast('🔒 已登出 Google 帳號');
-    };
-
-    // 手動點擊下拉選單「立即備份至 Google Drive」
-    window.manualForceGoogleSync = async function() {
-      const dd = document.getElementById('user-dropdown');
-      if (dd) dd.classList.add('hidden');
-      if (!googleIdToken) {
-        alert('請先點擊上方「G (Google)」按鈕登入您的 Google 帳號，即可啟用 Google Drive 雲端備份！');
+    // 點擊「Google 登入/雲端」按鈕
+    window.connectPersonalGoogleDrive = function() {
+      if (!window.google || !window.google.accounts || !window.google.accounts.oauth2) {
+        alert('Google 登入元件載入中，請確認 <head> 已加入 gsi/client 腳本！');
         return;
       }
-      const ok = await saveUserToGoogleDrive(getCurrentUid(), courseList);
-      if (ok && typeof showToast === 'function') {
-        showToast('✅ 已成功備份至 Google Drive (cu_tracker_multiuser_db.json)！');
+      if (!googleTokenClient) {
+        googleTokenClient = window.google.accounts.oauth2.initTokenClient({
+          client_id: GOOGLE_CLIENT_ID,
+          scope: 'https://www.googleapis.com/auth/drive.file email profile',
+          callback: handleOAuthTokenResponse
+        });
       }
+      googleTokenClient.requestAccessToken({ prompt: '' });
     };
 
-    async function loadUserFromGoogleDrive(uid = getCurrentUid()) {
-      try {
-        if (typeof setSyncStatus === 'function') setSyncStatus('☁️ 讀取 Google Drive...', true);
-        const res = await fetch(`${GOOGLE_DRIVE_WEBAPP_URL}?uid=${encodeURIComponent(uid)}&t=${Date.now()}`, {
-          method: 'GET',
-          cache: 'no-store'
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
+    async function handleOAuthTokenResponse(tokenResponse) {
+      if (!tokenResponse || !tokenResponse.access_token) return;
 
-        if (data && data.ok && data.record && Array.isArray(data.record.courses) && data.record.courses.length > 0) {
-          courseList = data.record.courses;
-          safeStorage.setItem(`cuboulder_courses_${uid}`, JSON.stringify(courseList));
-          if (typeof window.updateDashboardAndRender === 'function') window.updateDashboardAndRender();
-          else if (typeof renderCourses === 'function') renderCourses();
-          if (typeof setSyncStatus === 'function') setSyncStatus('☁️ Google Drive 已同步');
+      googleAccessToken = tokenResponse.access_token;
+      googleTokenExpiry = Date.now() + (Number(tokenResponse.expires_in || 3599) - 60) * 1000;
+      localStorage.setItem('cuboulder_g_access_token', googleAccessToken);
+      localStorage.setItem('cuboulder_g_token_expiry', String(googleTokenExpiry));
+
+      try {
+        updateDriveStatusUI('syncing', '正在驗證 Google 帳號身分...');
+        const userRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: { Authorization: `Bearer ${googleAccessToken}` }
+        });
+        const userInfo = await userRes.json();
+        googleUserEmail = (userInfo.email || '').toLowerCase();
+        googleUserName = userInfo.name || googleUserEmail.split('@')[0];
+
+        localStorage.setItem('cuboulder_google_email', googleUserEmail);
+        localStorage.setItem('cuboulder_google_name', googleUserName);
+
+        const isOwner = (googleUserEmail === OWNER_GMAIL.toLowerCase());
+        const currentUid = getCurrentUid();
+        const emailPrefix = googleUserEmail.split('@')[0].replace(/[^a-z0-9_]/g, '');
+
+        let targetUid = isOwner
+          ? ((currentUid === 'test' || currentUid === 'surihua') ? 'surihua' : currentUid)
+          : ((currentUid === 'surihua' || currentUid === 'test') ? emailPrefix : currentUid);
+
+        if (typeof activeUserId !== 'undefined') activeUserId = targetUid;
+        if (typeof currentUser !== 'undefined') currentUser = targetUid;
+
+        const deskDisp = document.getElementById('current-user-display');
+        const mobDisp = document.getElementById('current-user-display-mobile');
+        if (deskDisp) deskDisp.textContent = isOwner ? 'Suri Hua (@surihua)' : `${googleUserName} (@${targetUid})`;
+        if (mobDisp) mobDisp.textContent = `@${targetUid}`;
+
+        if (typeof isEditMode !== 'undefined') isEditMode = true;
+        const modeText = document.getElementById('mode-text');
+        const addBtn = document.getElementById('btn-add-course');
+        const resetBtn = document.getElementById('btn-reset-data');
+        if (modeText) modeText.textContent = '編輯模式 (已解鎖)';
+        if (addBtn) addBtn.classList.remove('hidden');
+        if (resetBtn) resetBtn.classList.remove('hidden');
+
+        const loaded = await loadFromPersonalGoogleDrive(targetUid);
+        if (!loaded) {
+          await saveToPersonalGoogleDrive(targetUid, courseList);
+        }
+        if (typeof renderCourses === 'function') renderCourses();
+      } catch (err) {
+        updateDriveStatusUI('error', `驗證失敗：${err.message}`);
+      }
+    }
+
+    async function loadFromPersonalGoogleDrive(uid = getCurrentUid()) {
+      if (!googleAccessToken || Date.now() >= googleTokenExpiry) return false;
+      try {
+        const q = encodeURIComponent(`name = '${PERSONAL_BACKUP_FILENAME}' and trashed = false`);
+        const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name,modifiedTime)&spaces=drive`, {
+          headers: { Authorization: `Bearer ${googleAccessToken}` }
+        });
+        if (!searchRes.ok) throw new Error(`HTTP ${searchRes.status}`);
+        const searchData = await searchRes.json();
+        if (!searchData.files || searchData.files.length === 0) return false;
+
+        const fileMeta = searchData.files[0];
+        personalDriveFileId = fileMeta.id;
+        localStorage.setItem('cuboulder_drive_file_id', personalDriveFileId);
+
+        const fileRes = await fetch(`https://www.googleapis.com/drive/v3/files/${personalDriveFileId}?alt=media`, {
+          headers: { Authorization: `Bearer ${googleAccessToken}` }
+        });
+        const content = await fileRes.json();
+        const userCourses = (content.accounts && content.accounts[uid] && content.accounts[uid].courses)
+          ? content.accounts[uid].courses
+          : (Array.isArray(content.courses) ? content.courses : null);
+
+        if (userCourses && userCourses.length > 0) {
+          courseList = userCourses;
+          localStorage.setItem(`cuboulder_courses_${uid}`, JSON.stringify(courseList));
+          if (typeof renderCourses === 'function') renderCourses();
+          const timeStr = new Date(fileMeta.modifiedTime || Date.now()).toLocaleTimeString('zh-TW', { hour12: false });
+          updateDriveStatusUI(
+            'synced',
+            `✅ <b>已同步 (${timeStr})</b><br>ID：<b class="text-white">@${uid}</b> ➔ <span class="text-emerald-300">${googleUserEmail}</span><br>位置：我的雲端硬碟 / <code class="text-[#CFB87C]">${PERSONAL_BACKUP_FILENAME}</code>`,
+            personalDriveFileId
+          );
           return true;
         }
         return false;
       } catch (err) {
-        console.warn('Google Drive 讀取失敗:', err);
+        updateDriveStatusUI('error', `讀取失敗：請確認已啟用 Google Drive API`);
         return false;
       }
     }
 
-    async function saveUserToGoogleDrive(uid = getCurrentUid(), coursesToSave = courseList) {
-      if (!googleIdToken) return false;
+    async function saveToPersonalGoogleDrive(uid = getCurrentUid(), coursesToSave = courseList) {
+      if (!googleAccessToken || Date.now() >= googleTokenExpiry) return false;
       try {
-        if (typeof setSyncStatus === 'function') setSyncStatus('☁️ 備份至 Google Drive...', true);
-        const res = await fetch(GOOGLE_DRIVE_WEBAPP_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({
-            uid: uid,
-            idToken: googleIdToken,
-            courses: coursesToSave
-          })
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.json();
-        if (!data || !data.ok) throw new Error(data?.error || '寫入失敗');
-
-        if (data.uid === 'surihua') {
-          safeStorage.setItem('cuboulder_courses_surihua', JSON.stringify(coursesToSave));
-          safeStorage.setItem('cuboulder_courses_test', JSON.stringify(coursesToSave));
+        updateDriveStatusUI('syncing', '☁️ 正在寫入您的個人 Google Drive...');
+        if (!personalDriveFileId) {
+          const q = encodeURIComponent(`name = '${PERSONAL_BACKUP_FILENAME}' and trashed = false`);
+          const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id)&spaces=drive`, {
+            headers: { Authorization: `Bearer ${googleAccessToken}` }
+          });
+          const searchData = await searchRes.json();
+          if (searchData.files && searchData.files.length > 0) {
+            personalDriveFileId = searchData.files[0].id;
+          }
         }
-        if (typeof setSyncStatus === 'function') setSyncStatus('☁️ Google Drive 已備份');
+
+        const nowIso = new Date().toISOString();
+        const payloadObj = {
+          app: 'CU Boulder Course Tracker',
+          ownerEmail: googleUserEmail,
+          boundUid: uid,
+          updatedAt: nowIso,
+          courses: coursesToSave,
+          accounts: { [uid]: { uid, ownerEmail: googleUserEmail, updatedAt: nowIso, courses: coursesToSave } }
+        };
+
+        const boundary = '-------cu_tracker_drive_boundary';
+        const multipartBody =
+          `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n` +
+          `${JSON.stringify({ name: PERSONAL_BACKUP_FILENAME, mimeType: 'application/json' })}\r\n` +
+          `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n` +
+          `${JSON.stringify(payloadObj, null, 2)}\r\n--${boundary}--`;
+
+        const uploadUrl = personalDriveFileId
+          ? `https://www.googleapis.com/upload/drive/v3/files/${personalDriveFileId}?uploadType=multipart&fields=id,name,modifiedTime`
+          : `https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,modifiedTime`;
+
+        const res = await fetch(uploadUrl, {
+          method: personalDriveFileId ? 'PATCH' : 'POST',
+          headers: {
+            Authorization: `Bearer ${googleAccessToken}`,
+            'Content-Type': `multipart/related; boundary=${boundary}`
+          },
+          body: multipartBody
+        });
+
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const savedMeta = await res.json();
+        personalDriveFileId = savedMeta.id;
+        localStorage.setItem('cuboulder_drive_file_id', personalDriveFileId);
+
+        const timeStr = new Date().toLocaleTimeString('zh-TW', { hour12: false });
+        updateDriveStatusUI(
+          'synced',
+          `✅ <b>備份成功 (${timeStr})</b><br>綁定 ID：<b class="text-white">@${uid}</b><br>檔案：我的雲端硬碟 / <code class="text-[#CFB87C]">${PERSONAL_BACKUP_FILENAME}</code>`,
+          personalDriveFileId
+        );
         return true;
       } catch (err) {
-        console.error('Google Drive 寫入失敗:', err);
-        if (typeof showToast === 'function') showToast(`⚠️ 雲端備份提示：${err.message}`);
+        updateDriveStatusUI('error', `❌ 備份失敗：請確認已啟用 Google Drive API`);
         return false;
       }
     }
 
-    // 自動掛鉤原有的儲存函式，每次修改儲存時自動同步到 Google Drive
-    const _origSave = window.saveToStorage || window.saveCourses;
-    if (typeof _origSave === 'function') {
-      window.saveToStorage = function(...args) {
-        const r = _origSave.apply(this, args);
-        if (googleIdToken) saveUserToGoogleDrive(getCurrentUid(), courseList);
-        return r;
-      };
-    }
+    window.manualForceGoogleSync = async function() {
+      if (!googleAccessToken || Date.now() >= googleTokenExpiry) {
+        window.connectPersonalGoogleDrive();
+        return;
+      }
+      await saveToPersonalGoogleDrive(getCurrentUid(), courseList);
+    };
 
-    function initGoogleSignInButton() {
-      const timer = setInterval(() => {
-        if (window.google && window.google.accounts && window.google.accounts.id) {
-          clearInterval(timer);
-          window.google.accounts.id.initialize({
-            client_id: GOOGLE_CLIENT_ID,
-            callback: window.handleGoogleCredentialResponse
-          });
-          const btnContainer = document.getElementById('googleSignInBtnContainer');
-          if (btnContainer) {
-            const isMobile = window.innerWidth < 640;
-            window.google.accounts.id.renderButton(btnContainer, {
-              type: isMobile ? 'icon' : 'standard',
-              theme: 'filled_black',
-              size: 'small',
-              shape: 'pill',
-              text: 'signin',
-              locale: 'zh_TW'
-            });
-          }
-          // 若本機已有未過期的登入狀態，自動恢復
-          if (googleIdToken) {
-            const payload = parseJwtPayload(googleIdToken);
-            if (payload && payload.exp && payload.exp * 1000 > Date.now()) {
-              updateGoogleAuthUI();
-              const isOwner = (googleUserEmail === OWNER_GMAIL.toLowerCase());
-              const targetUid = isOwner ? 'surihua' : googleUserEmail.split('@')[0].replace(/[^a-z0-9_]/g, '');
-              unlockEditModeByGoogle(targetUid);
-            } else {
-              googleIdToken = '';
-              safeStorage.removeItem('cuboulder_google_id_token');
-              updateGoogleAuthUI();
-            }
-          }
-        }
-      }, 300);
-    }
+    window.handleGoogleSignOut = function() {
+      googleAccessToken = '';
+      googleTokenExpiry = 0;
+      localStorage.removeItem('cuboulder_g_access_token');
+      localStorage.removeItem('cuboulder_g_token_expiry');
+      updateDriveStatusUI('disconnected', '已登出 Google Drive');
+    };
 
-    window.addEventListener('DOMContentLoaded', () => {
-      initGoogleSignInButton();
+    // 唯讀模式也能打開批量表格檢視
+    window.openBatchTableReadable = function() {
+      const unlocked = (typeof isEditMode !== 'undefined' && isEditMode);
+      const prev = typeof isEditMode !== 'undefined' ? isEditMode : false;
+      if (typeof isEditMode !== 'undefined') isEditMode = true;
+
+      if (typeof openBatchModal === 'function') openBatchModal();
+      else if (typeof switchTab === 'function') switchTab('batch');
+
+      if (typeof isEditMode !== 'undefined') isEditMode = prev;
+
       setTimeout(() => {
-        loadUserFromGoogleDrive(getCurrentUid());
-      }, 500);
-    });
+        const modal = document.getElementById('batch-modal') || document.getElementById('batchModal') || document.querySelector('[id*="batch"]');
+        if (!modal) return;
+        modal.querySelectorAll('input, select, textarea').forEach(el => { el.disabled = !unlocked; });
+      }, 60);
+    };
+
 
   </script>
 </body>
