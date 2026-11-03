@@ -3069,9 +3069,9 @@
     initUserSystem();
     // =========================================================================
     // 🌟 v5.5 升級引擎：
-    // 1. 對訪客隱藏 @surihua，未登入時預設顯示 @test 並自動抓取站長最新進度
-    // 2. 每人獨立存自己的 Google Drive (CU_Boulder_Tracker_Backup.json)
-    // 3. 唯讀模式下點擊「📋 表格」分頁可直接檢視完整批量總表
+    // 1. 頂部兩行清晰顯示 Google 帳號 (🟢 h5u9a95)
+    // 2. 成績等第分佈卡片排版優化：第一行「15門」(不折行)、第二行「83%」
+    // 3. 對訪客隱藏 @surihua，且讓 @test 自動同步站長最新課程資料 (19 門完成)
     // =========================================================================
     const GOOGLE_CLIENT_ID = '221633388740-90qq8uabufith29n0aiusvorvhnevote.apps.googleusercontent.com';
     const PUBLIC_SHOWCASE_URL = 'https://script.google.com/macros/s/AKfycbwzujJpnEvgdi3R6Zoj08A1UmfpdBXso6SM_cqkOl6Cv7ORsEsl5APz36ilmUFcGYLP/exec';
@@ -3085,7 +3085,6 @@
     let personalDriveFileId = localStorage.getItem('cuboulder_drive_file_id') || '';
     let googleTokenClient = null;
 
-    // 判斷目前是否為站長本人已登入狀態
     function isOwnerLoggedIn() {
       return Boolean(
         googleAccessToken &&
@@ -3095,54 +3094,81 @@
     }
 
     function getCurrentUid() {
-      if (typeof activeUserId !== 'undefined' && activeUserId) return activeUserId;
-      if (typeof currentUser !== 'undefined' && currentUser) return currentUser;
-      const mobileEl = document.getElementById('current-user-display-mobile');
-      if (mobileEl && mobileEl.textContent) return mobileEl.textContent.replace('@', '').trim().toLowerCase();
-      return isOwnerLoggedIn() ? 'surihua' : 'test';
+      if (isOwnerLoggedIn()) return 'surihua';
+      if (typeof activeUserId !== 'undefined' && activeUserId && activeUserId !== 'surihua') return activeUserId;
+      if (typeof currentUser !== 'undefined' && currentUser && currentUser !== 'surihua') return currentUser;
+      return 'test';
     }
 
-    // 🕵️‍♀️ 隱私保護：若非站長本人登入，將畫面與下拉選單中的 surihua 徹底隱藏並轉為 @test
+    // 🎨 自動美化「成績等第分佈」卡片排版：讓「15門」在同一行，正下方換行顯示「83%」
+    function formatGradeDistributionLayout() {
+      ['A', 'A-', 'B+', 'B', 'B-'].forEach(g => {
+        const countEl = document.getElementById(`grade-count-${g}`);
+        const pctEl = document.getElementById(`grade-pct-${g}`);
+        if (countEl && pctEl) {
+          countEl.classList.add('whitespace-nowrap', 'leading-tight', 'block');
+          pctEl.classList.add('whitespace-nowrap', 'leading-tight', 'block', 'mt-0.5');
+          const parent = countEl.parentElement;
+          if (parent && parent === pctEl.parentElement) {
+            parent.className = 'flex flex-col items-end justify-center text-right shrink-0 ml-1';
+          }
+        }
+      });
+
+      // 備援 DOM 掃描：針對動態生成的成績分佈小卡，將「數字 + 門」與「百分比」排成上下兩行
+      document.querySelectorAll('.grid > div, [id*="grade"] > div').forEach(card => {
+        const txt = (card.textContent || '').replace(/\s+/g, ' ').trim();
+        if (/^(A|A-|B\+|B|B-)\s*\([0-9.]+\)/.test(txt) && txt.includes('門') && txt.includes('%')) {
+          const rightBox = card.lastElementChild;
+          if (rightBox && rightBox.children.length >= 2) {
+            rightBox.classList.remove('flex-row', 'items-baseline', 'space-x-1', 'gap-1');
+            rightBox.classList.add('flex', 'flex-col', 'items-end', 'justify-center', 'text-right', 'shrink-0');
+            Array.from(rightBox.children).forEach(ch => {
+              ch.classList.add('whitespace-nowrap', 'leading-tight', 'block');
+            });
+          }
+        }
+      });
+    }
+
+    // 🕵️‍♀️ 隱私保護與帳號顯示同步
     function enforceVisitorPrivacy() {
       const ownerMode = isOwnerLoggedIn();
-
-      // 1. 若非站長本人，且目前停留在 surihua，強制切為 test
-      if (!ownerMode && getCurrentUid() === 'surihua') {
-        if (typeof activeUserId !== 'undefined') activeUserId = 'test';
-        if (typeof currentUser !== 'undefined') currentUser = 'test';
-        localStorage.setItem('cuboulder_active_user', 'test');
-      }
-
-      // 2. 更新右上角與儀表板上的帳號名稱顯示
-      const uid = getCurrentUid();
       const deskDisp = document.getElementById('current-user-display');
       const mobDisp = document.getElementById('current-user-display-mobile');
-      if (uid === 'test') {
-        if (deskDisp) deskDisp.textContent = '範例展示 (@test)';
-        if (mobDisp) mobDisp.textContent = '@test';
-      } else if (uid === 'surihua' && ownerMode) {
+
+      if (ownerMode) {
+        if (typeof activeUserId !== 'undefined') activeUserId = 'surihua';
+        if (typeof currentUser !== 'undefined') currentUser = 'surihua';
+        localStorage.setItem('cuboulder_active_user', 'surihua');
         if (deskDisp) deskDisp.textContent = 'Suri Hua (@surihua)';
         if (mobDisp) mobDisp.textContent = '@surihua';
-      }
-
-      // 將頁面上所有「顯示：@surihua」在訪客模式下替換為「顯示：@test」
-      if (!ownerMode) {
+      } else {
+        if (typeof activeUserId !== 'undefined' && activeUserId === 'surihua') activeUserId = 'test';
+        if (typeof currentUser !== 'undefined' && currentUser === 'surihua') currentUser = 'test';
+        const uid = getCurrentUid();
+        localStorage.setItem('cuboulder_active_user', uid);
+        if (uid === 'test') {
+          if (deskDisp) deskDisp.textContent = '範例展示 (@test)';
+          if (mobDisp) mobDisp.textContent = '@test';
+        }
+        // 對訪客將頁面上所有 @surihua 替換為 @test
         document.querySelectorAll('span, div, p').forEach(el => {
           if (el.children.length === 0 && el.textContent && el.textContent.includes('@surihua')) {
             el.textContent = el.textContent.replace(/@surihua/g, '@test').replace(/Suri Hua/g, '範例展示');
           }
         });
+        // 隱藏下拉選單中的 surihua
+        const listContainer = document.getElementById('user-list-options');
+        if (listContainer) {
+          Array.from(listContainer.children).forEach(item => {
+            if (item.textContent && item.textContent.toLowerCase().includes('surihua')) {
+              item.classList.add('hidden');
+            }
+          });
+        }
       }
-
-      // 3. 過濾下拉選單 (#user-list-options)，不讓訪客看到 surihua
-      const listContainer = document.getElementById('user-list-options');
-      if (listContainer && !ownerMode) {
-        Array.from(listContainer.children).forEach(item => {
-          if (item.textContent && item.textContent.toLowerCase().includes('surihua')) {
-            item.classList.add('hidden');
-          }
-        });
-      }
+      formatGradeDistributionLayout();
     }
 
     function updateDriveStatusUI(state, message, fileId = personalDriveFileId) {
@@ -3186,7 +3212,6 @@
       if (fileLink && fileId) fileLink.href = `https://drive.google.com/file/d/${fileId}/view`;
     }
 
-    // 點擊「Google 雲端」登入按鈕
     window.connectPersonalGoogleDrive = function() {
       if (!window.google || !window.google.accounts || !window.google.accounts.oauth2) {
         alert('Google 登入元件載入中，請稍候再試！');
@@ -3223,21 +3248,12 @@
         localStorage.setItem('cuboulder_google_name', googleUserName);
 
         const isOwner = (googleUserEmail === OWNER_GMAIL.toLowerCase());
-        const currentUid = getCurrentUid();
         const emailPrefix = googleUserEmail.split('@')[0].replace(/[^a-z0-9_]/g, '');
-
-        let targetUid = isOwner
-          ? 'surihua'
-          : ((currentUid === 'surihua' || currentUid === 'test') ? emailPrefix : currentUid);
+        const targetUid = isOwner ? 'surihua' : emailPrefix;
 
         if (typeof activeUserId !== 'undefined') activeUserId = targetUid;
         if (typeof currentUser !== 'undefined') currentUser = targetUid;
         localStorage.setItem('cuboulder_active_user', targetUid);
-
-        const deskDisp = document.getElementById('current-user-display');
-        const mobDisp = document.getElementById('current-user-display-mobile');
-        if (deskDisp) deskDisp.textContent = isOwner ? 'Suri Hua (@surihua)' : `${googleUserName} (@${targetUid})`;
-        if (mobDisp) mobDisp.textContent = `@${targetUid}`;
 
         if (typeof isEditMode !== 'undefined') isEditMode = true;
         if (typeof unlockedUsersSession !== 'undefined') unlockedUsersSession[targetUid] = true;
@@ -3250,20 +3266,18 @@
 
         const loaded = await loadFromPersonalGoogleDrive(targetUid);
         if (!loaded) {
-          if (!isOwner && currentUid === 'test' && typeof defaultCoursesTemplate !== 'undefined') {
+          if (!isOwner && typeof defaultCoursesTemplate !== 'undefined') {
             courseList = JSON.parse(JSON.stringify(defaultCoursesTemplate));
           }
           await saveToPersonalGoogleDrive(targetUid, courseList);
         }
-        if (typeof window.updateDashboardAndRender === 'function') window.updateDashboardAndRender();
-        else if (typeof renderCourses === 'function') renderCourses();
         enforceVisitorPrivacy();
       } catch (err) {
         updateDriveStatusUI('error', `驗證失敗：${err.message}`);
       }
     }
 
-    // 📥 從個人 Google Drive 讀取備份檔
+    // 📥 從個人 Google Drive 讀取最新課表，若是站長本人則同步更新給 @test
     async function loadFromPersonalGoogleDrive(uid = getCurrentUid()) {
       if (!googleAccessToken || Date.now() >= googleTokenExpiry) return false;
       try {
@@ -3290,9 +3304,18 @@
         if (userCourses && userCourses.length > 0) {
           courseList = userCourses;
           localStorage.setItem(`cuboulder_courses_${uid}`, JSON.stringify(courseList));
-          if (uid === 'surihua') {
+
+          // 🌟 站長本人載入時，自動把最新 19 門進度同步給本機與雲端的 @test！
+          if (isOwnerLoggedIn()) {
+            localStorage.setItem('cuboulder_courses_surihua', JSON.stringify(courseList));
             localStorage.setItem('cuboulder_courses_test', JSON.stringify(courseList));
+            fetch(PUBLIC_SHOWCASE_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+              body: JSON.stringify({ uid: 'test', accessToken: googleAccessToken, courses: courseList })
+            }).catch(() => {});
           }
+
           if (typeof window.updateDashboardAndRender === 'function') window.updateDashboardAndRender();
           else if (typeof renderCourses === 'function') renderCourses();
 
@@ -3312,7 +3335,7 @@
       }
     }
 
-    // 📤 寫入個人 Google Drive（若為站長本人，同時更新 @test 公開展示雲端！）
+    // 📤 寫入個人 Google Drive（站長儲存時同步更新 @test）
     async function saveToPersonalGoogleDrive(uid = getCurrentUid(), coursesToSave = courseList) {
       if (!googleAccessToken || Date.now() >= googleTokenExpiry) return false;
       try {
@@ -3363,7 +3386,6 @@
         personalDriveFileId = savedMeta.id;
         localStorage.setItem('cuboulder_drive_file_id', personalDriveFileId);
 
-        // 🌟 若是站長本人儲存，同步把最新進度存給 @test 供訪客瀏覽！
         if (isOwnerLoggedIn()) {
           localStorage.setItem('cuboulder_courses_surihua', JSON.stringify(coursesToSave));
           localStorage.setItem('cuboulder_courses_test', JSON.stringify(coursesToSave));
@@ -3387,15 +3409,27 @@
       }
     }
 
-    // 🌐 訪客打開 @test 時，自動從公開展示雲端抓取站長最新課表（不露出 surihua ID）
+    // 🌐 訪客打開 @test 時，自動抓取最新課表（優先取 test，若 test 較舊則取最新快照）
     async function loadLatestShowcaseForVisitor() {
-      if (getCurrentUid() !== 'test') return;
+      if (isOwnerLoggedIn()) return;
       try {
-        const res = await fetch(`${PUBLIC_SHOWCASE_URL}?uid=test&t=${Date.now()}`, { cache: 'no-store' });
-        if (!res.ok) return;
-        const data = await res.json();
-        if (data && data.ok && data.record && Array.isArray(data.record.courses) && data.record.courses.length > 0) {
-          courseList = data.record.courses;
+        const [resTest, resOwner] = await Promise.all([
+          fetch(`${PUBLIC_SHOWCASE_URL}?uid=test&t=${Date.now()}`, { cache: 'no-store' }).catch(() => null),
+          fetch(`${PUBLIC_SHOWCASE_URL}?uid=surihua&t=${Date.now()}`, { cache: 'no-store' }).catch(() => null)
+        ]);
+        const dataTest = resTest && resTest.ok ? await resTest.json() : null;
+        const dataOwner = resOwner && resOwner.ok ? await resOwner.json() : null;
+
+        const coursesTest = dataTest?.record?.courses || [];
+        const coursesOwner = dataOwner?.record?.courses || [];
+        const countComplete = arr => arr.filter(c => c.status === 'Complete').length;
+
+        const bestCourses = countComplete(coursesOwner) >= countComplete(coursesTest) && coursesOwner.length > 0
+          ? coursesOwner
+          : coursesTest;
+
+        if (bestCourses && bestCourses.length > 0) {
+          courseList = bestCourses;
           localStorage.setItem('cuboulder_courses_test', JSON.stringify(courseList));
           if (typeof window.updateDashboardAndRender === 'function') window.updateDashboardAndRender();
           else if (typeof renderCourses === 'function') renderCourses();
@@ -3425,11 +3459,22 @@
       localStorage.setItem('cuboulder_active_user', 'test');
       updateDriveStatusUI('disconnected', '已登出 Google Drive，切換回 @test 訪客模式');
       enforceVisitorPrivacy();
+      loadLatestShowcaseForVisitor();
       if (typeof window.updateDashboardAndRender === 'function') window.updateDashboardAndRender();
       else if (typeof renderCourses === 'function') renderCourses();
     };
 
-    // 自動掛鉤原有的儲存函式，每次您儲存時自動同步到 Google Drive 與 @test
+    // 掛鉤畫面更新函式，每次重繪後自動套用「15門 (換行) 83%」排版與隱私規則
+    const _origUpdateDash = window.updateDashboardAndRender;
+    if (typeof _origUpdateDash === 'function') {
+      window.updateDashboardAndRender = function(...args) {
+        const r = _origUpdateDash.apply(this, args);
+        enforceVisitorPrivacy();
+        formatGradeDistributionLayout();
+        return r;
+      };
+    }
+
     const _origSaveFn = window.saveToStorage || window.saveCourses;
     if (typeof _origSaveFn === 'function') {
       window.saveToStorage = function(...args) {
@@ -3441,13 +3486,11 @@
       };
     }
 
-    // 📋 讓唯讀模式下點擊「📋 表格」主分頁也能直接打開檢視（並自動鎖定輸入框）
     const _origSwitchTab = window.switchTab;
     if (typeof _origSwitchTab === 'function') {
       window.switchTab = function(tabName, ...rest) {
         const currentlyUnlocked = (typeof isEditMode !== 'undefined' && isEditMode);
         const prevEdit = typeof isEditMode !== 'undefined' ? isEditMode : false;
-        // 暫時放行讓原本限制編輯模式才能看的「表格 (batch)」分頁能順利切換
         if (typeof isEditMode !== 'undefined') isEditMode = true;
         const result = _origSwitchTab.call(this, tabName, ...rest);
         if (typeof isEditMode !== 'undefined') isEditMode = prevEdit;
@@ -3468,28 +3511,18 @@
       };
     }
 
-    // 每次開關下拉選單時也自動隱藏 surihua
-    const _origToggleDropdown = window.toggleUserDropdown;
-    if (typeof _origToggleDropdown === 'function') {
-      window.toggleUserDropdown = function(...args) {
-        const r = _origToggleDropdown.apply(this, args);
-        enforceVisitorPrivacy();
-        return r;
-      };
-    }
-
     window.addEventListener('DOMContentLoaded', () => {
+      updateDriveStatusUI(isOwnerLoggedIn() ? 'synced' : 'disconnected');
       enforceVisitorPrivacy();
-      if (isOwnerLoggedIn()) {
-        if (typeof activeUserId !== 'undefined') activeUserId = 'surihua';
-        if (typeof currentUser !== 'undefined') currentUser = 'surihua';
-        loadFromPersonalGoogleDrive('surihua');
-      } else {
-        loadLatestShowcaseForVisitor();
-      }
-      setTimeout(enforceVisitorPrivacy, 300);
+      setTimeout(() => {
+        if (isOwnerLoggedIn()) {
+          loadFromPersonalGoogleDrive('surihua');
+        } else {
+          loadLatestShowcaseForVisitor();
+        }
+        formatGradeDistributionLayout();
+      }, 250);
     });
-
 
   </script>
 </body>
