@@ -40,11 +40,12 @@
 
   <!-- Header -->
   <header class="sticky top-0 z-40 glass-card border-b border-slate-800/80 px-3 py-2.5 sm:px-8 sm:py-3 shadow-md">
-    <div class="max-w-7xl mx-auto flex items-center justify-between gap-1.5 sm:gap-2">
+    <div class="max-w-7xl mx-auto flex flex-wrap sm:flex-nowrap items-center justify-between gap-2">
+      <!-- 第一行（手機版上排 / 電腦版左側）：Logo 與標題 -->
       <div class="flex items-center space-x-2 sm:space-x-2.5 min-w-0">
         <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-[#CFB87C] to-yellow-200 flex items-center justify-center text-slate-950 font-extrabold text-base sm:text-xl shadow-lg shrink-0">CU</div>
         <div class="min-w-0">
-          <h1 class="font-bold text-xs sm:text-lg leading-tight text-slate-100 truncate">CU Boulder Master's</h1>
+          <h1 class="font-bold text-sm sm:text-lg leading-tight text-slate-100 truncate">CU Boulder Master's</h1>
           <div class="flex items-center space-x-1 sm:space-x-1.5 mt-0.5">
             <span class="text-[10px] sm:text-xs text-[#CFB87C] font-medium whitespace-nowrap">Course Tracker</span>
             <button type="button" onclick="forceReloadWebApp()" class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 whitespace-nowrap shrink-0" title="點擊強制重新整理網頁 (適合 iPhone 主畫面 Web App 更新版本)">v5.5 🔄</button>
@@ -53,15 +54,7 @@
         </div>
       </div>
 
-      <!-- 桌面版導覽列 -->
-      <nav class="hidden sm:flex p-1 bg-slate-900/90 rounded-xl border border-slate-800 space-x-1 mx-2 shrink-0">
-        <button type="button" id="nav-home" onclick="switchPage('home')" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center whitespace-nowrap"><i data-lucide="layout-dashboard" class="w-3.5 h-3.5 mr-1.5"></i> 主頁</button>
-        <button type="button" id="nav-table" onclick="switchPage('table')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap"><i data-lucide="table" class="w-3.5 h-3.5 mr-1.5"></i> 批量表格</button>
-        <button type="button" id="nav-planner" onclick="switchPage('planner')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap"><i data-lucide="calendar-clock" class="w-3.5 h-3.5 mr-1.5"></i> 畢業規劃</button>
-        <button type="button" id="nav-profile" onclick="switchPage('profile')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap"><i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1.5"></i> 帳號安全</button>
-      </nav>
-      
-      <!-- 右側工具按鈕 (手機版自動換到第二行，完整顯示 Google 帳號) -->
+      <!-- 右側工具按鈕（手機版自動換到第二行，完整顯示 Google 帳號與選單） -->
       <div class="flex items-center justify-between sm:justify-end gap-1.5 sm:gap-2 w-full sm:w-auto pt-1.5 sm:pt-0 border-t border-slate-800/70 sm:border-t-0 shrink-0 ml-auto">
         <!-- 🌟 Google 帳號綁定按鈕（手機與電腦皆清楚顯示 Google 帳號） -->
         <div id="googleAuthArea" class="flex items-center shrink-0">
@@ -133,6 +126,7 @@
         </div>
       </div>
     </div>
+
 
 
 
