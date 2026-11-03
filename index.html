@@ -129,29 +129,17 @@
 
     </div>
 
-    <!-- 🌟 導覽分頁列（移除 sm:hidden，讓手機版與電腦網頁版都清楚顯示「主頁 / 📋 表格 / 🗺️ 規劃 / 🔒 帳號」！） -->
-    <div class="max-w-7xl mx-auto mt-2.5 pt-2 border-t border-slate-800/80 flex items-center gap-1.5">
-      <button type="button" id="mob-nav-main" onclick="switchMainView('main')" class="flex-1 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-[#CFB87C] text-slate-950 text-center transition">主頁</button>
-      <button type="button" id="mob-nav-batch" onclick="switchMainView('batch')" class="flex-1 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-400 hover:text-slate-200 text-center transition">📋 表格</button>
-      <button type="button" id="mob-nav-planner" onclick="switchMainView('planner')" class="flex-1 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-400 hover:text-slate-200 text-center transition">🗺️ 規劃</button>
-      <button type="button" id="mob-nav-security" onclick="switchMainView('security')" class="flex-1 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-slate-400 hover:text-slate-200 text-center transition">🔒 帳號</button>
-    </div>
-  </header>
-
-
-
-
-
-    <!-- 手機版 4 分頁切換器 -->
-    <div class="flex sm:hidden justify-center mt-2 pt-2 border-t border-slate-800/70">
-      <div class="grid grid-cols-4 p-0.5 bg-slate-900/90 rounded-xl border border-slate-800 w-full gap-0.5">
-        <button type="button" id="mobile-nav-home" onclick="switchPage('home')" class="py-1.5 rounded-lg text-[11px] font-bold bg-[#CFB87C] text-slate-950 whitespace-nowrap text-center">主頁</button>
-        <button type="button" id="mobile-nav-table" onclick="switchPage('table')" class="py-1.5 rounded-lg text-[11px] font-medium text-slate-300 whitespace-nowrap text-center">📋 表格</button>
-        <button type="button" id="mobile-nav-planner" onclick="switchPage('planner')" class="py-1.5 rounded-lg text-[11px] font-medium text-slate-300 whitespace-nowrap text-center">🗺️ 規劃</button>
-        <button type="button" id="mobile-nav-profile" onclick="switchPage('profile')" class="py-1.5 rounded-lg text-[11px] font-medium text-slate-300 whitespace-nowrap text-center">🔒 帳號</button>
+    <!-- 🌟 電腦版與手機版共用的 4 分頁切換器（已移除 sm:hidden，電腦與手機都能點！） -->
+    <div class="max-w-7xl mx-auto flex justify-center mt-2.5 pt-2 border-t border-slate-800/70">
+      <div class="grid grid-cols-4 p-1 bg-slate-900/90 rounded-xl border border-slate-800 w-full gap-1">
+        <button type="button" id="mobile-nav-home" onclick="switchPage('home')" class="py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-[#CFB87C] text-slate-950 whitespace-nowrap text-center transition">主頁</button>
+        <button type="button" id="mobile-nav-table" onclick="switchPage('table')" class="py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:text-white whitespace-nowrap text-center transition">📋 表格</button>
+        <button type="button" id="mobile-nav-planner" onclick="switchPage('planner')" class="py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:text-white whitespace-nowrap text-center transition">🗺️ 規劃</button>
+        <button type="button" id="mobile-nav-profile" onclick="switchPage('profile')" class="py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:text-white whitespace-nowrap text-center transition">🔒 帳號</button>
       </div>
     </div>
   </header>
+
 
   <!-- 🌟 共用置頂儀表板 -->
   <div id="shared-dashboard" class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 pt-4 sm:pt-6 space-y-3 sm:space-y-4">
@@ -2059,11 +2047,7 @@
       }
     };
 
-    window.switchPage = function(p) {
-      if (p === 'table' && !isAccountUnlockedForEdit(activeUserId)) {
-        promptUnlockForAction('table', activeUserId);
-        return;
-      }
+       window.switchPage = function(p) {
       currentPage = p;
       document.getElementById('shared-dashboard').classList.toggle('hidden', p === 'profile' || p === 'planner');
       document.getElementById('batch-live-preview-banner').classList.toggle('hidden', p !== 'table');
@@ -2075,14 +2059,14 @@
       ['home', 'table', 'planner', 'profile'].forEach(k => {
         const dBtn = document.getElementById(`nav-${k}`), mBtn = document.getElementById(`mobile-nav-${k}`), active = (k === p);
         if (dBtn) dBtn.className = active ? "px-3 py-1.5 rounded-lg text-xs font-bold bg-[#CFB87C] text-slate-950 flex items-center whitespace-nowrap" : "px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap";
-        if (mBtn) mBtn.className = active ? "py-1.5 rounded-lg text-[11px] font-bold bg-[#CFB87C] text-slate-950 whitespace-nowrap text-center" : "py-1.5 rounded-lg text-[11px] font-medium text-slate-300 whitespace-nowrap text-center";
+        if (mBtn) mBtn.className = active ? "py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-[#CFB87C] text-slate-950 whitespace-nowrap text-center transition" : "py-1.5 rounded-lg text-xs sm:text-sm font-medium text-slate-300 hover:text-white whitespace-nowrap text-center transition";
       });
 
       if (p === 'profile') {
         updateProfilePageDisplay();
         updateReadOnlyControlsAcrossPages();
       } else if (p === 'table') {
-        setEditModeUI(true);
+        // 保持原本的唯讀/編輯狀態，不強制跳出密碼框
         initBatchTableData();
       } else if (p === 'planner') {
         updateReadOnlyControlsAcrossPages();
@@ -2094,6 +2078,7 @@
       try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { window.scrollTo(0, 0); }
       safeCreateIcons();
     };
+
 
     window.handlePlannerTargetChange = function() {
       renderGraduationPlanner();
@@ -2894,9 +2879,9 @@
 
       const legendHtml = gOrder.map(g => {
         const cnt = gCounts[g.l] || 0, pct = grd > 0 ? Math.round((cnt / grd) * 100) : 0;
-        return `<div class="flex items-center justify-between bg-slate-900/70 px-2.5 py-1 rounded-lg border border-slate-800/80 text-xs">
-          <div class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full ${g.dot} shrink-0"></span><span class="font-bold text-slate-200">${g.l}</span><span class="text-[10px] text-slate-500">(${g.s})</span></div>
-          <div class="flex items-baseline space-x-1"><span class="font-bold ${cnt > 0 ? g.t : 'text-slate-500'}">${cnt}門</span><span class="text-[10px] text-slate-500">${pct}%</span></div>
+        return `<div class="flex items-center justify-between bg-slate-900/70 px-2.5 py-1.5 rounded-lg border border-slate-800/80 text-xs gap-1">
+          <div class="flex items-center space-x-1.5 whitespace-nowrap shrink-0"><span class="w-2.5 h-2.5 rounded-full ${g.dot} shrink-0"></span><span class="font-bold text-slate-200">${g.l}</span><span class="text-[10px] text-slate-500">(${g.s})</span></div>
+          <div class="flex flex-col items-end justify-center leading-tight text-right shrink-0"><span class="font-bold ${cnt > 0 ? g.t : 'text-slate-500'} whitespace-nowrap">${cnt}門</span><span class="text-[10px] text-slate-500 whitespace-nowrap mt-0.5">${pct}%</span></div>
         </div>`;
       }).join('');
 
@@ -3509,44 +3494,34 @@
       };
     }
 
-    const _origSwitchTab = window.switchTab;
-    if (typeof _origSwitchTab === 'function') {
-      window.switchTab = function(tabName, ...rest) {
-        const currentlyUnlocked = (typeof isEditMode !== 'undefined' && isEditMode);
-        const prevEdit = typeof isEditMode !== 'undefined' ? isEditMode : false;
-        if (typeof isEditMode !== 'undefined') isEditMode = true;
-        const result = _origSwitchTab.call(this, tabName, ...rest);
-        if (typeof isEditMode !== 'undefined') isEditMode = prevEdit;
+    function lockBatchTableIfReadOnly() {
+      const canEdit = (typeof isEditMode !== 'undefined' && isEditMode && isAccountUnlockedForEdit(activeUserId)) || isOwnerLoggedIn();
+      if (!canEdit) {
+        document.querySelectorAll('#batch-table-tbody input, #batch-table-tbody select, #batch-table-tbody button').forEach(el => {
+          el.disabled = true;
+          el.classList.add('opacity-70', 'cursor-not-allowed');
+        });
+      }
+    }
 
-        if (!currentlyUnlocked) {
-          setTimeout(() => {
-            const batchView = document.getElementById('view-batch') || document.getElementById('batch-view') || document.querySelector('[id*="batch"]');
-            if (batchView) {
-              batchView.querySelectorAll('input, select, textarea').forEach(el => {
-                el.disabled = true;
-                el.classList.add('opacity-75', 'cursor-not-allowed');
-              });
-            }
-          }, 50);
-        }
-        enforceVisitorPrivacy();
-        return result;
+    const _origRenderBatchTable = window.renderBatchTable || renderBatchTable;
+    if (typeof _origRenderBatchTable === 'function') {
+      renderBatchTable = window.renderBatchTable = function(...args) {
+        const res = _origRenderBatchTable.apply(this, args);
+        lockBatchTableIfReadOnly();
+        return res;
       };
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      enforceTwoRowMobileHeader();
-      updateDriveStatusUI(googleUserEmail ? 'synced' : 'disconnected');
-      enforceVisitorPrivacy();
-      setTimeout(async () => {
-        enforceTwoRowMobileHeader();
-        const loadedFromDrive = isOwnerLoggedIn() ? await loadFromPersonalGoogleDrive('surihua') : false;
-        if (!loadedFromDrive) {
-          await loadLatestShowcaseForVisitor();
-        }
-        enforceVisitorPrivacy();
-      }, 200);
-    });
+    const _origSwitchPage = window.switchPage;
+    if (typeof _origSwitchPage === 'function') {
+      window.switchPage = function(pageName, ...rest) {
+        const res = _origSwitchPage.call(this, pageName, ...rest);
+        if (pageName === 'table') lockBatchTableIfReadOnly();
+        if (typeof enforceVisitorPrivacy === 'function') enforceVisitorPrivacy();
+        return res;
+      };
+    }
 
 
   </script>
