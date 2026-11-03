@@ -61,29 +61,25 @@
         <button type="button" id="nav-profile" onclick="switchPage('profile')" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-300 hover:text-white flex items-center whitespace-nowrap"><i data-lucide="shield-check" class="w-3.5 h-3.5 mr-1.5"></i> 帳號安全</button>
       </nav>
       
-      <!-- 右側工具按鈕 (含 Google 個人雲端綁定、雲端檔案直達連結、常駐批量表格檢視) -->
-      <div class="flex items-center space-x-1 sm:space-x-2 shrink-0">
-        <!-- 🌟 Google 帳號綁定與個人 Google Drive 狀態 -->
+      <!-- 右側工具按鈕 (手機防遮擋 + 預設顯示 @test 隱藏 surihua) -->
+      <div class="flex items-center space-x-1 sm:space-x-2 shrink-0 ml-auto">
+        <!-- 🌟 Google 帳號綁定按鈕 (手機版僅顯示小巧 G / 🟢 圖示，不擠壓標題) -->
         <div id="googleAuthArea" class="flex items-center shrink-0">
-          <button type="button" id="googleConnectBtn" onclick="connectPersonalGoogleDrive()" class="inline-flex items-center px-2 py-1.5 sm:px-2.5 rounded-xl text-xs font-semibold bg-white text-slate-900 hover:bg-slate-100 border border-slate-300 shadow-sm transition shrink-0" title="綁定 Google 帳號並將資料存入您個人的 Google Drive">
+          <button type="button" id="googleConnectBtn" onclick="connectPersonalGoogleDrive()" class="inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-900 hover:bg-slate-100 border border-slate-300 shadow-sm transition shrink-0" title="綁定 Google 帳號並存入個人 Google Drive">
             <svg class="w-3.5 h-3.5 sm:mr-1.5 shrink-0" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
               <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24z"/>
               <path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14z"/>
               <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96z"/>
             </svg>
-            <span class="hidden sm:inline whitespace-nowrap font-bold">Google 登入/雲端</span>
+            <span class="hidden sm:inline whitespace-nowrap font-bold">Google 雲端</span>
           </button>
 
-          <button type="button" id="googleUserBadge" onclick="toggleUserDropdown()" class="hidden inline-flex items-center px-2 py-1.5 rounded-xl text-[11px] font-bold border border-emerald-500/40 bg-emerald-950/70 text-emerald-300 hover:bg-emerald-900/80 transition shrink-0" title="已綁定個人 Google Drive，點擊查看雲端檔案位置">
-            <span id="googleUserText" class="truncate max-w-[90px] sm:max-w-[150px]">🟢 已連雲端</span>
+          <button type="button" id="googleUserBadge" onclick="toggleUserDropdown()" class="hidden inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-[11px] font-bold border border-emerald-500/40 bg-emerald-950/80 text-emerald-300 hover:bg-emerald-900/80 transition shrink-0" title="已綁定個人 Google Drive，點擊查看雲端檔案位置">
+            <span class="inline sm:hidden text-xs leading-none">🟢</span>
+            <span id="googleUserText" class="hidden sm:inline truncate max-w-[130px]">🟢 已連雲端</span>
           </button>
         </div>
-
-        <!-- 📋 常駐顯示：批量表格按鈕（唯讀可檢視、解鎖可編輯） -->
-        <button type="button" id="btn-batch-view" onclick="openBatchTableReadable()" class="inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-[#CFB87C] border border-slate-700 hover:border-[#CFB87C] shrink-0" title="批量表格檢視 / 編輯">
-          <i data-lucide="table" class="w-3.5 h-3.5 sm:mr-1"></i><span class="hidden sm:inline whitespace-nowrap">批量表格</span>
-        </button>
 
         <button type="button" id="mode-toggle-btn" onclick="toggleEditMode()" class="inline-flex items-center justify-center p-1.5 sm:px-2.5 sm:py-1.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-300 border border-slate-700 hover:border-[#CFB87C] shrink-0" title="點擊切換為編輯模式">
           <i data-lucide="lock" class="w-3.5 h-3.5 sm:mr-1 text-slate-400"></i><span id="mode-text" class="hidden sm:inline whitespace-nowrap">瀏覽模式 (唯讀)</span>
@@ -92,14 +88,13 @@
         <div class="relative shrink-0">
           <button type="button" onclick="toggleUserDropdown()" class="inline-flex items-center px-2 py-1.5 sm:px-2.5 rounded-xl text-xs font-semibold bg-slate-800/90 text-slate-200 border border-slate-700 hover:border-[#CFB87C] whitespace-nowrap">
             <i data-lucide="user" class="w-3.5 h-3.5 mr-1 text-[#CFB87C] shrink-0"></i>
-            <span id="current-user-display" class="hidden sm:inline">Suri Hua (@surihua)</span>
-            <span id="current-user-display-mobile" class="inline sm:hidden font-mono text-[11px]">@surihua</span>
+            <span id="current-user-display" class="hidden sm:inline">範例展示 (@test)</span>
+            <span id="current-user-display-mobile" class="inline sm:hidden font-mono text-[11px]">@test</span>
             <i data-lucide="chevron-down" class="w-3 h-3 ml-0.5 sm:ml-1 text-slate-400 shrink-0"></i>
           </button>
 
           <!-- 下拉選單：內含雲端狀態確認面板 -->
           <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-72 glass-card rounded-xl shadow-xl border border-slate-700 py-1.5 z-50">
-            <!-- 🌟 雲端備份位置與狀態驗證面板 -->
             <div class="px-3 py-2 bg-slate-900/90 border-b border-slate-800 text-[11px]">
               <div class="flex items-center justify-between font-bold text-slate-300 mb-1">
                 <span>☁️ 個人 Google Drive 狀態</span>
@@ -136,6 +131,7 @@
         <button type="button" id="btn-reset-data" onclick="resetData()" title="重設資料" class="hidden p-1.5 sm:p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-rose-400 shrink-0"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i></button>
       </div>
     </div>
+
 
 
 
@@ -3072,10 +3068,13 @@
 
     initUserSystem();
     // =========================================================================
-    // 功能：1. 每人存自己的 Google Drive  2. 顯示雲端檔案直達連結  3. 唯讀可看批量表格
+    // 🌟 v5.5 升級引擎：
+    // 1. 對訪客隱藏 @surihua，未登入時預設顯示 @test 並自動抓取站長最新進度
+    // 2. 每人獨立存自己的 Google Drive (CU_Boulder_Tracker_Backup.json)
+    // 3. 唯讀模式下點擊「📋 表格」分頁可直接檢視完整批量總表
     // =========================================================================
-  
     const GOOGLE_CLIENT_ID = '221633388740-90qq8uabufith29n0aiusvorvhnevote.apps.googleusercontent.com';
+    const PUBLIC_SHOWCASE_URL = 'https://script.google.com/macros/s/AKfycbwzujJpnEvgdi3R6Zoj08A1UmfpdBXso6SM_cqkOl6Cv7ORsEsl5APz36ilmUFcGYLP/exec';
     const OWNER_GMAIL = 'h5u9a95@gmail.com';
     const PERSONAL_BACKUP_FILENAME = 'CU_Boulder_Tracker_Backup.json';
 
@@ -3086,12 +3085,64 @@
     let personalDriveFileId = localStorage.getItem('cuboulder_drive_file_id') || '';
     let googleTokenClient = null;
 
+    // 判斷目前是否為站長本人已登入狀態
+    function isOwnerLoggedIn() {
+      return Boolean(
+        googleAccessToken &&
+        Date.now() < googleTokenExpiry &&
+        googleUserEmail.toLowerCase() === OWNER_GMAIL.toLowerCase()
+      );
+    }
+
     function getCurrentUid() {
       if (typeof activeUserId !== 'undefined' && activeUserId) return activeUserId;
       if (typeof currentUser !== 'undefined' && currentUser) return currentUser;
       const mobileEl = document.getElementById('current-user-display-mobile');
       if (mobileEl && mobileEl.textContent) return mobileEl.textContent.replace('@', '').trim().toLowerCase();
-      return 'surihua';
+      return isOwnerLoggedIn() ? 'surihua' : 'test';
+    }
+
+    // 🕵️‍♀️ 隱私保護：若非站長本人登入，將畫面與下拉選單中的 surihua 徹底隱藏並轉為 @test
+    function enforceVisitorPrivacy() {
+      const ownerMode = isOwnerLoggedIn();
+
+      // 1. 若非站長本人，且目前停留在 surihua，強制切為 test
+      if (!ownerMode && getCurrentUid() === 'surihua') {
+        if (typeof activeUserId !== 'undefined') activeUserId = 'test';
+        if (typeof currentUser !== 'undefined') currentUser = 'test';
+        localStorage.setItem('cuboulder_active_user', 'test');
+      }
+
+      // 2. 更新右上角與儀表板上的帳號名稱顯示
+      const uid = getCurrentUid();
+      const deskDisp = document.getElementById('current-user-display');
+      const mobDisp = document.getElementById('current-user-display-mobile');
+      if (uid === 'test') {
+        if (deskDisp) deskDisp.textContent = '範例展示 (@test)';
+        if (mobDisp) mobDisp.textContent = '@test';
+      } else if (uid === 'surihua' && ownerMode) {
+        if (deskDisp) deskDisp.textContent = 'Suri Hua (@surihua)';
+        if (mobDisp) mobDisp.textContent = '@surihua';
+      }
+
+      // 將頁面上所有「顯示：@surihua」在訪客模式下替換為「顯示：@test」
+      if (!ownerMode) {
+        document.querySelectorAll('span, div, p').forEach(el => {
+          if (el.children.length === 0 && el.textContent && el.textContent.includes('@surihua')) {
+            el.textContent = el.textContent.replace(/@surihua/g, '@test').replace(/Suri Hua/g, '範例展示');
+          }
+        });
+      }
+
+      // 3. 過濾下拉選單 (#user-list-options)，不讓訪客看到 surihua
+      const listContainer = document.getElementById('user-list-options');
+      if (listContainer && !ownerMode) {
+        Array.from(listContainer.children).forEach(item => {
+          if (item.textContent && item.textContent.toLowerCase().includes('surihua')) {
+            item.classList.add('hidden');
+          }
+        });
+      }
     }
 
     function updateDriveStatusUI(state, message, fileId = personalDriveFileId) {
@@ -3135,10 +3186,10 @@
       if (fileLink && fileId) fileLink.href = `https://drive.google.com/file/d/${fileId}/view`;
     }
 
-    // 點擊「Google 登入/雲端」按鈕
+    // 點擊「Google 雲端」登入按鈕
     window.connectPersonalGoogleDrive = function() {
       if (!window.google || !window.google.accounts || !window.google.accounts.oauth2) {
-        alert('Google 登入元件載入中，請確認 <head> 已加入 gsi/client 腳本！');
+        alert('Google 登入元件載入中，請稍候再試！');
         return;
       }
       if (!googleTokenClient) {
@@ -3176,11 +3227,12 @@
         const emailPrefix = googleUserEmail.split('@')[0].replace(/[^a-z0-9_]/g, '');
 
         let targetUid = isOwner
-          ? ((currentUid === 'test' || currentUid === 'surihua') ? 'surihua' : currentUid)
+          ? 'surihua'
           : ((currentUid === 'surihua' || currentUid === 'test') ? emailPrefix : currentUid);
 
         if (typeof activeUserId !== 'undefined') activeUserId = targetUid;
         if (typeof currentUser !== 'undefined') currentUser = targetUid;
+        localStorage.setItem('cuboulder_active_user', targetUid);
 
         const deskDisp = document.getElementById('current-user-display');
         const mobDisp = document.getElementById('current-user-display-mobile');
@@ -3188,6 +3240,7 @@
         if (mobDisp) mobDisp.textContent = `@${targetUid}`;
 
         if (typeof isEditMode !== 'undefined') isEditMode = true;
+        if (typeof unlockedUsersSession !== 'undefined') unlockedUsersSession[targetUid] = true;
         const modeText = document.getElementById('mode-text');
         const addBtn = document.getElementById('btn-add-course');
         const resetBtn = document.getElementById('btn-reset-data');
@@ -3197,14 +3250,20 @@
 
         const loaded = await loadFromPersonalGoogleDrive(targetUid);
         if (!loaded) {
+          if (!isOwner && currentUid === 'test' && typeof defaultCoursesTemplate !== 'undefined') {
+            courseList = JSON.parse(JSON.stringify(defaultCoursesTemplate));
+          }
           await saveToPersonalGoogleDrive(targetUid, courseList);
         }
-        if (typeof renderCourses === 'function') renderCourses();
+        if (typeof window.updateDashboardAndRender === 'function') window.updateDashboardAndRender();
+        else if (typeof renderCourses === 'function') renderCourses();
+        enforceVisitorPrivacy();
       } catch (err) {
         updateDriveStatusUI('error', `驗證失敗：${err.message}`);
       }
     }
 
+    // 📥 從個人 Google Drive 讀取備份檔
     async function loadFromPersonalGoogleDrive(uid = getCurrentUid()) {
       if (!googleAccessToken || Date.now() >= googleTokenExpiry) return false;
       try {
@@ -3231,13 +3290,19 @@
         if (userCourses && userCourses.length > 0) {
           courseList = userCourses;
           localStorage.setItem(`cuboulder_courses_${uid}`, JSON.stringify(courseList));
-          if (typeof renderCourses === 'function') renderCourses();
+          if (uid === 'surihua') {
+            localStorage.setItem('cuboulder_courses_test', JSON.stringify(courseList));
+          }
+          if (typeof window.updateDashboardAndRender === 'function') window.updateDashboardAndRender();
+          else if (typeof renderCourses === 'function') renderCourses();
+
           const timeStr = new Date(fileMeta.modifiedTime || Date.now()).toLocaleTimeString('zh-TW', { hour12: false });
           updateDriveStatusUI(
             'synced',
             `✅ <b>已同步 (${timeStr})</b><br>ID：<b class="text-white">@${uid}</b> ➔ <span class="text-emerald-300">${googleUserEmail}</span><br>位置：我的雲端硬碟 / <code class="text-[#CFB87C]">${PERSONAL_BACKUP_FILENAME}</code>`,
             personalDriveFileId
           );
+          enforceVisitorPrivacy();
           return true;
         }
         return false;
@@ -3247,6 +3312,7 @@
       }
     }
 
+    // 📤 寫入個人 Google Drive（若為站長本人，同時更新 @test 公開展示雲端！）
     async function saveToPersonalGoogleDrive(uid = getCurrentUid(), coursesToSave = courseList) {
       if (!googleAccessToken || Date.now() >= googleTokenExpiry) return false;
       try {
@@ -3297,6 +3363,17 @@
         personalDriveFileId = savedMeta.id;
         localStorage.setItem('cuboulder_drive_file_id', personalDriveFileId);
 
+        // 🌟 若是站長本人儲存，同步把最新進度存給 @test 供訪客瀏覽！
+        if (isOwnerLoggedIn()) {
+          localStorage.setItem('cuboulder_courses_surihua', JSON.stringify(coursesToSave));
+          localStorage.setItem('cuboulder_courses_test', JSON.stringify(coursesToSave));
+          fetch(PUBLIC_SHOWCASE_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ uid: 'test', accessToken: googleAccessToken, courses: coursesToSave })
+          }).catch(() => {});
+        }
+
         const timeStr = new Date().toLocaleTimeString('zh-TW', { hour12: false });
         updateDriveStatusUI(
           'synced',
@@ -3305,9 +3382,26 @@
         );
         return true;
       } catch (err) {
-        updateDriveStatusUI('error', `❌ 備份失敗：請確認已啟用 Google Drive API`);
+        updateDriveStatusUI('error', `❌ 備份失敗：${err.message}`);
         return false;
       }
+    }
+
+    // 🌐 訪客打開 @test 時，自動從公開展示雲端抓取站長最新課表（不露出 surihua ID）
+    async function loadLatestShowcaseForVisitor() {
+      if (getCurrentUid() !== 'test') return;
+      try {
+        const res = await fetch(`${PUBLIC_SHOWCASE_URL}?uid=test&t=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (data && data.ok && data.record && Array.isArray(data.record.courses) && data.record.courses.length > 0) {
+          courseList = data.record.courses;
+          localStorage.setItem('cuboulder_courses_test', JSON.stringify(courseList));
+          if (typeof window.updateDashboardAndRender === 'function') window.updateDashboardAndRender();
+          else if (typeof renderCourses === 'function') renderCourses();
+          enforceVisitorPrivacy();
+        }
+      } catch (e) {}
     }
 
     window.manualForceGoogleSync = async function() {
@@ -3321,28 +3415,80 @@
     window.handleGoogleSignOut = function() {
       googleAccessToken = '';
       googleTokenExpiry = 0;
+      googleUserEmail = '';
       localStorage.removeItem('cuboulder_g_access_token');
       localStorage.removeItem('cuboulder_g_token_expiry');
-      updateDriveStatusUI('disconnected', '已登出 Google Drive');
+      localStorage.removeItem('cuboulder_google_email');
+      if (typeof isEditMode !== 'undefined') isEditMode = false;
+      if (typeof activeUserId !== 'undefined') activeUserId = 'test';
+      if (typeof currentUser !== 'undefined') currentUser = 'test';
+      localStorage.setItem('cuboulder_active_user', 'test');
+      updateDriveStatusUI('disconnected', '已登出 Google Drive，切換回 @test 訪客模式');
+      enforceVisitorPrivacy();
+      if (typeof window.updateDashboardAndRender === 'function') window.updateDashboardAndRender();
+      else if (typeof renderCourses === 'function') renderCourses();
     };
 
-    // 唯讀模式也能打開批量表格檢視
-    window.openBatchTableReadable = function() {
-      const unlocked = (typeof isEditMode !== 'undefined' && isEditMode);
-      const prev = typeof isEditMode !== 'undefined' ? isEditMode : false;
-      if (typeof isEditMode !== 'undefined') isEditMode = true;
+    // 自動掛鉤原有的儲存函式，每次您儲存時自動同步到 Google Drive 與 @test
+    const _origSaveFn = window.saveToStorage || window.saveCourses;
+    if (typeof _origSaveFn === 'function') {
+      window.saveToStorage = function(...args) {
+        const r = _origSaveFn.apply(this, args);
+        if (googleAccessToken && Date.now() < googleTokenExpiry) {
+          saveToPersonalGoogleDrive(getCurrentUid(), courseList);
+        }
+        return r;
+      };
+    }
 
-      if (typeof openBatchModal === 'function') openBatchModal();
-      else if (typeof switchTab === 'function') switchTab('batch');
+    // 📋 讓唯讀模式下點擊「📋 表格」主分頁也能直接打開檢視（並自動鎖定輸入框）
+    const _origSwitchTab = window.switchTab;
+    if (typeof _origSwitchTab === 'function') {
+      window.switchTab = function(tabName, ...rest) {
+        const currentlyUnlocked = (typeof isEditMode !== 'undefined' && isEditMode);
+        const prevEdit = typeof isEditMode !== 'undefined' ? isEditMode : false;
+        // 暫時放行讓原本限制編輯模式才能看的「表格 (batch)」分頁能順利切換
+        if (typeof isEditMode !== 'undefined') isEditMode = true;
+        const result = _origSwitchTab.call(this, tabName, ...rest);
+        if (typeof isEditMode !== 'undefined') isEditMode = prevEdit;
 
-      if (typeof isEditMode !== 'undefined') isEditMode = prev;
+        if (!currentlyUnlocked) {
+          setTimeout(() => {
+            const batchView = document.getElementById('view-batch') || document.getElementById('batch-view') || document.querySelector('[id*="batch"]');
+            if (batchView) {
+              batchView.querySelectorAll('input, select, textarea').forEach(el => {
+                el.disabled = true;
+                el.classList.add('opacity-75', 'cursor-not-allowed');
+              });
+            }
+          }, 50);
+        }
+        enforceVisitorPrivacy();
+        return result;
+      };
+    }
 
-      setTimeout(() => {
-        const modal = document.getElementById('batch-modal') || document.getElementById('batchModal') || document.querySelector('[id*="batch"]');
-        if (!modal) return;
-        modal.querySelectorAll('input, select, textarea').forEach(el => { el.disabled = !unlocked; });
-      }, 60);
-    };
+    // 每次開關下拉選單時也自動隱藏 surihua
+    const _origToggleDropdown = window.toggleUserDropdown;
+    if (typeof _origToggleDropdown === 'function') {
+      window.toggleUserDropdown = function(...args) {
+        const r = _origToggleDropdown.apply(this, args);
+        enforceVisitorPrivacy();
+        return r;
+      };
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      enforceVisitorPrivacy();
+      if (isOwnerLoggedIn()) {
+        if (typeof activeUserId !== 'undefined') activeUserId = 'surihua';
+        if (typeof currentUser !== 'undefined') currentUser = 'surihua';
+        loadFromPersonalGoogleDrive('surihua');
+      } else {
+        loadLatestShowcaseForVisitor();
+      }
+      setTimeout(enforceVisitorPrivacy, 300);
+    });
 
 
   </script>
